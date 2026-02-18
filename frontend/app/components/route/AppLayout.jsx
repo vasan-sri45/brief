@@ -44,9 +44,9 @@ export default function AppLayout({ children }) {
 
   return (
     <>
-      {!hideLayout && <Navbar />}
+      {hydrated && <Navbar />}
       {children}
-      {!hideLayout && <Footer />}
+      {hydrated && <Footer />}
     </>
   );
 }
