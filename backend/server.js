@@ -14,6 +14,7 @@ import BlogRoutes from "./routes/admin/blog.route.js";
 import PaidServiceRoutes from "./routes/selling/paidService.route.js";
 import paymentRoutes from "./routes/service/payment.routes.js";
 import contactRouter from "./routes/service/contact.routes.js";
+import healthRoutes from "./routes/health/health.route.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 
@@ -45,6 +46,7 @@ app.set("trust proxy", 1);
 
 
 // Mount under /api
+app.use("/api", healthRoutes);
 app.use("/api", userAuthRouter);
 app.use("/api", employeeAuthRouter);
 app.use("/api/user", userServiceRouter);
