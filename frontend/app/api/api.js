@@ -21,24 +21,26 @@ export const api = axios.create({
 //   }
 // );
 
-
 api.interceptors.response.use(
   res => res,
   async (error) => {
     const config = error.config;
 
-    // retry only once
     if (!config || config.__retry) {
       return Promise.reject(error);
     }
 
-    // network error OR 502 OR 503 OR timeout
-    if (!error.response || error.code === "ECONNABORTED" || error.response?.status >= 500) {
+    const status = error?.response?.status;
+
+    const shouldRetry =
+      !status || status === 502 || status === 503 || status === 504;
+
+    if (shouldRetry) {
       config.__retry = true;
 
-      console.log("Server waking up... retrying in 3s");
+      console.log("Server cold start... retrying");
 
-      await new Promise(r => setTimeout(r, 3000));
+      await new Promise(r => setTimeout(r, 4000));
       return api(config);
     }
 

@@ -7,6 +7,7 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import AuthInitializer from "./components/route/AuthInitializar";
 
 export default function Providers({ children }) {
+
   return (
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
