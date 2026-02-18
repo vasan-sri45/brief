@@ -31,22 +31,24 @@ import Footer from "../navbar/Footer";
 import { usePathname } from "next/navigation";
 
 export default function AppLayout({ children }) {
-  const { hydrated } = useSelector((s) => s.auth);
+  const { user, hydrated } = useSelector((s) => s.auth);
   const pathname = usePathname();
 
+  const isAuthPage = user != null||"";
+
   // pages where navbar should NOT show
-  const hideLayout =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/register");
+  // const hideLayout =
+  //   pathname.startsWith("/login") ||
+  //   pathname.startsWith("/register");
 
   // wait auth check
   if (!hydrated) return null;
 
   return (
     <>
-      {hydrated && <Navbar />}
-      {children}
-      {hydrated && <Footer />}
+       {isAuthPage && user && <Navbar />}
+        {children}
+       {isAuthPage && user && <Footer />}
     </>
   );
 }
