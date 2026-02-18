@@ -1,6 +1,7 @@
 import Service from '../../models/services/service.model.js';
 import mongoose from 'mongoose';
 import asyncHandler from 'express-async-handler';
+import { uploadToCloudinary, cloudinary } from '../../helpers/cloudinary.js';
 
 const normalizeArray = (schemaName, arr) => {
   if (!Array.isArray(arr)) return [];
@@ -156,3 +157,42 @@ export const deleteService = asyncHandler(async (req, routes) => {
   
   res.status(204).send();
 });
+
+
+export const updateimage = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const service = await Service.findById(id);
+
+    if (!service) {
+      return res.status(404).json({ success:false, message:"Service not found" });
+    }
+
+    Object.assign(service, req.body);
+
+    /* ADD NEW IMAGES */
+    const files = Array.isArray(req.files?.images) ? req.files.images : [];
+
+    for (const file of files) {
+      const result = await uploadToCloudinary(file.buffer);
+
+      service.images.push({
+        url: result.secure_url,
+        publicId: result.public_id,
+        originalName: file.originalname,
+        mimetype: file.mimetype
+      });
+    }
+
+    await service.save();
+
+    res.json({
+      success:true,
+      message:"Service updated",
+      data:service
+    });
+
+  } catch (err) {
+    next(err);
+  }
+};

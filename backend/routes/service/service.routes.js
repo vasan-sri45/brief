@@ -5,8 +5,10 @@ import {
   listServices,
   getServiceById,
   updateService,
-  deleteService
+  deleteService,
+  updateimage
 } from "../../controllers/service/service.controller.js"; // adjust path
+import { upload } from '../../helpers/cloudinary.js';
 
 const router = express.Router();
 
@@ -21,6 +23,7 @@ router.get("/:id", getServiceById);
 
 // PATCH /api/services/:id   -> partial update
 router.patch("/:id", updateService);
+router.patch("/image/:id",upload.fields([{ name: 'images', maxCount: 5 }]), updateimage);
 
 // DELETE /api/services/:id  -> delete
 router.delete("/:id", deleteService);

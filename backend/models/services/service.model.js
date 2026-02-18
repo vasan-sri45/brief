@@ -49,7 +49,34 @@ const serviceSchema = new mongoose.Schema(
     processAtBriefcase: { type: [processStepSchema], default: [] },
     content: {type: [contentSchema], default: []},
     trademark: {type: [trademarkSchema], default: []},
-    price: {type: String, default: null}
+    price: {type: String, default: null},
+    images: {
+      type: [
+        {
+          url: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+          publicId: {
+            type: String,
+            default: null,
+          },
+          originalName: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+          mimetype: {
+            type: String,
+            required: true,
+            trim: true,
+          },
+        },
+      ],
+      default: [], // or `undefined` if you prefer it truly optional
+      // default: undefined,
+    },
   },
   { timestamps: true }
 );
