@@ -232,7 +232,7 @@ import bcrypt from "bcryptjs";
 import User from "../../models/auth/user.js";
 import sendEmail from "../../utils/email.js";
 import { generateOtp, hashOtp } from "../../utils/otpGenerator.js";
-import generateToken from "../../utils/generateToken.js";
+import {generateToken} from "../../utils/generateToken.js";
 import { getAuthCookieName, getAuthCookieOptions } from "../../utils/auth/cookies.js";
 
 export const register = asyncHandler(async (req, res) => {

@@ -1,7 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import validator from 'validator';
 import Employee from '../../models/auth/employee.js';
-import generateToken from '../../utils/generateToken.js';
+import {generateToken} from '../../utils/generateToken.js';
 import User from '../../models/auth/user.js';
 import { generateOtp, hashOtp } from "../../utils/otpGenerator.js";
 import sendEmail from "../../utils/email.js";
