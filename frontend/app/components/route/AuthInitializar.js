@@ -98,7 +98,7 @@ export default function AuthInitializer() {
 
       try {
         // 1️⃣ wait backend ready (important for Render cold start)
-        await fetch("/health", { cache: "no-store" });
+        await fetch("/api/health", { cache: "no-store" });
 
         // 2️⃣ get logged user
         const res = await api.get("/user");
