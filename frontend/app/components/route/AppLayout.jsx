@@ -37,18 +37,18 @@ export default function AppLayout({ children }) {
   // const isAuthPage = user != null||"";
 
   // pages where navbar should NOT show
-  // const hideLayout =
-  //   pathname.startsWith("/login") ||
-  //   pathname.startsWith("/register");
+  const hideLayout =
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/register");
 
   // wait auth check
   if (!hydrated) return null;
 
   return (
     <>
-       {/* {isAuthPage && user && <Navbar />} */}
+       {hideLayout && user && <Navbar />}
         {children}
-       {/* {isAuthPage && user && <Footer />} */}
+       {hideLayout && user && <Footer />}
     </>
   );
 }

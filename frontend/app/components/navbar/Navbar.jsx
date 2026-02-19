@@ -71,10 +71,10 @@ import MegaMenu from "./MegaMenu";
 import HeroStrip from "./HeroStrip";
 
 const Navbar = () => {
-  const { user, hydrated } = useSelector((state) => state.auth);
+  // const { user, hydrated } = useSelector((state) => state.auth);
 
-  if (!hydrated) return null;
-  if (!user || user.role !== "user") return null;
+  // if (!hydrated) return null;
+  // if (!user || user.role !== "user") return null;
 
   return (
     <header

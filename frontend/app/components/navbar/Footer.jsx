@@ -14,10 +14,10 @@ import {
 import Image from "next/image";
 
 const Footer = () => {
-  const { user, hydrated } = useSelector((state) => state.auth);
+  // const { user, hydrated } = useSelector((state) => state.auth);
 
   // Show footer ONLY for logged-in users
-  if (!hydrated || !user || user.role !== "user") return null;
+  // if (!hydrated || !user || user.role !== "user") return null;
 
   const socialLinks = [
     {
