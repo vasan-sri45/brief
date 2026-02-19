@@ -34,21 +34,21 @@ export default function AppLayout({ children }) {
   const { user, hydrated } = useSelector((s) => s.auth);
   const pathname = usePathname();
 
-  // const isAuthPage = user != null||"";
+  const isAuthPage = user != null||"";
 
   // pages where navbar should NOT show
-  const hideLayout =
-    pathname.startsWith("/login") ||
-    pathname.startsWith("/register");
+  // const hideLayout =
+  //   pathname.startsWith("/login") ||
+  //   pathname.startsWith("/register");
 
   // wait auth check
   if (!hydrated) return null;
 
   return (
     <>
-       {hideLayout && user && <Navbar />}
+       {isAuthPage && user && <Navbar />}
         {children}
-       {hideLayout && user && <Footer />}
+       {isAuthPage && user && <Footer />}
     </>
   );
 }
