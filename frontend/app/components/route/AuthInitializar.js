@@ -58,7 +58,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setUser, clearUser } from "../../store/features/auth.slice";
-import { api } from "../../lib/axios";
+import { api } from "../../api/api";
 
 export default function AuthInitializer() {
   const dispatch = useDispatch();
