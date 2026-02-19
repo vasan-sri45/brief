@@ -435,11 +435,11 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 });
 
 export const getMe = asyncHandler(async (req, res) => {
-  const user = req.user;
+  // const user = req.user;
   res.status(200).json({
     success: true,
     message: "Authenticated user!",
-    user,
+    user:req.user,
   });
 });
 
