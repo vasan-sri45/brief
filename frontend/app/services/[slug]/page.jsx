@@ -1,7 +1,4 @@
-
-
 "use client";
-
 import React, { useEffect, useMemo, useCallback, useRef } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { gsap } from "gsap";

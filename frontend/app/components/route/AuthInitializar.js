@@ -53,27 +53,69 @@
 // }
 
 
+// "use client";
+
+// import { useEffect } from "react";
+// import { useDispatch } from "react-redux";
+// import { setUser, clearUser } from "../../store/features/auth.slice";
+// import { api } from "../../api/api";
+
+// export default function AuthInitializer() {
+//   const dispatch = useDispatch();
+
+//   useEffect(() => {
+//     const init = async () => {
+//       try {
+//         const res = await api.get("/user"); // your protected route
+//         dispatch(setUser(res.data.user));
+//       } catch {
+//         dispatch(clearUser());
+//       }
+//     };
+
+//     init();
+//   }, [dispatch]);
+
+//   return null;
+// }
+
+
 "use client";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setUser, clearUser } from "../../store/features/auth.slice";
+import { setUser, clearUser, setLoading } from "../../store/features/auth.slice";
 import { api } from "../../api/api";
 
 export default function AuthInitializer() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const init = async () => {
+    let mounted = true;
+
+    const initAuth = async () => {
+      dispatch(setLoading(true));
+
       try {
-        const res = await api.get("/user"); // your protected route
-        dispatch(setUser(res.data.user));
-      } catch {
-        dispatch(clearUser());
+        // 1️⃣ wait backend ready (important for Render cold start)
+        await fetch("/health", { cache: "no-store" });
+
+        // 2️⃣ get logged user
+        const res = await api.get("/user");
+
+        if (mounted) dispatch(setUser(res.data.user));
+      } catch (err) {
+        if (mounted) dispatch(clearUser());
+      } finally {
+        if (mounted) dispatch(setLoading(false));
       }
     };
 
-    init();
+    initAuth();
+
+    return () => {
+      mounted = false;
+    };
   }, [dispatch]);
 
   return null;
