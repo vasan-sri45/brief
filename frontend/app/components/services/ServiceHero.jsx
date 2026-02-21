@@ -79,7 +79,7 @@ const ServiceHero = ({ service }) => {
             <button
               onClick={handleStartService}
               className="mt-6 inline-flex items-center px-6 py-2 rounded-full font-lato font-bold
-                         bg-starttext text-white shadow 
+                         bg-starttext text-custom-blue shadow 
                          hover:shadow-lg hover:scale-105 
                          transition-all duration-300"
             >

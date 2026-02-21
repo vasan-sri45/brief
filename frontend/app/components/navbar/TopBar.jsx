@@ -37,7 +37,7 @@ const TopBar = () => {
                       height={32}
                       className=" rounded mr-3"
                     />
-                    <h2 className="text-xl font-anton font-semibold tracking-widest">BRIEFCASSE.</h2>
+                    <h2 className="text-xl md:text-2xl font-anton font-normal tracking-widest">BRIEFCASSE</h2>
                   </div>
       <input
         className="max-w-md w-full px-4 py-2 rounded-lg text-black"

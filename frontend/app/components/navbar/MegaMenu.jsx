@@ -112,7 +112,7 @@ const MegaMenuNavbar = () => {
       <div className="lg:hidden flex justify-between items-center px-4 py-4 bg-custom-blue rounded-t-xl">
         <div className="flex justify-center items-center gap-2">
               <Image src={BriefCasse} alt="logo" className="w-6 rounded" />
-              <span className="text-white font-bold text-lg">Briefcasse</span>
+              <span className="text-white font-anton font-normal text-lg">Briefcasse</span>
             </div>
         <button onClick={() => setMobileOpen(true)} className="p-2">
           <Menu className="text-white" size={28} />
