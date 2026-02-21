@@ -202,7 +202,7 @@ const handleSubmit = async (e) => {
     <div className="max-w-4xl mx-auto">
 
       <h2 className="text-3xl md:text-4xl font-anton text-starttext mb-10 tracking-wider">
-        Or fill out the form below
+        fill out the form below
       </h2>
 
       <form className="space-y-6" onSubmit={handleSubmit}>
