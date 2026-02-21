@@ -51,11 +51,11 @@ const ProcessAtBriefcase = ({ brief }) => {
   return (
     <section className="relative w-full py-12 md:py-16 overflow-hidden px-2">
       {/* background circles */}
-      <div className="pointer-events-none absolute -left-24 top-30 w-52 h-52 rounded-full bg-[#143C63]" />
-      <div className="hidden lg:block pointer-events-none absolute -left-10 top-20 w-40 h-40 rounded-full border-[6px] border-[#E3A849]" />
-      <div className="pointer-events-none absolute left-1/3 top-40 w-40 h-40 rounded-full bg-[#143C63]" />
-      <div className="pointer-events-none absolute left-[38%] top-32 w-24 h-24 rounded-full border-[5px] border-[#E3A849]/70" />
-      <div className="pointer-events-none absolute right-12 bottom-10 w-32 h-32 rounded-full border-[5px] border-[#E3A849]/60" />
+      <div className="pointer-events-none absolute -left-24 top-30 w-52 h-52 rounded-full bg-custom-blue" />
+      <div className="hidden lg:block pointer-events-none absolute -left-10 top-20 w-40 h-40 rounded-full border-[6px] border-starttext" />
+      <div className="pointer-events-none absolute left-1/3 top-40 w-40 h-40 rounded-full bg-custom-blue" />
+      <div className="pointer-events-none absolute left-[38%] top-32 w-24 h-24 rounded-full border-[5px] border-starttext" />
+      <div className="pointer-events-none absolute right-12 bottom-10 w-32 h-32 rounded-full border-[5px] border-starttext" />
 
       <div className="mb-8 lg:w-10/12 mx-auto">
           <h2 className="font-anton font-medium text-[1.1rem] md:text-[1.3rem] lg:text-[1.6rem] tracking-wider text-custom-blue">

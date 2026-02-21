@@ -99,7 +99,7 @@ export default function ScrollToTopSocialFAB() {
         }}
         aria-label="Scroll to top"
         className="flex items-center justify-center
-                   rounded-full bg-starttext text-white shadow-xl p-2.5"
+                   rounded-full bg-starttext text-custom-blue shadow-xl p-2.5"
       >
         {/* <ArrowUp size={25} /> */}
         <ChevronUp size={32} />

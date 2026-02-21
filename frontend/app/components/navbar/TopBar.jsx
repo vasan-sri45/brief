@@ -33,11 +33,11 @@ const TopBar = () => {
                      <Image
                       src="/assets/brief_white.png"
                       alt="logo"
-                      width={32}
-                      height={32}
-                      className=" rounded mr-1"
+                      width={36}
+                      height={36}
+                      className=" rounded mr-3"
                     />
-                    <h2 className="text-xl md:text-2xl font-anton font-normal tracking-widest">BRIEFCASSE</h2>
+                    <h2 className="text-xl md:text-3xl font-anton font-normal tracking-widest">BRIEFCASSE</h2>
                   </div>
       <input
         className="max-w-md w-full px-4 py-2 rounded-lg text-black"

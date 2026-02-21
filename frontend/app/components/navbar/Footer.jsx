@@ -59,8 +59,8 @@ const Footer = () => {
                 height={32}
                 className="mr-3"
               />
-              <h2 className="text-xl font-anton font-semibold tracking-widest">
-                BRIEFCASE.
+              <h2 className="text-xl md:text-3xl font-anton font-semibold tracking-widest">
+                BRIEFCASE
               </h2>
             </div>
 
