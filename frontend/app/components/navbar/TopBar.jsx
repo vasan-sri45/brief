@@ -35,7 +35,7 @@ const TopBar = () => {
                       alt="logo"
                       width={32}
                       height={32}
-                      className=" rounded mr-3"
+                      className=" rounded mr-1"
                     />
                     <h2 className="text-xl md:text-2xl font-anton font-normal tracking-widest">BRIEFCASSE</h2>
                   </div>
