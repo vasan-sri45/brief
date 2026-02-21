@@ -83,7 +83,7 @@ const MegaMenuNavbar = () => {
         <div className="p-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-10 max-h-[70vh] overflow-y-auto">
           {Object.entries(entry.sections).map(([title, items]) => (
             <div key={title} className="flex flex-col">
-              <h4 className="text-starttext font-bold text-sm mb-4 uppercase tracking-wider">
+              <h4 className="text-starttext bg-custom-blue p-2 font-bold text-sm mb-4 uppercase tracking-wider">
                 {title}
               </h4>
               <ul className="space-y-3">
