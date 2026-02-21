@@ -12,12 +12,25 @@ const RegisterForm = ({ handleClick }) => {
       <div className="bg-beige w-full sm:w-11/12 lg:max-w-lg rounded-3xl py-6 sm:py-8 lg:py-10 h-[550px] lg:h-[600px] xl:h-[640px]">
         <div className="w-11/12 mx-auto">
           {/* Logo & Heading */}
-          <div className="flex items-center gap-2 pt-2">
+          {/* <div className="flex items-center gap-2 pt-2">
             <div className="w-10 h-10 rounded-lg bg-white shadow-inner flex justify-center items-center">
               <Image src={BriefCasse} alt="logo" className="w-6 rounded" />
             </div>
             <div className="w-20 h-7 mt-3 lg:w-22 lg:h-8">
               <Image src={BriefHeading} alt="heading" className="w-full h-full object-contain" />
+            </div>
+          </div> */}
+
+          {/* ===== LOGO ===== */}
+          <div className="flex items-center gap-1 pt-4">
+            <div className="flex justify-center items-center">
+              <Image src={BriefCasse} alt="logo" className="w-6 rounded" />
+            </div>
+
+            <div className="w-20 h-7 mt-3">
+              <p className="text-[1.1rem] font-anton text-normal text-custom-blue mt-[-3px]">
+                Briefcasse
+              </p>
             </div>
           </div>
           {/* Title */}
