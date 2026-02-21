@@ -9,7 +9,7 @@ const LoginForm = ({ handleClick }) => {
     <div className="w-full md:w-6/12 min-h-screen flex flex-col justify-center items-center md:items-end gap-1">
       
       {/* ================= CARD ================= */}
-      <div className="bg-beige w-11/12 lg:max-w-lg h-[420px] lg:h-[500px] rounded-3xl">
+      <div className="bg-beige w-11/12 lg:max-w-lg h-[420px] lg:h-[460px] xl:h-[500px] rounded-3xl">
         <div className="w-5/6 mx-auto pt-2">
 
           {/* ===== LOGO ===== */}
@@ -44,7 +44,7 @@ const LoginForm = ({ handleClick }) => {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <div className="bg-beige w-11/12 lg:max-w-lg h-[80px] lg:h-[135px] rounded-3xl">
+      <div className="bg-beige w-11/12 lg:max-w-lg h-[90px] md:h-[125px] lg:h-[135px] rounded-3xl">
         <div className="h-full flex items-center justify-center">
           <FormFooter />
         </div>
