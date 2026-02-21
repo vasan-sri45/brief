@@ -7,7 +7,7 @@ const HeroStrip = () => {
     <div className="hidden lg:block py-4 text-white">
       <h1 className="text-3xl font-anton font-normal tracking-wider">BRIEFCASSE</h1>
       <p className="text-lg mt-1 font-lato font-bold tracking-wide">
-        The Legal Auto-Piolet For Your Bussiness
+        The Legal Auto-Piolot For Your Bussiness
       </p>
       
         <button
