@@ -25,7 +25,7 @@ const TopBar = () => {
   }, []);
 
   return (
-    <div className="hidden lg:flex items-center justify-between py-3 pt-5 text-white">
+    <div className="hidden lg:flex items-center justify-between pb-1 pt-5 text-white">
       {/* <div className="text-xl font-anton font-medium tracking-wider">Briefcasse</div> */}
 
         <div className="flex items-center mb-4">
