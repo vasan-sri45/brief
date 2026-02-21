@@ -4,6 +4,7 @@ import Image from "next/image";
 import BriefCasse from "../../../public/assets/brief_casse.png";
 import BriefHeading from "../../../public/assets/brief_heading.png";
 import RegisterForm1 from "./RegisterForm1";
+import BriefCasse from "../../../public/assets/brief_blue.png";
 
 const RegisterForm = ({ handleClick }) => {
   return (
