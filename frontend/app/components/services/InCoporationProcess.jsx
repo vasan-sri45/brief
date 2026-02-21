@@ -107,7 +107,7 @@ const ProcessCard = ({ step }) => {
   return (
     <div className="relative flex justify-center mt-6">
       {/* badge circle */}
-      <div className="absolute -top-4 left-[-9px] w-9 h-9 md:w-10 md:h-10 rounded-full bg-starttext text-white flex items-center justify-center shadow-[0_6px_12px_rgba(0,0,0,0.16)] border border-white z-10">
+      <div className="absolute -top-4 left-[-9px] w-9 h-9 md:w-10 md:h-10 rounded-full bg-starttext text-custom-blue flex items-center justify-center shadow-[0_6px_12px_rgba(0,0,0,0.16)] border border-white z-10">
         <span className="font-poppins font-semibold text-xs md:text-sm">
           {step.badge}
         </span>

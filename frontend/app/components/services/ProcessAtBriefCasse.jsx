@@ -99,7 +99,7 @@ const ProcessCard = ({ step, index }) => {
           absolute -left-4 md:-left-6 -top-5
           w-11 h-11 rounded-full
           bg-starttext flex items-center justify-center
-          text-[11px] md:text-[12px] font-semibold font-poppins text-white
+          text-[11px] md:text-[12px] font-semibold font-poppins text-custom-blue
           shadow-[0_4px_10px_rgba(0,0,0,0.25)]
         "
       >

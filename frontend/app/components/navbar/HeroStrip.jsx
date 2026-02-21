@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 
 const HeroStrip = () => {
   return (
-    <div className="hidden lg:block py-8 text-white">
+    <div className="hidden lg:block py-4 text-white">
       <h1 className="text-3xl font-anton font-normal tracking-wider">BRIEFCASSE</h1>
       <p className="text-lg mt-1 font-lato font-bold tracking-wide">
         The Legal Auto-Piolet For Your Bussiness
