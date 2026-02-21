@@ -33,8 +33,8 @@ const TopBar = () => {
                      <Image
                       src="/assets/brief_white.png"
                       alt="logo"
-                      width={36}
-                      height={36}
+                      width={44}
+                      height={44}
                       className=" rounded mr-3"
                     />
                     <h2 className="text-xl md:text-3xl font-anton font-normal tracking-widest">BRIEFCASSE</h2>
