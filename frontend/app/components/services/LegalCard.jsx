@@ -97,10 +97,10 @@ export default function TalkToLawyer({ content = [], service = null }) {
                 hover:scale-105"
               >
                 <div className="flex-1 flex flex-col justify-between min-h-0">
-                  <h3 className="font-lato font-bold text-base md:text-xl text-custom-blue text-center mb-4 md:mb-6 leading-tight transition-all duration-300 ease-out group-hover:text-white line-clamp-2">
+                  <h3 className="font-lato font-bold text-base md:text-xl text-custom-blue text-center mb-4 md:mb-6 leading-tight transition-all duration-300 ease-out group-hover:text-custom-blue line-clamp-2">
                     {item.title}
                   </h3>
-                  <p className="text-xs md:text-sm leading-6 md:leading-7 text-letter1 font-lato mb-6 text-justify font-bold line-clamp-4 md:line-clamp-5 transition-all duration-300 flex-1 group-hover:text-white/95">
+                  <p className="text-xs md:text-sm leading-6 md:leading-7 text-letter1 font-lato mb-6 text-justify font-bold line-clamp-4 md:line-clamp-5 transition-all duration-300 flex-1 group-hover:text-custom-blue">
                     {item.desc}
                   </p>
                 </div>
