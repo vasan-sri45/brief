@@ -129,9 +129,9 @@ const MegaMenuNavbar = () => {
             onMouseEnter={() => openMenu(item)}
             onMouseLeave={closeMenu}
           >
-            <button className="font-lato font-bold flex items-center gap-1 hover:text-yellow-400 py-2">
+            <button className="font-lato font-bold flex items-center gap-1 bg-starttext text-custom-blue hover:bg-custom-blue hover:text-starttext py-2">
               {item}
-              <ChevronDown size={16} className={`transition-transform duration-200 ${activeMenu === item ? "rotate-180" : ""}`} />
+              <ChevronDown size={16} className={`transition-transform duration-200 text-white ${activeMenu === item ? "rotate-180" : ""}`} />
             </button>
             
             {activeMenu === item && <DesktopMegaMenu item={item} />}
