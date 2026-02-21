@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useLogout } from "../../hooks/useAuthMutations";
 import { useAllServices } from "../../hooks/userServiceList";
-import BriefCasse from "../../../public/assets/brief_blue.png";
+import BriefCasse from "../../../public/assets/brief_white.png";
 import Image from "next/image";
 
 const CATEGORY_LABELS = [
@@ -110,7 +110,7 @@ const MegaMenuNavbar = () => {
       {/* ================= MOBILE/MEDIUM HEADER ================= */}
       {/* Changed xl:hidden to lg:hidden so desktop menu starts at 1024px */}
       <div className="lg:hidden flex justify-between items-center px-4 py-4 bg-custom-blue rounded-t-xl">
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center gap-2">
               <Image src={BriefCasse} alt="logo" className="w-6 rounded" />
               <span className="text-white font-bold text-lg">Briefcasse</span>
             </div>
