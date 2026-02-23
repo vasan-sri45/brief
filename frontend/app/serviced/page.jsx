@@ -143,15 +143,34 @@ export default function ServicePage() {
   return (
     <section className="bg-white">
       <div className="max-w-7xl mx-auto p-5">
-
-        <Section title="Startup" services={services} />
-        <Section title="Intellectual Property" services={services} />
-        <Section title="Tax Filling" services={services} />
-        <Section title="MCA Compliance" services={services} />
-        <Section title="Registration" services={services} />
-        <Section title="Legal Advisory & Agreement" services={services} />
-        <Section title="Other Services" services={services} />
-
+        <div>
+          <p className="text-letter1 text-bold text-lato text-lg">We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease.</p>
+          <Section title="Startup" services={services} />
+        </div>
+        <div>
+          <p className="text-letter1 text-bold text-lato text-lg">We offer comprehensive intellectual property services to protect, manage, and enforce your ideas, innovations, and brand assets effectively.</p>
+          <Section title="Intellectual Property" services={services} />
+        </div>
+        <div>
+          <p className="text-letter1 text-bold text-lato text-lg">We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free.</p>
+          <Section title="Tax Filling" services={services} />
+        </div>
+        <div>
+          <p>We assist in filing and managing MCA complaints efficiently to help individuals and businesses resolve corporate compliance issues smoothly.</p>
+          <Section title="MCA Compliance" services={services} />
+        </div>
+        <div>
+          <p className="text-letter1 text-bold text-lato text-lg">We offer quick and reliable registration services to help individuals and businesses complete legal formalities with ease and confidence.</p>
+          <Section title="Registration" services={services} />
+        </div>
+        <div>
+          <p className="text-letter1 text-bold text-lato text-lg">We provide expert legal advisory and agreement drafting services to protect your interests and ensure clear, enforceable business relationships.</p>
+          <Section title="Legal Advisory & Agreement" services={services} />
+        </div>
+       <div>
+          <p className="text-letter1 text-bold text-lato text-lg">We offer a wide range of other professional services tailored to meet diverse legal, compliance, and business support needs.</p>
+          <Section title="Other Services" services={services} />
+       </div>
       </div>
     </section>
   );

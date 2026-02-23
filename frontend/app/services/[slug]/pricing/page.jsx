@@ -121,60 +121,63 @@ const handlePayment = async () => {
   /* ================= UI ================= */
 
   return (
-    <section className="w-full py-10">
-      <div className="max-w-4xl mx-auto px-4">
+    // <section className="w-full py-10">
+    //   <div className="max-w-4xl mx-auto px-4">
 
-        <div className="mb-10 text-center">
-          <h1 className="text-3xl font-bold text-[#1E3A8A] uppercase">
-            {title} Pricing
-          </h1>
-          <p className="mt-2 text-slate-600">
-            Service: <span className="font-semibold">{slug}</span>
-          </p>
-        </div>
+    //     <div className="mb-10 text-center">
+    //       <h1 className="text-3xl font-bold text-[#1E3A8A] uppercase">
+    //         {title} Pricing
+    //       </h1>
+    //       <p className="mt-2 text-slate-600">
+    //         Service: <span className="font-semibold">{slug}</span>
+    //       </p>
+    //     </div>
 
-        <div className="flex justify-center">
-          <div className="w-full max-w-md rounded-xl border p-6 shadow-sm bg-white">
-            <h3 className="text-lg font-bold text-[#1E3A8A]">
-              Service Fee
-            </h3>
+    //     <div className="flex justify-center">
+    //       <div className="w-full max-w-md rounded-xl border p-6 shadow-sm bg-white">
+    //         <h3 className="text-lg font-bold text-[#1E3A8A]">
+    //           Service Fee
+    //         </h3>
 
-            <p className="text-4xl font-extrabold mt-4">
-              ₹{price}
-            </p>
+    //         <p className="text-4xl font-extrabold mt-4">
+    //           ₹{price}
+    //         </p>
 
-            <ul className="mt-4 space-y-2 text-sm text-slate-600">
-              <li>✔ Expert Consultation</li>
-              <li>✔ Government Filing</li>
-              <li>✔ Documentation</li>
-              <li>✔ End-to-End Support</li>
-            </ul>
+    //         <ul className="mt-4 space-y-2 text-sm text-slate-600">
+    //           <li>✔ Expert Consultation</li>
+    //           <li>✔ Government Filing</li>
+    //           <li>✔ Documentation</li>
+    //           <li>✔ End-to-End Support</li>
+    //         </ul>
 
-            <button
-              disabled={loading}
-              onClick={handlePayment}
-              className={`mt-6 w-full py-2 rounded-lg font-semibold transition
-                ${
-                  loading
-                    ? "bg-gray-400 cursor-not-allowed"
-                    : "bg-[#2563EB] hover:bg-[#1E40AF] text-white"
-                }`}
-            >
-              {loading ? "Processing..." : "Pay Now"}
-            </button>
-          </div>
-        </div>
+    //         <button
+    //           disabled={loading}
+    //           onClick={handlePayment}
+    //           className={`mt-6 w-full py-2 rounded-lg font-semibold transition
+    //             ${
+    //               loading
+    //                 ? "bg-gray-400 cursor-not-allowed"
+    //                 : "bg-[#2563EB] hover:bg-[#1E40AF] text-white"
+    //             }`}
+    //         >
+    //           {loading ? "Processing..." : "Pay Now"}
+    //         </button>
+    //       </div>
+    //     </div>
 
-        <div className="mt-10 flex justify-center">
-          <button
-            onClick={() => router.back()}
-            className="px-6 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100"
-          >
-            ← Back
-          </button>
-        </div>
-      </div>
-    </section>
+    //     <div className="mt-10 flex justify-center">
+    //       <button
+    //         onClick={() => router.back()}
+    //         className="px-6 py-2 border border-slate-300 rounded-lg text-slate-700 hover:bg-slate-100"
+    //       >
+    //         ← Back
+    //       </button>
+    //     </div>
+    //   </div>
+    // </section>
+    <>
+      <ContactForm />
+    </>
   );
 }
 
