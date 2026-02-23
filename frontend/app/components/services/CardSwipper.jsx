@@ -47,7 +47,7 @@ const CardSwipper = ({ servicesData = [] }) => {
               <h3 className="text-lg font-anton text-custom-blue text-center mb-4">
                 {service.heading}
               </h3>
-               <p className="text-letter1 text-bold text-lato text-lg">We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease.</p>
+               
 
               {/* ICON */}
               <div className="flex justify-center mb-4">
