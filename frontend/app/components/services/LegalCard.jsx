@@ -71,19 +71,19 @@ export default function TalkToLawyer({ content = [], service = null }) {
   return (
     <section className="w-full pt-4 pb-3 lg:pt-12">
       <div className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0">
-        <header className="mb-8 text-center">
+        {/* <header className="mb-8 text-center">
           <h2 className="font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue tracking-widest uppercase">TALK TO LAWYER</h2>
          
           <div className="mt-2 flex justify-center mb-6 overflow-hidden">
             <span className="relative h-[3px] w-16 rounded-full bg-custom-blue">
-              {/* GSAP-driven infinite underline */}
+              
               <span
                 ref={underlineRef}
                 className="underline-glow absolute inset-0 rounded-full bg-white/70"
               />
             </span>
           </div>
-        </header>
+        </header>  */}
 
         {items.length === 0 ? (
           <div className="text-center py-12 text-gray-500">No consultation options available.</div>
@@ -106,7 +106,7 @@ export default function TalkToLawyer({ content = [], service = null }) {
                 </div>
 
                 <div className="mt-auto flex justify-end pt-2 ">
-                  <Link href='/contact' className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-starttext shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2
+                  <Link href='/user/contact' className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-starttext shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2
                      text-white text-xs
                       group-hover:bg-white">
                     <span className="font-lato font-semibold text-xs md:text-lg text-white group-hover:text-custom-blue tracking-wide">Book Slot</span>
