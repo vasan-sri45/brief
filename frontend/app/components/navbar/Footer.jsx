@@ -42,6 +42,12 @@ const Footer = () => {
     },
   ];
 
+  const links = [
+  { name: "About Us", href: "/user/about" },
+  { name: "Blogs", href: "/blogs" },
+  { name: "Contact", href: "/user/contact" },
+];
+
   return (
     <footer className="w-full bg-custom-blue text-white">
       <div className="mx-auto p-6 max-w-[1800px] mt-5 md:mt-14">
@@ -65,8 +71,8 @@ const Footer = () => {
             </div>
 
             <p className="text-gray-300 text-sm leading-relaxed font-lato font-semibold">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-              Curabitur interdum mollis orci.
+              Briefcasse is your trusted partner for legal, tax, compliance, and business registration services,
+               delivering reliable solutions for individuals, startups, and enterprises.
             </p>
           </div>
 
@@ -85,7 +91,7 @@ const Footer = () => {
               ].map((item) => (
                 <li key={item}>
                   <a
-                    href="#"
+                    href="/serviced"
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
                     {item}
@@ -99,13 +105,13 @@ const Footer = () => {
           <div>
             <h3 className="text-lg font-lato font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              {["About Us", "Career", "Blogs", "Contact"].map((item) => (
-                <li key={item}>
+              {links.map((item) => (
+                <li key={item.name}>
                   <a
-                    href="#"
+                    href={item.href}
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
-                    {item}
+                    {item.name}
                   </a>
                 </li>
               ))}
