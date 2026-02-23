@@ -107,7 +107,7 @@ const handleSubmit = async (e) => {
 
         {/* Message */}
         <div>
-          <label className="block font-bold text-custom-blue mb-2">Message*</label>
+          <label className="block font-bold text-custom-blue mb-2">Message</label>
           <div className="relative">
             <MessageSquare className="absolute left-4 top-4 text-letter1" size={18} />
             <textarea
