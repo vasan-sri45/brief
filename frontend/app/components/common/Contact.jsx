@@ -21,7 +21,7 @@ export default function Contact() {
 
           <ContactCard
             icon={<Phone size={28} />}
-            text="+91 84898 29227 / 80988 88087"
+            text="+91 9600606897"
           />
 
           <ContactCard
