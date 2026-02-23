@@ -106,7 +106,7 @@ export default function TalkToLawyer({ content = [], service = null }) {
                 </div>
 
                 <div className="mt-auto flex justify-end pt-2 ">
-                  <Link href={item.href} className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-starttext shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2
+                  <Link href='/contact' className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-starttext shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2
                      text-white text-xs
                       group-hover:bg-white">
                     <span className="font-lato font-semibold text-xs md:text-lg text-white group-hover:text-custom-blue tracking-wide">Book Slot</span>

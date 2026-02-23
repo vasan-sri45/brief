@@ -31,31 +31,45 @@ export default function ServicePage() {
       <div className="max-w-7xl mx-auto p-5">
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease.</p> */}
-          <Section title="Startup" services={services} />
+          <Section title="Startup"
+          subTitle="We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease."
+          services={services} />
         </div>
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We offer comprehensive intellectual property services to protect, manage, and enforce your ideas, innovations, and brand assets effectively.</p> */}
-          <Section title="Intellectual Property" services={services} />
+          <Section title="Intellectual Property"
+          subTitle="We offer comprehensive intellectual property services to protect, manage, and enforce your ideas, innovations, and brand assets effectively."
+          services={services} />
         </div>
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free.</p> */}
-          <Section title="Tax Filling" services={services} />
+          <Section title="Tax Filling"
+            subTitle="We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free."
+          services={services} />
         </div>
         <div>
           {/* <p>We assist in filing and managing MCA complaints efficiently to help individuals and businesses resolve corporate compliance issues smoothly.</p> */}
-          <Section title="MCA Compliance" services={services} />
+          <Section title="MCA Compliance"
+          subTitle="We assist in filing and managing MCA complaints efficiently to help individuals and businesses resolve corporate compliance issues smoothly."
+          services={services} />
         </div>
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We offer quick and reliable registration services to help individuals and businesses complete legal formalities with ease and confidence.</p> */}
-          <Section title="Registration" services={services} />
+          <Section title="Registration"
+          subTitle="We offer quick and reliable registration services to help individuals and businesses complete legal formalities with ease and confidence."
+          services={services} />
         </div>
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We provide expert legal advisory and agreement drafting services to protect your interests and ensure clear, enforceable business relationships.</p> */}
-          <Section title="Legal Advisory & Agreement" services={services} />
+          <Section title="Legal Advisory & Agreement"
+          subTitle="We provide expert legal advisory and agreement drafting services to protect your interests and ensure clear, enforceable business relationships."
+          services={services} />
         </div>
        <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We offer a wide range of other professional services tailored to meet diverse legal, compliance, and business support needs.</p> */}
-          <Section title="Other Services" services={services} />
+          <Section title="Other Services"
+          subTitle="We offer a wide range of other professional services tailored to meet diverse legal, compliance, and business support needs."
+          services={services} />
        </div>
       </div>
     </section>
@@ -63,7 +77,7 @@ export default function ServicePage() {
 }
 
 
-function Section({ title, services }) {
+function Section({ title ,subTitle, services }) {
 
   // ⭐ MAIN FIX
   const filtered = services.filter(
@@ -74,9 +88,10 @@ function Section({ title, services }) {
     <div className="mb-12">
 
       <div className="pb-8 text-center">
-        <p className="font-anton font-semibold text-custom-blue text-2xl tracking-wider">
+        <p className="font-anton font-semibold text-custom-blue text-2xl tracking-wider pb-3">
           {title}
         </p>
+        <p className="text-letter1 text-lg text-lato text-bold">{subTitle}</p>
       </div>
 
       <CardSwipper servicesData={filtered} />
