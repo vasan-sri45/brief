@@ -114,8 +114,8 @@ const CardSwipper = ({ servicesData = [] }) => {
                     Know More
                   </span>
 
-                  <div className="w-10 h-10 bg-custom-blue rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
-                    <RxArrowTopRight className="text-startbtn group-hover/link:rotate-45 transition-transform duration-300 text-xl" />
+                  <div className="w-10 h-10 bg-starttext rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
+                    <RxArrowTopRight className="text-custom-blue group-hover/link:rotate-45 transition-transform duration-300 text-xl" />
                   </div>
                 </Link>
             </div>
