@@ -63,7 +63,7 @@ const IncorporationProcess = ({ process }) => {
         {/* heading */}
         <div className="text-left pb-1 md:pb-10">
           <h2 className="font-anton font-medium text-[1.1rem] md:text-[1.3rem] lg:text-[1.6rem] tracking-wider text-custom-blue">
-            INCORPORATION PROCESS
+            PROCESS
           </h2>
           {/* <div className="mt-1 h-1 w-16 bg-[#C58E3B]" /> */}
           <div className="mt-1 h-1 w-16 bg-transparent relative overflow-hidden">
