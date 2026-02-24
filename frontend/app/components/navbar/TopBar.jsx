@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { useLogout } from "../../hooks/useAuthMutations";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 
 const TopBar = () => {
   const [open, setOpen] = useState(false);
@@ -28,7 +29,7 @@ const TopBar = () => {
     <div className="hidden lg:flex items-center justify-between pb-1 pt-5 text-white">
       {/* <div className="text-xl font-anton font-medium tracking-wider">Briefcasse</div> */}
 
-        <div className="flex items-center mb-4">
+        <Link href="/serviced" className="flex items-center mb-4">
                     {/* <Image  alt="logo" src="/assets/brief_white.png" className="w-8 h-8 bg-white rounded mr-3" /> */}
                      <Image
                       src="/assets/brief_white.png"
@@ -38,7 +39,7 @@ const TopBar = () => {
                       className=" rounded mr-3"
                     />
                     <h2 className="text-xl md:text-3xl font-anton font-normal tracking-widest">BRIEFCASSE</h2>
-                  </div>
+                  </Link>
       <input
         className="max-w-md w-full px-4 py-2 rounded-lg text-black"
         disabled
