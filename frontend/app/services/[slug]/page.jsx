@@ -225,91 +225,202 @@
 
 
 "use client";
-import React, { useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
 
+import React, { useEffect, useMemo, useCallback, useRef, useState } from "react";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+import { useAuthGuard } from "../../components/route/useAuthGuard";
+import { useGsapScrollReveal } from "../../hooks/useGsapScrollReveal";
+import { useServiceBySlug } from "../../hooks/useServiceBySlug";
 import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
-import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
-import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 
-const ServiceHero = ({ service }) => {
-  const [activeTab, setActiveTab] = useState("description");
-  const router = useRouter();
+import ServiceHero from "../../components/services/ServiceHero";
+import LegalCard from "../../components/services/LegalCard";
+import DocumentsRequired from "../../components/services/DocumentsRequired";
+import IncorporationProcess from "../../components/services/InCoporationProcess";
+import ProcessAtBriefcase from "../../components/services/ProcessAtBriefCasse";
+import BoxClasses from "../../components/services/ClassGrid";
+import SocialMedia from "../../components/common/SocialMedia";
 
-  // 🎯 GSAP hooks
-  const titleRef = useGsapHeroTitle();
-  const tabsRef = useGsapHeroTabs();
-  useGsapSmoothScroll();
+gsap.registerPlugin(ScrollTrigger);
 
-  const descriptionText =
-    service?.description ||
-    "Want to register your Private Limited Company? We've got you covered!";
+export default function ServiceSlugPage() {
 
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
+const [activeTab, setActiveTab] = useState("description");
+const titleRef = useGsapHeroTitle();
 
-  /* ================= NAVIGATE TO PRICE PAGE ================= */
-  const handleStartService = () => {
-    if (!service?.slug) return;
+/* ================= AUTH ================= */
+const { loading: authLoading } = useAuthGuard(["user"]);
 
-    router.push(`/services/${service.slug}/pricing`);
-  };
+/* ================= ROUTE ================= */
+const { slug } = useParams();
+const router = useRouter();
+const searchParams = useSearchParams();
+const contentFilter = searchParams?.get("content")?.toLowerCase().trim();
 
-  return (
-    <section className="w-full pt-1 md:pt-6">
-      <div className="w-full mx-auto px-2 md:px-4 lg:w-10/12 lg:p-0">
+/* ================= DATA ================= */
+const { service, isLoading, error } = useServiceBySlug(slug);
 
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1.2fr] gap-6">
-          <div>
-
-            {/* DESCRIPTION */}
-            <p className="mt-4 max-w-xl text-justify leading-8 font-lato font-semibold text-letter1">
-              {descriptionText}
-            </p>
-
-            {/* START SERVICE BUTTON */}
-            <button
-              onClick={handleStartService}
-              className="mt-6 inline-flex items-center px-6 py-2 rounded-full font-lato font-bold
-                         bg-starttext text-white shadow 
-                         hover:shadow-lg hover:scale-105 
-                         transition-all duration-300"
-            >
-              START THE SERVICE
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </button>
-          </div>
-
-           <div className="
-      relative
-      w-full
-      h-44
-      sm:h-52
-      md:h-64
-      lg:h-72
-      rounded-xl
-      overflow-hidden
-      shadow-lg
-    ">
-
-    <img
-      src={service?.images?.[0]?.url}
-      alt={service?.heading}
-      className="
-        w-full
-        h-full
-        
-        object-center
-      "
-    />
-
-  </div>
-        </div>
-      </div>
-    </section>
-  );
+/* ================= SECTION REFS ================= */
+const sectionRefs = {
+description: useRef(null),
+documents: useRef(null),
+process: useRef(null),
 };
 
-export default ServiceHero;
+const legalRef = useRef(null);
+const briefcaseRef = useRef(null);
+const boxClassesRef = useRef(null);
+
+/* ================= FILTER ================= */
+const norm = useCallback((v = "") => String(v).toLowerCase().trim(), []);
+
+const filteredData = useMemo(() => {
+if (!service) return null;
+if (!contentFilter) return service;
+
+
+return {
+  ...service,
+  content:
+    service.content?.filter((item) =>
+      norm(item.name || item.title || "").includes(contentFilter)
+    ) || [],
+};
+
+
+}, [service, contentFilter, norm]);
+
+/* ================= SCROLL TO SECTION ================= */
+const scrollToSection = (tab) => {
+setActiveTab(tab);
+const el = sectionRefs[tab]?.current;
+if (!el) return;
+
+
+el.scrollIntoView({
+  behavior: "smooth",
+  block: "start",
+});
+
+
+};
+
+/* ================= ACTIVE TAB ON SCROLL ================= */
+useEffect(() => {
+const observers = [];
+
+Object.entries(sectionRefs).forEach(([key, ref]) => {
+  if (!ref.current) return;
+
+  const observer = new IntersectionObserver(
+    ([entry]) => {
+      if (entry.isIntersecting) {
+        setActiveTab(key);
+      }
+    },
+    { rootMargin: "-40% 0px -55% 0px" }
+  );
+
+  observer.observe(ref.current);
+  observers.push(observer);
+});
+
+return () => observers.forEach((o) => o.disconnect());
+
+}, []);
+
+/* ================= SCROLL ANIMATIONS ================= */
+useGsapScrollReveal(legalRef, { y: 40, stagger: 0.15 });
+useGsapScrollReveal(sectionRefs.documents, { y: 50, stagger: 0.2 });
+useGsapScrollReveal(sectionRefs.process, { y: 60, stagger: 0.25 });
+useGsapScrollReveal(briefcaseRef, { y: 50, stagger: 0.2 });
+
+/* ================= STATES ================= */
+if (authLoading || isLoading) {
+return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+}
+
+if (error || !filteredData) {
+return <div className="min-h-screen flex items-center justify-center">Service not found</div>;
+}
+
+/* ================= JSX ================= */
+return ( <div className="overflow-hidden">
+  <div className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0 mt-4">
+     <h1
+          ref={titleRef}
+          className="hero-title font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-3 uppercase tracking-[0.08em]"
+        >
+          {service?.heading}
+        </h1>
+  </div>
+  {/* TABS NAVBAR */}
+  <div className="w-full mx-auto px-2 lg:w-10/12 lg:p-0 hero-tabs flex gap-6 text-sm md:text-lg text-custom-blue font-lato font-bold sticky  bg-white z-40">
+    {["description", "documents", "process"].map((tab) => (
+      <button
+        key={tab}
+        onClick={() => scrollToSection(tab)}
+        className={`pb-2 border-b-2 transition-all duration-300 ${
+          activeTab === tab
+            ? "border-starttext text-starttext"
+            : "border-transparent hover:border-[#C58E3B]/50"
+        }`}
+      >
+        {tab === "description"
+          ? "Description"
+          : tab === "documents"
+          ? "Documents Required"
+          : "Process"}
+      </button>
+    ))}
+  </div>
+
+  {/* DESCRIPTION */}
+  <section ref={sectionRefs.description}>
+    <ServiceHero service={filteredData} />
+  </section>
+
+  {/* LEGAL CONTENT */}
+  {filteredData.content?.length > 0 && (
+    <section ref={legalRef}>
+      <LegalCard legal={filteredData.content} service={filteredData} />
+    </section>
+  )}
+
+  {/* DOCUMENTS */}
+  {filteredData.documents?.length > 0 && (
+    <section ref={sectionRefs.documents}>
+      <DocumentsRequired docs={filteredData.documents} variant="cards" />
+    </section>
+  )}
+
+  {/* PROCESS */}
+  {filteredData.process?.length > 0 && (
+    <section ref={sectionRefs.process}>
+      <IncorporationProcess process={filteredData.process} />
+    </section>
+  )}
+
+  {/* BRIEFCASE PROCESS */}
+  {filteredData.processAtBriefcase?.length > 0 && (
+    <section ref={briefcaseRef}>
+      <ProcessAtBriefcase brief={filteredData.processAtBriefcase} />
+    </section>
+  )}
+
+  {/* TRADEMARK CLASSES */}
+  {filteredData.trademark?.length > 0 && (
+    <section ref={boxClassesRef}>
+      <BoxClasses trade={filteredData.trademark} />
+    </section>
+  )}
+
+  <SocialMedia />
+
+</div>
+
+);
+}
