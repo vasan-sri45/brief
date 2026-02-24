@@ -36,18 +36,18 @@ const ServiceHero = ({ service }) => {
       <div className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0">
 
         {/* TITLE */}
-        <h1
+        {/* <h1
           ref={titleRef}
           className="hero-title font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-3 uppercase tracking-[0.08em]"
         >
           {service?.heading}
-        </h1>
+        </h1> */}
 
         <div className="grid grid-cols-1 md:grid-cols-[2fr_1.2fr] gap-6">
           <div>
 
             {/* TABS */}
-            <div
+            {/* <div
               ref={tabsRef}
               className="hero-tabs flex gap-6 text-sm md:text-lg text-custom-blue font-lato font-bold"
             >
@@ -68,7 +68,7 @@ const ServiceHero = ({ service }) => {
                     : "Process"}
                 </button>
               ))}
-            </div>
+            </div> */}
 
             {/* DESCRIPTION */}
             <p className="mt-4 max-w-xl text-justify leading-8 font-lato font-semibold text-letter1">
