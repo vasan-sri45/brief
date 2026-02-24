@@ -32,7 +32,7 @@ const ServiceHero = ({ service }) => {
   };
 
   return (
-    <section className="w-full pt-1 md:pt-6">
+    <section className="w-full pt-1 md:pt-3">
       <div className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0">
 
         {/* TITLE */}
