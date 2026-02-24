@@ -94,7 +94,7 @@ const CardSwipper = ({ servicesData = [] }) => {
                 {/* IMAGE (FIXED AREA) */}
                 <div className="h-32 w-full flex items-center justify-center mb-3">
                   <img
-                    src={service?.images?.[0]?.url || "/placeholder.jpg"}
+                    src={service?.images?.[0]?.url || "/assets/brief_man.png"}
                     alt={service?.heading}
                     className="max-h-full max-w-full object-contain"
                   />
