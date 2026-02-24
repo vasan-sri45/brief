@@ -11,6 +11,11 @@ import "swiper/css/pagination";
 
 const CardSwipper = ({ servicesData = [] }) => {
 
+  const shortText = (text, length = 150) => {
+  if (!text || typeof text !== "string") return "No description available";
+  return text.length > length ? text.substring(0, length) + "..." : text;
+};
+
   if (!Array.isArray(servicesData) || servicesData.length === 0) {
     return (
       <div className="text-center text-gray-400 py-12 font-semibold">
@@ -41,15 +46,15 @@ const CardSwipper = ({ servicesData = [] }) => {
           <SwiperSlide key={service._id}>
                
           
-            <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-custom-blue min-h-[350px] p-6 flex flex-col">
+            {/* <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-custom-blue min-h-[350px] p-6 flex flex-col">
 
-              {/* SUB SERVICE NAME */}
+              
               <h3 className="text-lg font-anton text-custom-blue text-center mb-4">
                 {service.heading}
               </h3>
                
 
-              {/* ICON */}
+              
               <div className="flex justify-center mb-4">
                 <Image
                   src="/assets/brief_man.png"
@@ -59,20 +64,10 @@ const CardSwipper = ({ servicesData = [] }) => {
                 />
               </div>
 
-              {/* DESCRIPTION */}
+              
               <p className="text-sm font-semibold text-gray-600 flex-grow">
                 {service.description}
               </p>
-
-              {/* <div className="flex justify-between items-center mt-6">
-                <span className="text-custom-blue font-bold">
-                  Know More
-                </span>
-
-                <div className="w-10 h-10 bg-custom-blue rounded-full flex items-center justify-center">
-                  <RxArrowTopRight className="text-white group-hover:rotate-45 transition-transform duration-300" />
-                </div>
-              </div> */}
 
               <Link
                   href={`/services/${service.slug}`}
@@ -87,6 +82,42 @@ const CardSwipper = ({ servicesData = [] }) => {
                   </div>
               </Link>
 
+            </div>  */}
+
+            <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-custom-blue h-[380px] p-6 flex flex-col">
+
+            {/* TITLE */}
+                <h3 className="text-lg font-anton text-custom-blue text-center mb-3 line-clamp-2 min-h-[48px]">
+                  {service.heading}
+                </h3>
+
+                {/* IMAGE (FIXED AREA) */}
+                <div className="h-32 w-full flex items-center justify-center mb-3">
+                  <img
+                    src={service?.images?.[0]?.url || "/placeholder.jpg"}
+                    alt={service?.heading}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+
+                {/* DESCRIPTION (FLEX AREA) */}
+                <p className="text-sm font-semibold text-gray-600 flex-grow line-clamp-4 overflow-hidden">
+                  {shortText(service.description)}
+                </p>
+
+                {/* BUTTON (ALWAYS BOTTOM) */}
+                <Link
+                  href={`/services/${service.slug}`}
+                  className="flex justify-between items-center mt-4 group/link"
+                >
+                  <span className="text-custom-blue font-bold group-hover/link:underline">
+                    Know More
+                  </span>
+
+                  <div className="w-10 h-10 bg-custom-blue rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
+                    <RxArrowTopRight className="text-white group-hover/link:rotate-45 transition-transform duration-300" />
+                  </div>
+                </Link>
             </div>
 
           </SwiperSlide>

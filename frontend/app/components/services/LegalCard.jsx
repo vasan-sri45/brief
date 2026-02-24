@@ -109,9 +109,9 @@ export default function TalkToLawyer({ content = [], service = null }) {
                   <Link href='/user/contact' className="inline-flex items-center gap-2 px-5 py-2.5 md:px-6 md:py-3 rounded-full bg-starttext shadow-[0_4px_12px_rgba(0,0,0,0.25)] transition-all duration-300 ease-out hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2
                      text-white text-xs
                       group-hover:bg-white">
-                    <span className="font-lato font-semibold text-xs md:text-lg text-white group-hover:text-custom-blue tracking-wide">Book Slot</span>
+                    <span className="font-lato font-semibold text-xs md:text-lg text-custom-blue tracking-wide">Book Slot</span>
           
-                    <ArrowRight className="ml-2 w-5 h-5 md:w-7 md:h-7 group-hover:text-custom-blue" />
+                    <ArrowRight className="ml-2 w-5 h-5 md:w-7 md:h-7 text-custom-blue" />
                   </Link>
                 </div>
               </div>

@@ -110,10 +110,22 @@ const MegaMenuNavbar = () => {
       {/* ================= MOBILE/MEDIUM HEADER ================= */}
       {/* Changed xl:hidden to lg:hidden so desktop menu starts at 1024px */}
       <div className="lg:hidden flex justify-between items-center px-4 py-4 bg-custom-blue rounded-t-xl">
-        <div className="flex justify-center items-center gap-2">
+        {/* <div className="flex justify-center items-center gap-2">
               <Image src={BriefCasse} alt="logo" className="w-8 rounded" />
               <span className="text-white font-anton font-normal text-xl">BRIEFCASSE</span>
-            </div>
+            </div> */}
+
+            <Link href="/serviced" className="flex items-center">
+                            
+                             <Image
+                              src="/assets/brief_white.png"
+                              alt="logo"
+                              width={32}
+                              height={32}
+                              className=" rounded mr-1"
+                            />
+                            <h2 className="text-xl font-anton font-normal tracking-widest text-white mt-1">BRIEFCASSE</h2>
+          </Link>
         <button onClick={() => setMobileOpen(true)} className="p-2">
           <Menu className="text-white" size={28} />
         </button>

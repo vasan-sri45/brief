@@ -92,6 +92,30 @@ const ServiceHero = ({ service }) => {
           {/* <div className="hero-bg h-40 md:h-64 bg-gradient-to-br from-custom-blue to-[#1E3A8A] rounded-sm relative overflow-hidden">
             <div className="absolute inset-0 bg-gradient-to-r from-[#E3A849]/10 via-transparent to-[#C58E3B]/10 animate-pulse" />
           </div> */}
+          <div className="
+            relative
+            w-full
+            h-44
+            sm:h-52
+            md:h-64
+            lg:h-72
+            rounded-xl
+            overflow-hidden
+            shadow-lg
+          ">
+
+            <img
+              src={service?.images?.[0]?.url}
+              alt={service?.heading}
+              className="
+                w-full
+                h-full
+                
+                object-center
+              "
+            />
+
+          </div>
         </div>
       </div>
     </section>
