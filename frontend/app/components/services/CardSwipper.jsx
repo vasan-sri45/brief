@@ -8,13 +8,26 @@ import Link from "next/link";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const CardSwipper = ({ servicesData = [] }) => {
+
+   const router = useRouter();
+  const { user } = useSelector((state) => state.auth);
 
   const shortText = (text, length = 150) => {
   if (!text || typeof text !== "string") return "No description available";
   return text.length > length ? text.substring(0, length) + "..." : text;
 };
+
+const handleNavigate = (slug) => {
+    if (user) {
+      router.push(`/services/${slug}`);
+    } else {
+      router.push(`/login`);
+    }
+  };
 
   if (!Array.isArray(servicesData) || servicesData.length === 0) {
     return (
@@ -106,7 +119,7 @@ const CardSwipper = ({ servicesData = [] }) => {
                 </p>
 
                 {/* BUTTON (ALWAYS BOTTOM) */}
-                <Link
+                {/* <Link
                   href={`/services/${service.slug}`}
                   className="flex justify-between items-center mt-4 group/link"
                 >
@@ -117,7 +130,22 @@ const CardSwipper = ({ servicesData = [] }) => {
                   <div className="w-10 h-10 bg-starttext rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
                     <RxArrowTopRight className="text-custom-blue group-hover/link:rotate-45 transition-transform duration-300 text-xl" />
                   </div>
-                </Link>
+                </Link> */}
+
+                <button
+                onClick={() => handleNavigate(service.slug)}
+                className="flex justify-between items-center mt-4 group/link w-full"
+              >
+                <span className="text-custom-blue font-bold group-hover/link:underline">
+                  Know More
+                </span>
+
+                <div className="w-10 h-10 bg-custom-blue rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
+                  <RxArrowTopRight className="text-white group-hover/link:rotate-45 transition-transform duration-300" />
+                </div>
+              </button>
+
+
             </div>
 
           </SwiperSlide>
