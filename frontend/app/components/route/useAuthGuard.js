@@ -15,7 +15,7 @@ export function useAuthGuard() {
     // ❌ Not logged in → go to login page
     if (isError || !data?.user) {
       if (pathname !== "/") {
-        router.replace("/serviced");
+        router.replace("/");
       }
     }
   }, [isLoading, isError, data, pathname, router]);

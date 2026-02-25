@@ -91,7 +91,7 @@ const Footer = () => {
               ].map((item) => (
                 <li key={item}>
                   <a
-                    href="/serviced"
+                    href="/"
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
                     {item}

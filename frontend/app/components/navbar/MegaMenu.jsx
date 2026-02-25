@@ -115,7 +115,7 @@ const MegaMenuNavbar = () => {
               <span className="text-white font-anton font-normal text-xl">BRIEFCASSE</span>
             </div> */}
 
-            <Link href="/serviced" className="flex items-center">
+            <Link href="/" className="flex items-center">
                             
                              <Image
                               src="/assets/brief_white.png"

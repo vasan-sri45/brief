@@ -17,6 +17,10 @@ const TopBar = () => {
   // Get user from Redux state
   const user = useSelector((state) => state.auth.user);
 
+  const handleLogin = () => {
+    router.push(`/login`);
+  };
+
   useEffect(() => {
     const handler = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
@@ -29,7 +33,7 @@ const TopBar = () => {
     <div className="hidden lg:flex items-center justify-between pb-1 pt-5 text-white">
       {/* <div className="text-xl font-anton font-medium tracking-wider">Briefcasse</div> */}
 
-        <Link href="/serviced" className="flex items-center mb-4">
+        <Link href="/" className="flex items-center mb-4">
                     {/* <Image  alt="logo" src="/assets/brief_white.png" className="w-8 h-8 bg-white rounded mr-3" /> */}
                      <Image
                       src="/assets/brief_white.png"
@@ -101,8 +105,11 @@ const TopBar = () => {
             >
               Contact
             </button>
+
             <div className="border-t border-gray-100" />
-            <button
+
+            {
+              user ? <button
               className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 text-sm font-lato font-bold"
               onClick={() => {
                 logout.mutate();
@@ -110,7 +117,15 @@ const TopBar = () => {
               }}
             >
               Logout
+            </button>:
+            <button
+              className="w-full text-left px-4 py-2 text-red-600 hover:bg-gray-100 text-sm font-lato font-bold"
+              onClick={handleLogin}
+            >
+              Login
             </button>
+            }
+            
           </div>
         )}
       </div>
