@@ -25,6 +25,7 @@ const HeroStrip = () => {
       </p>
       
         <button
+        onClick={handleService}
               className="mt-2 inline-flex items-center px-6 py-2 rounded-full font-lato font-bold
                          bg-starttext text-custom-blue shadow 
                          hover:shadow-lg hover:scale-105 

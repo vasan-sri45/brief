@@ -31,6 +31,20 @@ const ServiceHero = ({ service }) => {
   //   router.push(`/services/${service.slug}/pricing`);
   // };
 
+  // const handleStartService = () => {
+  //   if (!service?.slug) return;
+
+  //   // router.push(`/services/${service.slug}/pricing`);
+  //   // router.push(`/login`);
+
+  //   if(user){
+  //     router.push(`/services/${service.slug}/pricing`);
+  //   }else{
+  //     router.push(`/login`);
+  //   }
+  // };
+
+   /* ================= NAVIGATE TO PRICE PAGE ================= */
   const handleStartService = () => {
     if (!service?.slug) return;
 
@@ -43,6 +57,7 @@ const ServiceHero = ({ service }) => {
       router.push(`/login`);
     }
   };
+
 
   return (
     <section className="w-full pt-1 md:pt-3">

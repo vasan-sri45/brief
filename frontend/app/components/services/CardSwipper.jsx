@@ -22,11 +22,9 @@ const CardSwipper = ({ servicesData = [] }) => {
 };
 
 const handleNavigate = (slug) => {
-    if (user) {
+    
       router.push(`/services/${slug}`);
-    } else {
-      router.push(`/login`);
-    }
+  
   };
 
   if (!Array.isArray(servicesData) || servicesData.length === 0) {
@@ -119,7 +117,7 @@ const handleNavigate = (slug) => {
                 </p>
 
                 {/* BUTTON (ALWAYS BOTTOM) */}
-                {/* <Link
+                <Link
                   href={`/services/${service.slug}`}
                   className="flex justify-between items-center mt-4 group/link"
                 >
@@ -130,20 +128,9 @@ const handleNavigate = (slug) => {
                   <div className="w-10 h-10 bg-starttext rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
                     <RxArrowTopRight className="text-custom-blue group-hover/link:rotate-45 transition-transform duration-300 text-xl" />
                   </div>
-                </Link> */}
+                </Link> 
 
-                <button
-                onClick={() => handleNavigate(service.slug)}
-                className="flex justify-between items-center mt-4 group/link w-full"
-              >
-                <span className="text-custom-blue font-bold group-hover/link:underline">
-                  Know More
-                </span>
-
-                <div className="w-10 h-10 bg-startbtn rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
-                  <RxArrowTopRight className="text-custom-blue group-hover/link:rotate-45 transition-transform duration-300" />
-                </div>
-              </button>
+                
 
 
             </div>
