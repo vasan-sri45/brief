@@ -6,10 +6,12 @@ import HeroButton from "./HeroButton";
 import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
 import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
+import { useSelector } from "react-redux";
 
 const ServiceHero = ({ service }) => {
   const [activeTab, setActiveTab] = useState("description");
   const router = useRouter();
+  const { user } = useSelector((state) => state.auth);
 
   // 🎯 GSAP hooks
   const titleRef = useGsapHeroTitle();
