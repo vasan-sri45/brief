@@ -20,7 +20,7 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-const allowlist = ["https://brief-1-cpll.onrender.com",];
+const allowlist = ["https://briefcasse.com",];
 
 const corsOptions = {
   origin(origin, cb) {
