@@ -29,7 +29,7 @@ const [activeTab, setActiveTab] = useState("description");
 const titleRef = useGsapHeroTitle();
 
 /* ================= AUTH ================= */
-const { loading: authLoading } = useAuthGuard(["user"]);
+// const { loading: authLoading } = useAuthGuard(["user"]);
 
 /* ================= ROUTE ================= */
 const { slug } = useParams();
@@ -116,9 +116,9 @@ useGsapScrollReveal(sectionRefs.process, { y: 60, stagger: 0.25 });
 useGsapScrollReveal(briefcaseRef, { y: 50, stagger: 0.2 });
 
 /* ================= STATES ================= */
-if (authLoading || isLoading) {
-return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
-}
+// if (authLoading || isLoading) {
+// return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+// }
 
 if (error || !filteredData) {
 return <div className="min-h-screen flex items-center justify-center">Service not found</div>;

@@ -1,8 +1,22 @@
 "use client";
-
+import { useSelector } from "react-redux";
 import { ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+
 
 const HeroStrip = () => {
+
+    const { user } = useSelector((state) => state.auth);
+  const router = useRouter();
+
+   const handleService = () => {
+
+    if(user){
+      router.push(`/user/contact`);
+    }else{
+      router.push(`/login`);
+    }
+  };
   return (
     <div className="hidden lg:block py-4 text-white">
       <h1 className="text-3xl font-anton font-normal tracking-wider">BRIEFCASSE</h1>

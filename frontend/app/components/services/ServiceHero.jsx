@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
-
+import HeroButton from "./HeroButton";
 import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
 import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
@@ -25,10 +25,23 @@ const ServiceHero = ({ service }) => {
   };
 
   /* ================= NAVIGATE TO PRICE PAGE ================= */
+  // const handleStartService = () => {
+  //   if (!service?.slug) return;
+
+  //   router.push(`/services/${service.slug}/pricing`);
+  // };
+
   const handleStartService = () => {
     if (!service?.slug) return;
 
-    router.push(`/services/${service.slug}/pricing`);
+    // router.push(`/services/${service.slug}/pricing`);
+    // router.push(`/login`);
+
+    if(user){
+      router.push(`/services/${service.slug}/pricing`);
+    }else{
+      router.push(`/login`);
+    }
   };
 
   return (
@@ -76,7 +89,7 @@ const ServiceHero = ({ service }) => {
             </p>
 
             {/* START SERVICE BUTTON */}
-            <button
+            {/* <button
               onClick={handleStartService}
               className="mt-6 inline-flex items-center px-6 py-2 rounded-full font-lato font-bold
                          bg-starttext text-custom-blue shadow 
@@ -85,7 +98,8 @@ const ServiceHero = ({ service }) => {
             >
               START THE SERVICE
               <ArrowRight className="ml-2 w-5 h-5" />
-            </button>
+            </button> */}
+            <HeroButton handleStartService={handleStartService}/>
           </div>
 
           {/* RIGHT HERO CARD */}

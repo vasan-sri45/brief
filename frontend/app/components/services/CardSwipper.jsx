@@ -140,8 +140,8 @@ const handleNavigate = (slug) => {
                   Know More
                 </span>
 
-                <div className="w-10 h-10 bg-custom-blue rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
-                  <RxArrowTopRight className="text-white group-hover/link:rotate-45 transition-transform duration-300" />
+                <div className="w-10 h-10 bg-startbtn rounded-full flex items-center justify-center transition-all duration-300 group-hover/link:scale-110">
+                  <RxArrowTopRight className="text-custom-blue group-hover/link:rotate-45 transition-transform duration-300" />
                 </div>
               </button>
 
