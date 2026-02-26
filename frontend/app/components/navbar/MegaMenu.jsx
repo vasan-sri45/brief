@@ -932,7 +932,29 @@ const MegaMenuNavbar = () => {
             ))}
           </div>
 
-          <div className="border-t border-white/10 p-4">
+           <div className="border-t border-white/10 p-4 space-y-2">
+             <Link href="/blogs" onClick={() => setMobileOpen(false)} className="block font-bold">Blogs</Link>
+             <Link href="/user/about" onClick={() => setMobileOpen(false)} className="block font-bold">About</Link>
+             <Link href="/user/contact" onClick={() => setMobileOpen(false)} className="block font-bold">Contact</Link>
+
+             {user ? (
+              <button
+                onClick={() => {
+                  logout.mutate();
+                  setMobileOpen(false);
+                }}
+                className="block text-red-300 font-bold"
+              >
+                Logout
+              </button>
+            ) : (
+              <Link href="/login" onClick={() => setMobileOpen(false)} className="block font-bold text-green-300">
+                Login
+              </Link>
+            )}
+           </div>
+
+          {/* <div className="border-t border-white/10 p-4">
             <button
               onClick={() => {
                 logout.mutate();
@@ -942,7 +964,7 @@ const MegaMenuNavbar = () => {
             >
               Logout
             </button>
-          </div>
+          </div> */}
         </aside>
       </div>
     </nav>
