@@ -194,7 +194,7 @@ const RegisterForm1 = ({ handleClick }) => {
 
         {/* Radio */}
         <div className="flex justify-between items-center w-10/12 mb-3">
-          <label className="text-sm flex items-center gap-1 text-md font-lato font-bold text-letter1">
+          <label className="text-sm flex items-center gap-1 text-md font-lato font-bold text-white">
             <input
               type="radio"
               name="entity-type"
@@ -206,7 +206,7 @@ const RegisterForm1 = ({ handleClick }) => {
             Individual
           </label>
 
-          <label className="text-sm flex items-center gap-1 text-md font-lato font-bold text-letter1">
+          <label className="text-sm flex items-center gap-1 text-md font-lato font-bold text-white">
             <input
               type="radio"
               name="entity-type"
@@ -259,7 +259,7 @@ const RegisterForm1 = ({ handleClick }) => {
         <button
           type="submit"
           disabled={registerUser.isPending || verifyOtp.isPending}
-          className="w-full h-10 bg-custom-blue text-white rounded-3xl text-md font-lato font-bold mt-0lg:mt-20"
+          className="w-full h-10 bg-white text-custom-blue rounded-3xl text-md font-lato font-bold mt-0lg:mt-20"
         >
           {stage === "REGISTER"
             ? registerUser.isPending
@@ -272,15 +272,15 @@ const RegisterForm1 = ({ handleClick }) => {
 
         {/* Divider */}
         <div className="flex items-center gap-1.5 my-3">
-          <div className="w-1/2 h-0.5 bg-custom-blue" />
-          <span className="text-custom-blue text-sm">or</span>
-          <div className="w-1/2 h-0.5 bg-custom-blue" />
+          <div className="w-1/2 h-0.5 bg-white" />
+          <span className="text-white text-sm">or</span>
+          <div className="w-1/2 h-0.5 bg-white" />
         </div>
 
         {/* Login prompt */}
-        <p className="text-center text-sm font-lato font-bold text-letter1">
+        <p className="text-center text-sm font-lato font-bold text-white">
           You already have an account?
-          <button type="button" onClick={handleClick} className="text-custom-blue ml-1 text-md font-lato font-bold">
+          <button type="button" onClick={handleClick} className="text-white ml-1 text-md font-lato font-bold">
             Sign in
           </button>
         </p>

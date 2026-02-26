@@ -4,13 +4,13 @@ import Image from "next/image";
 import BriefCasse1 from "../../../public/assets/brief_casse.png";
 import BriefHeading from "../../../public/assets/brief_heading.png";
 import RegisterForm1 from "./RegisterForm1";
-import BriefCasse from "../../../public/assets/brief_blue.png";
+import BriefCasse from "../../../public/assets/brief_white.png";
 
 const RegisterForm = ({ handleClick }) => {
   return (
     <div className="w-full md:w-6/12 min-h-screen flex justify-center md:justify-end items-center px-4 md:px-0 py-6 gap-1">
       {/* Card Container */}
-      <div className="bg-beige w-full sm:w-11/12 lg:max-w-lg rounded-3xl py-6 sm:py-8 lg:py-10 h-[550px] lg:h-[600px] xl:h-[640px]">
+      <div className="bg-custom-blue w-full sm:w-11/12 lg:max-w-lg rounded-3xl py-6 sm:py-8 lg:py-10 h-[550px] lg:h-[600px] xl:h-[640px]">
         <div className="w-11/12 mx-auto">
           {/* Logo & Heading */}
           {/* <div className="flex items-center gap-2 pt-2">
@@ -25,18 +25,18 @@ const RegisterForm = ({ handleClick }) => {
           {/* ===== LOGO ===== */}
           <div className="flex items-center gap-1 pt-4">
             <div className="flex justify-center items-center">
-              <Image src={BriefCasse} alt="logo" className="w-6 rounded" />
+              <Image src={BriefCasse} alt="logo" className="w-8 rounded" />
             </div>
 
             <div className="w-20 h-7 mt-3">
-              <p className="text-[1.1rem] font-anton text-normal text-custom-blue mt-[-3px]">
+              <p className="text-[1.1rem] font-anton text-normal text-white mt-[-3px]">
                 Briefcasse
               </p>
             </div>
           </div>
           {/* Title */}
           <div className="w-full mt-2">
-            <p className="text-lg lg:text-xl xl:text-2xl font-medium font-poppins tracking-widest">
+            <p className="text-lg lg:text-xl xl:text-2xl font-medium font-poppins tracking-wider text-white">
               Start Here. Right Now.
             </p>
           </div>

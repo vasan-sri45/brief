@@ -93,7 +93,7 @@ const UserOtpLoginForm = ({ handleClick }) => {
         <button
           type="submit"
           disabled={!canSubmit || otpLogin.isPending}
-          className="w-full mt-5 bg-custom-blue text-white rounded-3xl disabled:opacity-60 font-lato font-bold py-2"
+          className="w-full mt-5 bg-white text-custom-blue rounded-3xl disabled:opacity-60 font-lato font-bold py-2"
         >
           {otpLogin.isPending ? "Verifying..." : "Submit"}
         </button>
@@ -106,17 +106,17 @@ const UserOtpLoginForm = ({ handleClick }) => {
       )}
 
    <div className="flex items-center gap-1.5 my-3">
-          <div className="w-1/2 h-0.5 bg-custom-blue" />
-          <span className="text-custom-blue text-sm">or</span>
-          <div className="w-1/2 h-0.5 bg-custom-blue" />
+          <div className="w-1/2 h-0.5 bg-white" />
+          <span className="text-white text-sm">or</span>
+          <div className="w-1/2 h-0.5 bg-white" />
         </div>
 
-      <p className="text-center text-sm mt-4 font-lato font-bold text-letter1">
+      <p className="text-center text-sm mt-4 font-lato font-bold text-white">
         You don&apos;t have an account?
         <button
           type="button"
           onClick={handleClick}
-          className="ml-1 text-custom-blue font-lato font-bold"
+          className="ml-1 text-white font-lato font-bold"
         >
           Sign up
         </button>

@@ -28,7 +28,7 @@ const FormFooter = () => {
             </button>
           </div>
         </div>
-        <p className="text-custom-blue font-anton font-normal tracking-wider get-connected">
+        <p className="text-white font-anton font-normal tracking-wider get-connected">
           Get Connected
         </p>
       </div>
@@ -37,7 +37,7 @@ const FormFooter = () => {
       <button
         aria-label="Go"
         type="button"
-        className="w-9 h-9 lg:w-[60px] lg:h-[60px] xl:w-[68px] xl:h-[68px] rounded-full border-2 border-custom-blue mt-1 flex justify-center items-center text-custom-blue text-lg lg:text-3xl xl:text-4xl"
+        className="w-9 h-9 lg:w-[60px] lg:h-[60px] xl:w-[68px] xl:h-[68px] rounded-full border-2 border-white mt-1 flex justify-center items-center text-white text-lg lg:text-3xl xl:text-4xl"
       >
         <MdArrowOutward />
       </button>
