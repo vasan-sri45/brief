@@ -9,7 +9,7 @@ const LoginForm = ({ handleClick }) => {
     <div className="w-full md:w-6/12 min-h-screen flex flex-col justify-center items-center md:items-end gap-1">
       
       {/* ================= CARD ================= */}
-      <div className="bg-custom-blue w-11/12 lg:max-w-lg h-[420px] lg:h-[460px] xl:h-[500px] rounded-3xl">
+      <div className="bg-custom-blue w-11/12 lg:max-w-lg h-[520px] lg:h-[520px] xl:h-[550px] rounded-3xl">
         <div className="w-5/6 mx-auto pt-2">
 
           {/* ===== LOGO ===== */}
@@ -18,19 +18,19 @@ const LoginForm = ({ handleClick }) => {
               <Image src={BriefCasse} alt="logo" className="w-8 rounded" />
             </div>
 
-            <div className="w-20 h-7 mt-3">
-              <p className="text-[1.1rem] font-anton text-normal text-white mt-[-3px]">
+            {/* <div className="w-20 h-7"> */}
+              <p className="text-[1.1rem] lg:text-[1.3rem] font-anton text-normal text-white uppercase tracking-wide mt-1">
                 Briefcasse
               </p>
-            </div>
+            {/* </div> */}
           </div>
 
           {/* ===== TEXT ===== */}
           <div className="mt-3">
-            <p className="text-xl font-anton font-normal text-white">
+            <p className="text-xl font-anton font-normal text-white tracking-wide">
               Welcome to BriefCasse
             </p>
-            <p className="text-sm text-white font-anton font-normal mt-1">
+            <p className="text-sm text-white font-anton font-normal mt-1 tracking-wide">
               Login to continue
             </p>
           </div>

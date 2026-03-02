@@ -93,7 +93,7 @@ const UserOtpLoginForm = ({ handleClick }) => {
         <button
           type="submit"
           disabled={!canSubmit || otpLogin.isPending}
-          className="w-full mt-5 bg-white text-custom-blue rounded-3xl disabled:opacity-60 font-lato font-bold py-2"
+          className="w-full mt-20 bg-white text-custom-blue rounded-3xl disabled:opacity-60 font-lato font-bold py-2"
         >
           {otpLogin.isPending ? "Verifying..." : "Submit"}
         </button>

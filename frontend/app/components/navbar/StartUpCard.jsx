@@ -6,8 +6,8 @@ const StartUpCard = ({ onClose, onNavigate }) => {
     <div className="w-[320px] bg-custom-blue text-white p-8 flex flex-col justify-between rounded-r-xl">
 
               <div>
-                <h3 className="text-xl font-anton mb-3 uppercase tracking-wider">
-                  Start your bussiness today
+                <h3 className="text-xl font-anton font-normal mb-3 uppercase tracking-wider">
+                  Startup Packages
                 </h3>
 
                 <p className="text-sm opacity-90 mb-6">

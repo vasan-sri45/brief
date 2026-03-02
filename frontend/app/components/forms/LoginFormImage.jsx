@@ -12,11 +12,11 @@ const LoginFormImage = () => {
 
   return (
     <div className="hidden md:flex min-h-screen justify-start items-center md:w-6/12">
-      <div className="relative w-full sm:w-11/12 lg:max-w-lg h-[550px] lg:h-[600px] xl:h-[650px] bg-white border-3 border-custom-blue rounded-3xl">
+      <div className="relative w-full sm:w-11/12 lg:max-w-lg h-[645px] lg:h-[655px] xl:h-[685px] bg-white border-3 border-custom-blue rounded-3xl">
         <Image
           src={BriefCasseBuilding}
           alt="building"
-          className="h-[546px] lg:h-[596px] xl:h-[646px]"
+          className="h-[641px] lg:h-[641px] xl:h-[681px]"
         />
 
         {/* Top text */}

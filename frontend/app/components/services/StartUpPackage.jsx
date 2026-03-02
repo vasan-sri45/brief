@@ -74,10 +74,16 @@ router.push(`/user/contact?incorp=${incorpParam}&extras=${extrasParam}`);
 };
 
 return ( <div className="max-w-6xl mx-auto p-6 font-lato">
-
-  <h2 className="text-xl md:text-3xl font-anton text-custom-blue mb-8">
-    Start Up Packages
-  </h2>
+  <div className="flex justify-between items-center">
+    <h2 className="text-xl md:text-3xl font-anton text-custom-blue mb-8">
+      Start Up Packages
+    </h2>
+    <p className="hidden md:flex text-letter1 font-lato font-bold">
+      <span className="text-custom-blue">[</span>
+      Select Services as per your Requirements
+      <span className="text-custom-blue">]</span></p>
+  </div>
+  
 
   {/* INCORPORATION */}
   <div className="border-2 border-custom-blue rounded-lg overflow-hidden shadow-sm mb-6">

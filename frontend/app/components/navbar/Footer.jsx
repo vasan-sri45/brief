@@ -63,7 +63,7 @@ const Footer = () => {
                 alt="logo"
                 width={32}
                 height={32}
-                className="mr-3"
+                className="mr-1"
               />
               <h2 className="text-xl md:text-3xl font-anton font-semibold tracking-widest">
                 BRIEFCASSE

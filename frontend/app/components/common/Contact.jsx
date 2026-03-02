@@ -39,7 +39,7 @@ export default function Contact() {
         {/* <div className="border-b border-gray-300 mb-12"></div> */}
         <div className="flex items-center gap-1.5 my-3">
          <div className="w-1/2 h-0.5 bg-custom-blue" />
-          <span className="text-custom-blue text-sm md:text-2xl">or</span>
+          <span className="text-starttext text-sm md:text-2xl">or</span>
           <div className="w-1/2 h-0.5 bg-custom-blue" />
         </div>
 

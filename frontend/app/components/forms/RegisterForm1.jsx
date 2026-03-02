@@ -259,7 +259,7 @@ const RegisterForm1 = ({ handleClick }) => {
         <button
           type="submit"
           disabled={registerUser.isPending || verifyOtp.isPending}
-          className="w-full h-10 bg-white text-custom-blue rounded-3xl text-md font-lato font-bold mt-0lg:mt-20"
+          className="w-full h-10 bg-white text-custom-blue rounded-3xl text-md font-lato font-bold mt-0 "
         >
           {stage === "REGISTER"
             ? registerUser.isPending

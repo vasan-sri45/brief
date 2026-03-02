@@ -48,3 +48,17 @@ body {
   font-family: var(--font-lato);
 }
 
+.swiper-pagination {
+  bottom: 0px !important;
+}
+
+.swiper-pagination-bullet {
+  background: #cbd5e1;
+  opacity: 1;
+}
+
+.swiper-pagination-bullet-active {
+  background: #2563eb;
+  width: 18px;
+  border-radius: 8px;
+}

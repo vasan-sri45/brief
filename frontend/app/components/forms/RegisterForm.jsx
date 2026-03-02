@@ -1,26 +1,17 @@
 
 "use client";
 import Image from "next/image";
-import BriefCasse1 from "../../../public/assets/brief_casse.png";
-import BriefHeading from "../../../public/assets/brief_heading.png";
 import RegisterForm1 from "./RegisterForm1";
 import BriefCasse from "../../../public/assets/brief_white.png";
+import FormFooter from "./FormFooter";
 
 const RegisterForm = ({ handleClick }) => {
   return (
-    <div className="w-full md:w-6/12 min-h-screen flex justify-center md:justify-end items-center px-4 md:px-0 py-6 gap-1">
+    <div className="w-full md:w-6/12 min-h-screen flex flex-col justify-center  items-center md:items-end px-4 md:px-0 gap-1">
       {/* Card Container */}
-      <div className="bg-custom-blue w-full sm:w-11/12 lg:max-w-lg rounded-3xl py-6 sm:py-8 lg:py-10 h-[550px] lg:h-[600px] xl:h-[640px]">
+      <div className="bg-custom-blue w-full  lg:max-w-lg rounded-3xl h-[520px] lg:h-[520px] xl:h-[550px]">
         <div className="w-11/12 mx-auto">
-          {/* Logo & Heading */}
-          {/* <div className="flex items-center gap-2 pt-2">
-            <div className="w-10 h-10 rounded-lg bg-white shadow-inner flex justify-center items-center">
-              <Image src={BriefCasse} alt="logo" className="w-6 rounded" />
-            </div>
-            <div className="w-20 h-7 mt-3 lg:w-22 lg:h-8">
-              <Image src={BriefHeading} alt="heading" className="w-full h-full object-contain" />
-            </div>
-          </div> */}
+          
 
           {/* ===== LOGO ===== */}
           <div className="flex items-center gap-1 pt-4">
@@ -29,21 +20,29 @@ const RegisterForm = ({ handleClick }) => {
             </div>
 
             <div className="w-20 h-7 mt-3">
-              <p className="text-[1.1rem] font-anton text-normal text-white mt-[-3px]">
+              <p className="text-[1.1rem] font-anton text-normal text-white mt-[-3px] uppercase tracking-wide">
                 Briefcasse
               </p>
             </div>
           </div>
           {/* Title */}
-          <div className="w-full mt-2">
-            <p className="text-lg lg:text-xl xl:text-2xl font-medium font-poppins tracking-wider text-white">
-              Start Here. Right Now.
+          <div className="w-full mt-1">
+            <p className="text-sm lg:text-lg font-bold font-lato tracking-wider text-white">
+              Auto Piolot Your Legal Liabilities
             </p>
           </div>
           {/* Register Form */}
-          <div className="mt-2 lg:mt-2">
+          <div className="mt-2">
             <RegisterForm1 handleClick={handleClick} />
           </div>
+        </div>
+
+      </div>
+      
+           {/* ================= FOOTER ================= */}
+      <div className="bg-custom-blue w-full lg:max-w-lg h-[90px] md:h-[125px] lg:h-[135px] rounded-3xl">
+        <div className="h-full flex items-center justify-center">
+          <FormFooter />
         </div>
       </div>
     </div>
