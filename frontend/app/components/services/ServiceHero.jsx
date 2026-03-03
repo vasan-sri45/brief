@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { ArrowRight } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import HeroButton from "./HeroButton";
 import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 const ServiceHero = ({ service }) => {
   const [activeTab, setActiveTab] = useState("description");
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useSelector((state) => state.auth);
 
   // 🎯 GSAP hooks
@@ -47,18 +48,32 @@ const ServiceHero = ({ service }) => {
   // };
 
    /* ================= NAVIGATE TO PRICE PAGE ================= */
+  // const handleStartService = () => {
+  //   if (!service?.slug) return;
+
+  //   // router.push(`/services/${service.slug}/pricing`);
+  //   // router.push(`/login`);
+
+  //   if(user){
+  //     router.push(`/services/${service.slug}/pricing`);
+  //   }else{
+  //     router.push(`/login`);
+  //   }
+  // };
+
+
   const handleStartService = () => {
-    if (!service?.slug) return;
+  if (!service?.slug) return;
 
-    // router.push(`/services/${service.slug}/pricing`);
-    // router.push(`/login`);
+  const pricingUrl = `/services/${service.slug}/pricing`;
 
-    if(user){
-      router.push(`/services/${service.slug}/pricing`);
-    }else{
-      router.push(`/login`);
-    }
-  };
+  if (user) {
+    router.push(pricingUrl);
+  } else {
+    // redirect back to CURRENT page after login
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
+  }
+};
 
 
   return (
