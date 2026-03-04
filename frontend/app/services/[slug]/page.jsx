@@ -14,6 +14,7 @@ import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import ServiceHero from "../../components/services/ServiceHero";
 import LegalCard from "../../components/services/LegalCard";
 import DocumentsRequired from "../../components/services/DocumentsRequired";
+import LegalRequired from "../../components/services/LegalRequired";
 import IncorporationProcess from "../../components/services/InCoporationProcess";
 import ProcessAtBriefcase from "../../components/services/ProcessAtBriefCasse";
 import BoxClasses from "../../components/services/ClassGrid";
