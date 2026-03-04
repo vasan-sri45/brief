@@ -45,6 +45,7 @@ const sectionRefs = {
 description: useRef(null),
 documents: useRef(null),
 process: useRef(null),
+legal: useRef(null)
 };
 
 const legalRef = useRef(null);
@@ -173,6 +174,15 @@ return ( <div className="overflow-hidden">
       <DocumentsRequired docs={filteredData.documents} variant="cards" />
     </section>
   )}
+
+  {/* LEGALS REQUIRED */}
+
+   {filteredData.legalRequireds?.length > 0 && (
+    <section ref={sectionRefs.legal}>
+      <LegalRequired docs={filteredData.legalRequireds} variant="cards"/>
+    </section>
+  )}
+
 
   {/* PROCESS */}
   {filteredData.process?.length > 0 && (
