@@ -237,7 +237,7 @@ const CardSwipper = ({ servicesData = [] }) => {
       >
         {servicesData.map((service) => (
           <SwiperSlide key={service._id}>
-            <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-custom-blue min-h-[380px] p-6 flex flex-col">
+            <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-custom-blue hover:border-startbtn min-h-[380px] p-6 flex flex-col">
 
               {/* TITLE */}
               <h3 className="text-lg font-anton text-custom-blue text-center mb-3 line-clamp-2 min-h-[48px]">

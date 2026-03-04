@@ -1,7 +1,7 @@
 // components/auth/LoginFormImage.jsx
 "use client";
 import Image from "next/image";
-import BriefCasseBuilding from "../../../public/assets/BriefDog.png";
+import BriefCasseBuilding from "../../../public/assets/blueDog.png";
 import Briefbuilding1 from "../../../public/assets/building1.jpg";
 import Briefbuilding2 from "../../../public/assets/building2.jpg";
 import { MdArrowOutward } from "react-icons/md";
