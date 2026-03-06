@@ -1,13 +1,16 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../api/api";
 import {ArrowRight} from "lucide-react";
 
 export default function BlogDetailPage() {
   const { slug } = useParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["blog", slug],
@@ -46,6 +49,17 @@ export default function BlogDetailPage() {
   } catch {
     contentBlocks = [{ heading: "", body: String(blog.content) }];
   }
+
+  // const backToPrevious = () => {
+  //   router.push("/blogs")
+  // };
+  const backToPrevious = () => {
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.replace("/blogs");
+  }
+};
 
   return (
     <main className="w-full py-10 px-4">
@@ -96,13 +110,13 @@ export default function BlogDetailPage() {
         </article>
 
         <div className="flex justify-end mt-12">
-           <Link
-              href={`/blogs`}
+           <button
+              onClick={backToPrevious}
               className="bg-starttext text-white text-[0.9rem] md:text-[1.1rem] font-anton font-normal tracking-wide rounded-full flex justify-center items-center px-3 py-2"
             >
               Back to blogs
               <ArrowRight className="ml-2 w-5 h-5 md:w-7 md:h-7" />
-            </Link>
+            </button>
         </div>
       </div>
     </main>

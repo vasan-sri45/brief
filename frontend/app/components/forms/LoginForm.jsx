@@ -19,7 +19,7 @@ const LoginForm = ({ handleClick }) => {
             </div>
 
             {/* <div className="w-20 h-7"> */}
-              <p className="text-[1.1rem] lg:text-[1.3rem] font-anton text-normal text-white uppercase tracking-wide mt-1">
+              <p className="text-[1.1rem] lg:text-[1.3rem] font-anton text-normal text-white uppercase tracking-wide mt-1.5">
                 Briefcasse
               </p>
             {/* </div> */}
@@ -27,10 +27,10 @@ const LoginForm = ({ handleClick }) => {
 
           {/* ===== TEXT ===== */}
           <div className="mt-3">
-            <p className="text-xl font-anton font-normal text-white tracking-wide">
+            <p className="text-xl font-anton font-normal text-white tracking-wide uppercase">
               Welcome to BriefCasse
             </p>
-            <p className="text-sm text-white font-anton font-normal mt-1 tracking-wide">
+            <p className="text-sm text-white font-anton font-normal mt-1 pt-3 tracking-wide">
               Login to continue
             </p>
           </div>

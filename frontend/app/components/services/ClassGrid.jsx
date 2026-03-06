@@ -2,8 +2,15 @@
 "use client";
 import React from "react";
 import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
+import { useRouter } from "next/navigation";
 
 const ClassGrid = ({trade}) => {
+
+  console.log(trade)
+
+  const router = useRouter();
+
+  const blogNavigate = (slug) => router.push(slug ? `/blogs/${slug}` : "/blogs");
 
   const underlineRef = useGsapUnderlineLoop();
   console.log(trade)
@@ -13,7 +20,7 @@ const ClassGrid = ({trade}) => {
 
           <div className="mb-8  mx-auto">
           <h2 className="font-anton font-medium text-[1.1rem] md:text-[1.3rem] lg:text-[1.6rem] tracking-wider text-custom-blue uppercase text-center">
-            Trademark Research
+            Trademark Search
           </h2>
          
           <div className="mt-1 h-1 w-16 bg-transparent relative overflow-hidden mx-auto">
@@ -30,7 +37,7 @@ const ClassGrid = ({trade}) => {
         {/* Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-5 gap-10">
           {trade.map((item,i) => (
-  <div
+  <button
     key={i}
     className="
       group
@@ -39,6 +46,7 @@ const ClassGrid = ({trade}) => {
       transition-all duration-200
       hover:bg-starttext hover:border-starttext
     "
+    onClick={() => blogNavigate(item.slug)}
   >
     <p
       className="
@@ -60,7 +68,7 @@ const ClassGrid = ({trade}) => {
     >
       {item.details}
     </p>
-  </div>
+  </button>
 ))}
 
         </div>

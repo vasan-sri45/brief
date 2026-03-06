@@ -19,20 +19,20 @@ const RegisterForm = ({ handleClick }) => {
               <Image src={BriefCasse} alt="logo" className="w-8 rounded" />
             </div>
 
-            <div className="w-20 h-7 mt-3">
-              <p className="text-[1.1rem] font-anton text-normal text-white mt-[-3px] uppercase tracking-wide">
+            {/* <div className="w-20 h-7 mt-3"> */}
+              <p className="text-[1.1rem] lg:text-[1.3rem] font-anton text-normal text-white mt-1.5 uppercase tracking-wide">
                 Briefcasse
               </p>
-            </div>
+            {/* </div> */}
           </div>
           {/* Title */}
           <div className="w-full mt-1">
             <p className="text-sm lg:text-lg font-bold font-lato tracking-wider text-white">
-              Auto Piolot Your Legal Liabilities
+              The Legal Auto Pilot For Your Business
             </p>
           </div>
           {/* Register Form */}
-          <div className="mt-2">
+          <div className="mt-2 lg:mt-4">
             <RegisterForm1 handleClick={handleClick} />
           </div>
         </div>

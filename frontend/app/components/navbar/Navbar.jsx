@@ -98,7 +98,7 @@ const Navbar = () => {
       {/* 👉 If you don’t want image, you can delete this block safely */}
       <div className="absolute inset-0 hidden lg:block -z-10">
         <Image
-          src="/assets/brief_banner2.png" 
+          src="/assets/navbarImage.png" 
           alt="Briefcasse banner"
           fill
           priority
