@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { api } from "../../api/api";
+import { api } from "../../../api/api";
 import {ArrowRight} from "lucide-react";
 
 export default function BlogDetailPage() {
