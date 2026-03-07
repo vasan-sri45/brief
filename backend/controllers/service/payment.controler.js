@@ -104,28 +104,57 @@ export const verifyPayment = async (req, res) => {
 //   }
 // };
 
+// export const getAllOrders = async (req, res) => {
+//   try {
+//     if (!req.user?._id || req.user.role !== "admin") {
+//       return res.status(403).json({ message: "Forbidden" });
+//     }
+
+//     const orders = await Payment.find()
+//       .populate("serviceId", "title price heading")
+//       .populate("userId", "name email")
+//       .sort({ createdAt: -1 });
+
+//     res.json({
+//       success: true,
+//       count: orders.length,
+//       orders,
+//     });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// };
+
 export const getAllOrders = async (req, res) => {
   try {
     if (!req.user?._id || req.user.role !== "admin") {
       return res.status(403).json({ message: "Forbidden" });
     }
 
+    const { page = 1, limit = 10 } = req.query;
+
+    const skip = (page - 1) * limit;
+
     const orders = await Payment.find()
       .populate("serviceId", "title price heading")
-      .populate("userId", "name email")
-      .sort({ createdAt: -1 });
+      .populate("userId", "name email mobile")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(Number(limit));
+
+    const total = await Payment.countDocuments();
 
     res.json({
       success: true,
-      count: orders.length,
+      total,
+      page: Number(page),
+      pages: Math.ceil(total / limit),
       orders,
     });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 };
-
-
 /* ================= UPDATE ORDER ================= */
 
 export const updatePaymentService = async (req, res) => {

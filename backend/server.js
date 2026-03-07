@@ -15,12 +15,13 @@ import PaidServiceRoutes from "./routes/selling/paidService.route.js";
 import paymentRoutes from "./routes/service/payment.routes.js";
 import contactRouter from "./routes/service/contact.routes.js";
 import healthRoutes from "./routes/health/health.route.js";
+import exportRoutes from "./routes/service/export.routes.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 
 const app = express();
 
-const allowlist = ["https://briefcasse.com",];
+const allowlist = ["https://briefcasse.com","http://localhost:3000"];
 
 const corsOptions = {
   origin(origin, cb) {
@@ -58,6 +59,8 @@ app.use("/api/paid",PaidServiceRoutes);
 
 app.use("/api/payment", paymentRoutes);
 app.use("/api", contactRouter);
+app.use("/api/export",exportRoutes);
+
 
 console.log("RESEND_API_KEY loaded?", !!process.env.RESEND_API_KEY);
 

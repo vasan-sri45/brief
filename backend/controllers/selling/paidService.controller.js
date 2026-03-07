@@ -99,6 +99,7 @@ export const getAllPaidServices = async (req, res, next) => {
     const services = await PaidService.find(query)
       .populate("createdBy", "name email")
       .populate("assignedTo", "name")
+      .populate("service","title heading")
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(Number(limit))

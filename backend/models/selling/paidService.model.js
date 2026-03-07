@@ -22,7 +22,11 @@ const paidServiceSchema = new mongoose.Schema(
     },
 
     serviceType: { type: String, required: true },
-    service: { type: String, required: true },
+       service: { 
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Service",
+      default: null,
+    },
 
     paymentMode: {
       type: String,
