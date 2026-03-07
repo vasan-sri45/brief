@@ -1,0 +1,50 @@
+
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-lato:var(--font-lato);
+  --font-anton:var(--font-anton);
+  --font-poppins:var(--font-poppins);
+  --text-s-tiny: .625rem;
+     --text-tiny: .725rem; 
+     --text-lg-tiny: .925rem;
+     --text-xl-tiny: 1.125rem;
+     --color-beige: #F4EDDB;
+     --color-custom-blue: #325cda;
+     --color-border1:#6887ad;
+     --color-admin:#1E3A8A;
+     --color-lightYelow:#fab025;
+     --color-filterText:#1E3A8A;
+     --color-startbtn:#FFCE1B;
+     --color-letter1:#3f3c3c;
+     --color-starttext:#ffd94e;
+     --shadow-inner:  rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+     --shadow-lg-inner: rgba(0, 0, 0, 0.4) 0px 2px 4px, rgba(0, 0, 0, 0.3) 0px 7px 13px -3px, rgba(0, 0, 0, 0.2) 0px -3px 0px inset;
+     --shadow-xl-inner: rgb(204, 219, 232) 3px 3px 6px 0px inset, rgba(255, 255, 255, 0.5) -3px -3px 6px 1px inset;
+     --shadow-stripe: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  /* background: var(--background); */
+  /* color: var(--foreground); */
+  /* font-family: Arial, Helvetica, sans-serif; */
+ 
+  font-family: var(--font-lato);
+}
+
