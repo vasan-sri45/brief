@@ -19,6 +19,14 @@ const processStepSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const customizedSchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    details: { type: String, required: true }
+  },
+  { _id: false }
+);
+
 const contentSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -48,6 +56,7 @@ const serviceSchema = new mongoose.Schema(
     process: { type: [processStepSchema], default: [] },
     processAtBriefcase: { type: [processStepSchema], default: [] },
     content: {type: [contentSchema], default: []},
+    custom:{type: [customizedSchema], default: []},
     trademark: {type: [trademarkSchema], default: []},
     price: {type: String, default: null},
     images: {

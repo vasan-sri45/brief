@@ -36,7 +36,7 @@ export const createService = asyncHandler(async (req, res) => {
   const {
     title, subTitle, slug, heading, description = '',
     documents = [], process = [], processAtBriefcase = [],
-    content = [], trademark = []
+    content = [], custom = [], trademark = []
   } = req.body;
 
   const trimmed = {
@@ -62,6 +62,7 @@ export const createService = asyncHandler(async (req, res) => {
     process: normalizeArray('process', process),
     processAtBriefcase: normalizeArray('processAtBriefcase', processAtBriefcase),
     content: normalizeArray('content', content),
+    custom: normalizeArray('custom', custom),
     trademark: normalizeArray('trademark', trademark)
   });
 
