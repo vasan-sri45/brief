@@ -192,6 +192,277 @@
 // );
 
 
+// "use client";
+
+// import { useState, useEffect } from "react";
+// import { X } from "lucide-react";
+
+// const PAYMENT_MODES = [
+//   "Online",
+//   "Cash",
+//   "UPI",
+//   "Card",
+//   "Bank Transfer",
+// ];
+
+// const PAYMENT_STATUS = ["created", "paid", "failed", "Pending"];
+
+// const SERVICE_STATUS = [
+//   "Pending",
+//   "In Progress",
+//   "Completed",
+//   "Cancelled",
+// ];
+
+// export default function TicketDetailsModal({
+//   open,
+//   onClose,
+//   service,
+//   employees = [],
+//   onUpdate,
+// }) {
+//   const [editMode, setEditMode] = useState(false);
+//   const [form, setForm] = useState({});
+
+//   useEffect(() => {
+//     if (service) {
+//       setForm(service);
+//     }
+//   }, [service]);
+
+//   if (!open || !service) return null;
+
+//   const handleChange = (key, value) => {
+//     setForm((prev) => ({ ...prev, [key]: value }));
+//   };
+
+//   const handleSave = () => {
+//     onUpdate?.({
+//       id: service._id,
+//       payload: {
+//         assignedTo: form.assignedTo || null,
+//         paymentStatus: form.paymentStatus,
+//         serviceStatus: form.serviceStatus,
+//         totalPayment: Number(form.totalPayment),
+//         paymentMode: form.paymentMode,
+//       },
+//     });
+
+//     setEditMode(false);
+//   };
+
+//   return (
+//     <div className="fixed inset-0 z-50 flex items-center justify-center">
+//       <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+
+//       <div className="relative bg-white w-full max-w-xl rounded-2xl p-6 shadow-xl z-10">
+//         {/* Header */}
+//         <div className="flex justify-between mb-6">
+//           <h2 className="text-xl font-semibold text-blue-600">
+//             Ticket Details
+//           </h2>
+
+//           <div className="flex gap-3">
+//             {!editMode && (
+//               <button
+//                 onClick={() => setEditMode(true)}
+//                 className="px-4 py-1 border rounded"
+//               >
+//                 Edit
+//               </button>
+//             )}
+//             <button onClick={onClose}>
+//               <X />
+//             </button>
+//           </div>
+//         </div>
+
+//         {/* Details Grid */}
+//         <div className="grid grid-cols-2 gap-4 text-sm">
+//           <Detail label="Service No" value={service.serviceNo} />
+//           <Detail label="Client Name" value={service.clientName} />
+//           <Detail label="Mobile" value={service.mobile} />
+//           <Detail label="Email" value={service.email} />
+//           <Detail label="Service Title" value={service.serviceTitle} />
+//           <Detail label="Service" value={service.service} />
+
+//           {/* Amount */}
+//           {editMode ? (
+//             <InputField
+//               label="Amount"
+//               type="number"
+//               value={form.totalPayment || ""}
+//               onChange={(e) =>
+//                 handleChange("totalPayment", e.target.value)
+//               }
+//             />
+//           ) : (
+//             <Detail label="Amount" value={`₹ ${service.totalPayment}`} />
+//           )}
+
+//           {/* Payment Mode */}
+//           {editMode ? (
+//             <SelectField
+//               label="Payment Mode"
+//               value={form.paymentMode || ""}
+//               onChange={(e) =>
+//                 handleChange("paymentMode", e.target.value)
+//               }
+//               options={PAYMENT_MODES}
+//             />
+//           ) : (
+//             <Detail label="Payment Mode" value={service.paymentMode} />
+//           )}
+
+//           {/* Assigned To */}
+//           {editMode ? (
+//             <SelectField
+//               label="Assign To"
+//               value={form.assignedTo || ""}
+//               onChange={(e) =>
+//                 handleChange("assignedTo", e.target.value)
+//               }
+//               options={employees.map((emp) => ({
+//                 value: emp._id,
+//                 label: emp.name,
+//               }))}
+//               isObject
+//             />
+//           ) : (
+//             <Detail
+//               label="Assigned To"
+//               value={
+//                 employees.find(
+//                   (e) => e._id === service.assignedTo
+//                 )?.name || "Unassigned"
+//               }
+//             />
+//           )}
+
+//           {/* Payment Status */}
+//           {editMode ? (
+//             <SelectField
+//               label="Payment Status"
+//               value={form.paymentStatus}
+//               onChange={(e) =>
+//                 handleChange("paymentStatus", e.target.value)
+//               }
+//               options={PAYMENT_STATUS}
+//             />
+//           ) : (
+//             <Detail
+//               label="Payment Status"
+//               value={service.paymentStatus}
+//             />
+//           )}
+
+//           {/* Service Status */}
+//           {editMode ? (
+//             <SelectField
+//               label="Service Status"
+//               value={form.serviceStatus}
+//               onChange={(e) =>
+//                 handleChange("serviceStatus", e.target.value)
+//               }
+//               options={SERVICE_STATUS}
+//             />
+//           ) : (
+//             <Detail
+//               label="Service Status"
+//               value={service.serviceStatus}
+//             />
+//           )}
+
+//           <Detail
+//             label="Date"
+//             value={new Date(service.createdAt).toLocaleString()}
+//           />
+//         </div>
+
+//         {/* Footer Buttons */}
+//         <div className="mt-6 text-right">
+//           {editMode ? (
+//             <>
+//               <button
+//                 onClick={() => setEditMode(false)}
+//                 className="px-4 py-2 border rounded mr-3"
+//               >
+//                 Cancel
+//               </button>
+//               <button
+//                 onClick={handleSave}
+//                 className="px-6 py-2 bg-blue-600 text-white rounded"
+//               >
+//                 Save
+//               </button>
+//             </>
+//           ) : (
+//             <button
+//               onClick={onClose}
+//               className="px-6 py-2 bg-blue-600 text-white rounded"
+//             >
+//               Close
+//             </button>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// /* ---------- Reusable Components ---------- */
+
+// const Detail = ({ label, value }) => (
+//   <div>
+//     <p className="text-gray-500">{label}</p>
+//     <p className="font-medium">{value || "-"}</p>
+//   </div>
+// );
+
+// const InputField = ({ label, value, onChange, type = "text" }) => (
+//   <div>
+//     <p className="text-gray-500 mb-1">{label}</p>
+//     <input
+//       type={type}
+//       className="border px-2 py-1 w-full rounded"
+//       value={value}
+//       onChange={onChange}
+//     />
+//   </div>
+// );
+
+// const SelectField = ({
+//   label,
+//   value,
+//   onChange,
+//   options,
+//   isObject = false,
+// }) => (
+//   <div>
+//     <p className="text-gray-500 mb-1">{label}</p>
+//     <select
+//       className="border px-2 py-1 w-full rounded"
+//       value={value || ""}
+//       onChange={onChange}
+//     >
+//       <option value="">Select</option>
+
+//       {isObject
+//         ? options.map((opt) => (
+//             <option key={opt.value} value={opt.value}>
+//               {opt.label}
+//             </option>
+//           ))
+//         : options.map((opt) => (
+//             <option key={opt} value={opt}>
+//               {opt}
+//             </option>
+//           ))}
+//     </select>
+//   </div>
+// );
+
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -220,6 +491,7 @@ export default function TicketDetailsModal({
   service,
   employees = [],
   onUpdate,
+  userRole
 }) {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({});
@@ -251,12 +523,17 @@ export default function TicketDetailsModal({
     setEditMode(false);
   };
 
+  console.log(service)
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-black/40"
+        onClick={onClose}
+      />
 
       <div className="relative bg-white w-full max-w-xl rounded-2xl p-6 shadow-xl z-10">
-        {/* Header */}
+
+        {/* HEADER */}
         <div className="flex justify-between mb-6">
           <h2 className="text-xl font-semibold text-blue-600">
             Ticket Details
@@ -271,22 +548,37 @@ export default function TicketDetailsModal({
                 Edit
               </button>
             )}
+
             <button onClick={onClose}>
               <X />
             </button>
           </div>
         </div>
 
-        {/* Details Grid */}
+        {/* DETAILS */}
         <div className="grid grid-cols-2 gap-4 text-sm">
+
           <Detail label="Service No" value={service.serviceNo} />
           <Detail label="Client Name" value={service.clientName} />
           <Detail label="Mobile" value={service.mobile} />
           <Detail label="Email" value={service.email} />
           <Detail label="Service Title" value={service.serviceTitle} />
-          <Detail label="Service" value={service.service} />
 
-          {/* Amount */}
+          {/* {userRole === "employee" && 
+            <Detail label="Employee" value={s} />} */}
+
+          {/* FIXED SERVICE VALUE */}
+          <Detail
+            label="Service"
+            value={
+              typeof service.service === "object"
+                ? service.service?.heading ||
+                  service.service?.title
+                : service.service
+            }
+          />
+
+          {/* AMOUNT */}
           {editMode ? (
             <InputField
               label="Amount"
@@ -297,10 +589,13 @@ export default function TicketDetailsModal({
               }
             />
           ) : (
-            <Detail label="Amount" value={`₹ ${service.totalPayment}`} />
+            <Detail
+              label="Amount"
+              value={`₹ ${service.totalPayment}`}
+            />
           )}
 
-          {/* Payment Mode */}
+          {/* PAYMENT MODE */}
           {editMode ? (
             <SelectField
               label="Payment Mode"
@@ -311,11 +606,14 @@ export default function TicketDetailsModal({
               options={PAYMENT_MODES}
             />
           ) : (
-            <Detail label="Payment Mode" value={service.paymentMode} />
+            <Detail
+              label="Payment Mode"
+              value={service.paymentMode}
+            />
           )}
 
-          {/* Assigned To */}
-          {editMode ? (
+          {/* ASSIGN */}
+          {/* {editMode ? (
             <SelectField
               label="Assign To"
               value={form.assignedTo || ""}
@@ -337,9 +635,36 @@ export default function TicketDetailsModal({
                 )?.name || "Unassigned"
               }
             />
-          )}
+            
+          )} */}
 
-          {/* Payment Status */}
+          {userRole === "admin" && (
+  editMode ? (
+    <SelectField
+      label="Assign To"
+      value={form.assignedTo || ""}
+      onChange={(e) =>
+        handleChange("assignedTo", e.target.value)
+      }
+      options={employees.map((emp) => ({
+        value: emp._id,
+        label: emp.name,
+      }))}
+      isObject
+    />
+  ) : (
+    <Detail
+      label="Assigned To"
+      value={
+        employees.find(
+          (e) => e._id === service.assignedTo
+        )?.name || "Unassigned"
+      }
+    />
+  )
+)}
+
+          {/* PAYMENT STATUS */}
           {editMode ? (
             <SelectField
               label="Payment Status"
@@ -356,7 +681,7 @@ export default function TicketDetailsModal({
             />
           )}
 
-          {/* Service Status */}
+          {/* SERVICE STATUS */}
           {editMode ? (
             <SelectField
               label="Service Status"
@@ -377,10 +702,12 @@ export default function TicketDetailsModal({
             label="Date"
             value={new Date(service.createdAt).toLocaleString()}
           />
+
         </div>
 
-        {/* Footer Buttons */}
+        {/* FOOTER */}
         <div className="mt-6 text-right">
+
           {editMode ? (
             <>
               <button
@@ -389,6 +716,7 @@ export default function TicketDetailsModal({
               >
                 Cancel
               </button>
+
               <button
                 onClick={handleSave}
                 className="px-6 py-2 bg-blue-600 text-white rounded"
@@ -404,13 +732,14 @@ export default function TicketDetailsModal({
               Close
             </button>
           )}
+
         </div>
       </div>
     </div>
   );
 }
 
-/* ---------- Reusable Components ---------- */
+/* COMPONENTS */
 
 const Detail = ({ label, value }) => (
   <div>
@@ -440,6 +769,7 @@ const SelectField = ({
 }) => (
   <div>
     <p className="text-gray-500 mb-1">{label}</p>
+
     <select
       className="border px-2 py-1 w-full rounded"
       value={value || ""}

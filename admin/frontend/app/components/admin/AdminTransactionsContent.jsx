@@ -12,11 +12,13 @@ import {
   useUpdatePaidService,
   useUpdatePaymentService,
 } from "../../hooks/useService";
+import { useAuth } from "../../hooks/useAuth";
 
 import { useGetEmployees } from "../../hooks/useEmployeeAuthMutations";
 
 export default function AdminTransactionsContent() {
   const { month, date, search, status } = useSelector((s) => s.ui);
+  const {user} = useAuth();
 
   const { data: onlineData, isLoading: onlineLoading } =
     useGetPaymentServices();
@@ -174,6 +176,7 @@ export default function AdminTransactionsContent() {
         open={!!selectedTxn}
         service={selectedTxn}
         employees={employeeList}
+        userRole={user?.role}
         onClose={() => setSelectedTxn(null)}
         onUpdate={async ({ id, payload }) => {
           if (selectedTxn.source === "online") {

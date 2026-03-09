@@ -13,7 +13,7 @@ router.post("/create-order",userProtectRoute, createOrder);
 router.post("/verify",userProtectRoute, verifyPayment);
 router.get(
   "/all-orders",
-  employeeProtectRoute, adminAuth,    // 👈 admin middleware
+  employeeProtectRoute, 
   getAllOrders
 );
 router.put("/update/:id", employeeProtectRoute, updatePaymentService);

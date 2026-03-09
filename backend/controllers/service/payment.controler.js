@@ -127,7 +127,7 @@ export const verifyPayment = async (req, res) => {
 
 export const getAllOrders = async (req, res) => {
   try {
-    if (!req.user?._id || req.user.role !== "admin") {
+    if (!req.user?._id ) {
       return res.status(403).json({ message: "Forbidden" });
     }
 
