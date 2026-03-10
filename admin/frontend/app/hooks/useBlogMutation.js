@@ -62,3 +62,25 @@ export const useGetBlogs = (page = 1, limit = 10) =>
     staleTime: 60_000,
     refetchOnWindowFocus: false,
   });
+
+
+  
+  export const useDeleteBlog = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id) => {
+      const res = await api.delete(`/admin/blogs/${id}`);
+      return res.data;
+    },
+
+    onSuccess: () => {
+      // refresh blog lists
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+    },
+
+    onError: () => {
+      alert("❌ Failed to delete blog");
+    },
+  });
+};
