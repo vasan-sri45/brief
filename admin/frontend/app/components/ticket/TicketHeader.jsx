@@ -45,7 +45,7 @@ const TicketHeader = () => {
       <div className="mx-auto p-3 md:p-4 lg:p-8 lg:w-10/12 flex items-center justify-between">
         {/* LEFT: Logo */}
         <div className="flex items-center gap-1">
-          <Image src="/assets/brief_blue.png" alt="logo" width={32} height={32} />
+          <Image src="/assets/brief_blue.png" alt="logo" width={32} height={32} className="mt-[-2px]" />
           <span className="font-anton font-normal text-custom-blue text-2xl uppercase">
             Briefcasse
           </span>
