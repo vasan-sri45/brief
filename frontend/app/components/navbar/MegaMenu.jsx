@@ -294,7 +294,7 @@ import StartUpCard from "./StartUpCard";
 const CATEGORY_LABELS = [
   "Startup",
   "Intellectual Property",
-  "Tax Filling",
+  "Tax Filing",
   "MCA Compliance",
   "Registration",
   "Legal Advisory & Agreement",
@@ -462,8 +462,8 @@ const MegaMenuNavbar = () => {
             height={32}
           />
 
-          <span className="text-white font-anton ml-2">
-            BRIEFCASE
+          <span className="text-white font-anton ml-1 text-2xl mt-1">
+            BRIEFCASSE
           </span>
 
         </Link>

@@ -20,7 +20,7 @@ const WelcomeCard = ({
         {/* Avatar + Name */}
         <div className="flex flex-col items-center gap-4 min-w-[160px]">
           <img
-            src="https://m.media-amazon.com/images/I/71qb1LEtHdL._AC_UF894,1000_QL80_.jpg"
+            src="https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"
             alt="Profile"
             className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover shadow-inner"
           />
