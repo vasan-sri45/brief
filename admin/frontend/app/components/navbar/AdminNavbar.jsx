@@ -64,7 +64,7 @@ export default function AdminNavbar() {
        <div className="flex items-center mb-4 justify-center">
                
                      <Image
-                      src="/assets/brief_blue.png"
+                      src="/assets/brief_white.png"
                       alt="logo"
                       width={32}
                       height={32}

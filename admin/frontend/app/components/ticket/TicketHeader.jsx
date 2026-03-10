@@ -42,12 +42,11 @@ const TicketHeader = () => {
   return (
     <header className="w-full bg-white relative z-50">
       <div className="mx-auto p-3 md:p-4 lg:p-8 lg:w-10/12 flex items-center justify-between">
-
         {/* LEFT: Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-md bg-white shadow-inner" />
-          <span className="font-poppins font-bold text-custom-blue text-lg">
-            Brief case
+        <div className="flex items-center gap-2">
+          <Image src="/assets/brief_white.png" alt="logo" className="w-10 h-10 rounded-md bg-white shadow-inner" />
+          <span className="font-anton font-normal text-custom-blue text-2xl uppercase">
+            Briefcase
           </span>
         </div>
 
