@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Menu, X, LogOut } from "lucide-react";
 import { gsap } from "gsap";
 import { useLogout } from "../../hooks/useEmployeeAuthMutations";
+import Image from "next/image";
 
 const TicketHeader = () => {
   const logout = useLogout("/");
