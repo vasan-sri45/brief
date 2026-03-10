@@ -3,7 +3,7 @@ import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { api } from "../api/api";
-import { setUser } from "../store/features/auth.slice";
+import { setUser, clearUser } from "../store/features/auth.slice";
 
 export const useEmployeeLogin = () => {
   const dispatch = useDispatch();

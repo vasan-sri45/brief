@@ -97,7 +97,7 @@ export default function BlogDetailPage() {
 
         <div className="flex justify-end mt-12">
            <Link
-              href={`/blogs`}
+              href={`/admin/status`}
               className="bg-starttext text-white text-[0.9rem] md:text-[1.1rem] font-anton font-normal tracking-wide rounded-full flex justify-center items-center px-3 py-2"
             >
               Back to blogs

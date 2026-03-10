@@ -58,7 +58,7 @@ const LatestBlogCard = ({ blog }) => {
             </p>
 
             <Link
-              href={`/blogs/${blog.slug}`}
+              href={`/admin/status/${blog.slug}`}
               className="text-startbtn text-[0.8rem] font-anton font-normal tracking-wide"
             >
               <button
