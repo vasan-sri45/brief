@@ -44,10 +44,10 @@ const TicketHeader = () => {
     <header className="w-full bg-white relative z-50">
       <div className="mx-auto p-3 md:p-4 lg:p-8 lg:w-10/12 flex items-center justify-between">
         {/* LEFT: Logo */}
-        <div className="flex items-center gap-2">
-          <Image src="/assets/brief_blue.png" alt="logo" className="w-10 h-10" />
+        <div className="flex items-center gap-1">
+          <Image src="/assets/brief_blue.png" alt="logo" width={28} height={28} />
           <span className="font-anton font-normal text-custom-blue text-2xl uppercase">
-            Briefcase
+            Briefcasse
           </span>
         </div>
 
