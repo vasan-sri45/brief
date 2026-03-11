@@ -43,7 +43,7 @@ export default function ServicePage() {
         </div>
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free.</p> */}
-          <Section title="Tax Filling"
+          <Section title="Tax Filing"
             subTitle="We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free."
           services={services} />
         </div>
