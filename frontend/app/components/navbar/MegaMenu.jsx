@@ -335,10 +335,22 @@ const MegaMenuNavbar = () => {
       const key = norm(title);
 
       /* hide Customized Agreement from list */
+      // if (
+      //   s.title === "Legal Advisory & Agreement" &&
+      //   sub === "Customized Agreement"
+      // ) return;
+
+      const clean = (v) => v?.toLowerCase().trim();
+
       if (
-        s.title === "Legal Advisory & Agreement" &&
-        sub === "Customized Agreement"
-      ) return;
+  (clean(s.title) === "legal advisory & agreement" &&
+    clean(sub) === "customized agreement") ||
+
+  (clean(s.title) === "intellectual property" &&
+    clean(sub) === "trademark search")
+) {
+  return;
+}
 
       if (!map[key]) {
         map[key] = { title, sections: {} };
@@ -370,79 +382,161 @@ const MegaMenuNavbar = () => {
 
   /* ================= DESKTOP MENU ================= */
 
+  // const DesktopMegaMenu = ({ item }) => {
+
+  //   const entry = menuData[norm(item)] || { sections: {} };
+
+  //   return (
+  //     <div
+  //       className="fixed left-1/2 -translate-x-1/2 top-[150px] bg-white shadow-2xl rounded-xl z-[100]
+  //       border border-gray-200 w-[95vw] max-w-[1400px]"
+  //       onMouseEnter={() => openMenu(item)}
+  //       onMouseLeave={closeMenu}
+  //     >
+
+  //       <div className="flex">
+
+  //         <div className="flex-1 p-10 grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-10 max-h-[70vh] overflow-y-auto">
+
+  //           {Object.entries(entry.sections).map(([title, items]) => (
+
+  //             <div key={title}>
+
+  //               <h4 className="bg-custom-blue text-white rounded-full px-4 py-2 text-sm font-bold mb-4 uppercase text-center">
+  //                 {title}
+  //               </h4>
+
+  //               <ul className="space-y-3">
+  //                 {items.map((s, i) => (
+
+  //                   <li key={i}>
+  //                     <Link
+  //                       href={`/services/${s.slug}`}
+  //                       onClick={() => setActiveMenu(null)}
+  //                       className="text-[14px] text-custom-blue font-bold hover:text-starttext"
+  //                     >
+  //                       {s.label}
+  //                     </Link>
+  //                   </li>
+
+  //                 ))}
+  //               </ul>
+
+  //             </div>
+
+  //           ))}
+
+  //         </div>
+
+        
+  //         {item === "Startup" && (
+  //           <StartUpCard
+  //             title="Startup Packages"
+  //             description="Register your company quickly with expert legal support."
+  //             buttonText="Custom Startup Package"
+  //             navigatePath="/startup"
+  //             onClose={() => setActiveMenu(null)}
+  //           />
+  //         )}
+
+          
+  //         {item === "Legal Advisory & Agreement" && (
+  //           <StartUpCard
+  //             title="Custom Agreement"
+  //             description="Create legally valid agreements with expert legal guidance."
+  //             buttonText="Custom Agreement"
+  //             navigatePath="/services/customized-agreement"
+  //             onClose={() => setActiveMenu(null)}
+  //           />
+  //         )}
+
+  //       </div>
+
+  //     </div>
+  //   );
+  // };
+
   const DesktopMegaMenu = ({ item }) => {
+  const entry = menuData[norm(item)] || { sections: {} };
 
-    const entry = menuData[norm(item)] || { sections: {} };
+  return (
+    <div
+      className="fixed left-1/2 -translate-x-1/2 top-[150px] bg-white shadow-2xl rounded-xl z-[100]
+      border border-gray-200 w-[95vw] max-w-[1400px]"
+      onMouseEnter={() => openMenu(item)}
+      onMouseLeave={closeMenu}
+    >
+      <div className="flex">
 
-    return (
-      <div
-        className="fixed left-1/2 -translate-x-1/2 top-[150px] bg-white shadow-2xl rounded-xl z-[100]
-        border border-gray-200 w-[95vw] max-w-[1400px]"
-        onMouseEnter={() => openMenu(item)}
-        onMouseLeave={closeMenu}
-      >
+        {/* ================= LEFT MENU ================= */}
+        <div className="flex-1 p-10 flex items-start gap-10">
 
-        <div className="flex">
+          {Object.entries(entry.sections).map(([title, items]) => (
 
-          <div className="flex-1 p-10 grid grid-cols-2 md:grid-cols-3 gap-x-8 gap-y-10 max-h-[70vh] overflow-y-auto">
+            <div key={title} className="min-w-[220px]">
 
-            {Object.entries(entry.sections).map(([title, items]) => (
+              {/* TITLE */}
+              <h4 className="bg-custom-blue text-white rounded-full px-4 py-2 text-sm font-bold mb-4 uppercase text-center">
+                {title}
+              </h4>
 
-              <div key={title}>
+              {/* LINKS */}
+              <ul className="space-y-3">
+                {items.map((s, i) => (
+                  <li key={i}>
+                    <Link
+                      href={`/services/${s.slug}`}
+                      onClick={() => setActiveMenu(null)}
+                      className="text-[14px] text-custom-blue font-bold hover:text-starttext"
+                    >
+                      {s.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
 
-                <h4 className="bg-custom-blue text-white rounded-full px-4 py-2 text-sm font-bold mb-4 uppercase text-center">
-                  {title}
-                </h4>
+            </div>
 
-                <ul className="space-y-3">
-                  {items.map((s, i) => (
-
-                    <li key={i}>
-                      <Link
-                        href={`/services/${s.slug}`}
-                        onClick={() => setActiveMenu(null)}
-                        className="text-[14px] text-custom-blue font-bold hover:text-starttext"
-                      >
-                        {s.label}
-                      </Link>
-                    </li>
-
-                  ))}
-                </ul>
-
-              </div>
-
-            ))}
-
-          </div>
-
-          {/* STARTUP CARD */}
-          {item === "Startup" && (
-            <StartUpCard
-              title="Startup Packages"
-              description="Register your company quickly with expert legal support."
-              buttonText="Custom Startup Package"
-              navigatePath="/startup"
-              onClose={() => setActiveMenu(null)}
-            />
-          )}
-
-          {/* LEGAL AGREEMENT CARD */}
-          {item === "Legal Advisory & Agreement" && (
-            <StartUpCard
-              title="Custom Agreement"
-              description="Create legally valid agreements with expert legal guidance."
-              buttonText="Custom Agreement"
-              navigatePath="/services/customized-agreement"
-              onClose={() => setActiveMenu(null)}
-            />
-          )}
+          ))}
 
         </div>
 
+        {/* ================= RIGHT CARD ================= */}
+
+        {item === "Startup" && (
+          <StartUpCard
+            title="Startup Packages"
+            description="Register your company quickly with expert legal support."
+            buttonText="Custom Startup Package"
+            navigatePath="/startup"
+            onClose={() => setActiveMenu(null)}
+          />
+        )}
+
+        {item === "Legal Advisory & Agreement" && (
+          <StartUpCard
+            title="Custom Agreement"
+            description="Create legally valid agreements with expert legal guidance."
+            buttonText="Custom Agreement"
+            navigatePath="/services/customized-agreement"
+            onClose={() => setActiveMenu(null)}
+          />
+        )}
+
+        {item === "Intellectual Property" && (
+          <StartUpCard
+            title="Trademark Search"
+            description="Search and protect your brand with expert legal support."
+            buttonText="Start Search"
+            navigatePath="/services/trademark-search"
+            onClose={() => setActiveMenu(null)}
+          />
+        )}
+
       </div>
-    );
-  };
+    </div>
+  );
+};
 
   /* ================= NAVBAR ================= */
 
