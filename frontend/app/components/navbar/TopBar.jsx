@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { ChevronUp, User2 } from "lucide-react";
+import { ChevronUp, User2, Home } from "lucide-react";
 import { useSelector } from "react-redux";
 import { useLogout } from "../../hooks/useAuthMutations";
 import { useRouter } from "next/navigation";
@@ -50,9 +50,11 @@ const TopBar = () => {
       />
 
       <div className="relative" ref={ref}>
+         
+  <div className="flex">
         <button
           onClick={() => setOpen(!open)}
-          className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-lg"
+          className="flex items-center gap-2 bg-white/10 px-3 py-1 rounded-l-lg"
         >
           {/* User Icon Container */}
           <div className="bg-white p-1 rounded-full">
@@ -72,9 +74,15 @@ const TopBar = () => {
           <ChevronUp 
             size={16} 
             className={`transition-transform duration-200 ${open ? "" : "rotate-180"}`} 
-          />
+          /> <span className="text-2xl">|</span>
         </button>
-
+        <button
+    onClick={() => router.push("/")}
+    className="flex items-center justify-center bg-white/10 p-2 rounded-r-lg hover:bg-white/20 transition"
+  >
+    <Home size={20} className="text-white" />
+  </button>
+</div>
         {open && (
           <div className="absolute right-0 mt-2 bg-white text-custom-blue rounded shadow w-40 overflow-hidden z-[1002]">
             <button
@@ -134,3 +142,6 @@ const TopBar = () => {
 };
 
 export default TopBar;
+
+
+  
