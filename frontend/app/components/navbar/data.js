@@ -1,7 +1,3 @@
-
-
-// components/Navbar/data.js
-
 export const navItems = [
   "Start Ups",
   "Intellectual Property",
