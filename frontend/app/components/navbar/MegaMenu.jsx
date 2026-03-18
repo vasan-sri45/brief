@@ -528,7 +528,7 @@ const MegaMenuNavbar = () => {
             title="Trademark Search"
             description="Search and protect your brand with expert legal support."
             buttonText="Start Search"
-            navigatePath="/services/trademark-search"
+            navigatePath="/services/trademark-research"
             onClose={() => setActiveMenu(null)}
           />
         )}
