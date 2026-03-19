@@ -78,7 +78,7 @@ const EmployeeLoginForm = () => {
         <button
           type="submit"
           disabled={!canSubmit || login.isPending}
-          className="w-full mt-7 lg:mt-24 bg-white text-custom-blue rounded-3xl
+          className="w-full mt-7 bg-white text-custom-blue rounded-3xl
                      text-md font-lato font-bold py-3
                      text-center 
                      disabled:opacity-60"

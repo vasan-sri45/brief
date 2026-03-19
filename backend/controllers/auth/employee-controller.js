@@ -65,7 +65,7 @@ export const register = asyncHandler(async (req, res) => {
     await user.save({ validateBeforeSave: false });
 
     // ✅ CREATE RESET LINK
-    const resetUrl = `https://admin-brief.onrender.com/forgot-password/${token}`;
+    const resetUrl = `https://admin-brief.onrender.com/forgot_password/${token}`;
 
     // ✅ SEND EMAIL
     await sendEmail({
