@@ -6,6 +6,7 @@ import User from '../../models/auth/user.js';
 import { generateOtp, hashOtp } from "../../utils/otpGenerator.js";
 import sendEmail from "../../utils/email.js";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
 
 export const register = asyncHandler(async (req, res) => {
   // Normalize inputs
