@@ -58,6 +58,14 @@ const EmployeeLoginForm = () => {
           />
         </div>
 
+        <Link
+          href="/forgot_password"
+          className="w-full text-end font-lato font-bold text-white text-sm pr-5 pt-2 block"
+        >
+          Forgot Password
+        </Link>
+
+
         {/* ================= ERROR ================= */}
         {errorMsg && (
           <p className="mt-2 text-center text-xs text-red-500">
