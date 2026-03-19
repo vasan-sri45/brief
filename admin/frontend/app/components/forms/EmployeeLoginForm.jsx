@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useEmployeeLogin } from "../../hooks/useEmployeeAuthMutations";
+import Link from "next/link";
 
 const EmployeeLoginForm = () => {
   const [email, setEmail] = useState("");
