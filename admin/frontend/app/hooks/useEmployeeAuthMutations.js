@@ -5,6 +5,15 @@ import { useRouter } from "next/navigation";
 import { api } from "../api/api";
 import { setUser, clearUser } from "../store/features/auth.slice";
 
+export const useRegisterEmployee = () => {
+  return useMutation({
+    mutationFn: async (formData) => {
+      const res = await api.post("/employee", formData);
+      return res.data;
+    },
+  });
+};
+
 export const useEmployeeLogin = () => {
   const dispatch = useDispatch();
   const qc = useQueryClient();
@@ -75,6 +84,43 @@ export const useGetMe = () => {
     refetchOnWindowFocus: false,
   });
 };
+
+
+
+export const useSendForgotOtp = () => {
+  return useMutation({
+    mutationFn: async (email) => {
+      const res = await api.post("/forgot-password", { email });
+      return res.data;
+    },
+  });
+};
+
+export const useVerifyOtp = () => {
+  return useMutation({
+    mutationFn: async ({ email, otp }) => {
+      const res = await api.post("/verify-forgot-otp", {
+        email,
+        otp,
+      });
+      return res.data;
+    },
+  });
+};
+
+export const useResetPassword = () => {
+  return useMutation({
+    mutationFn: async ({ email, otp, newPassword }) => {
+      const res = await api.post("/reset-password", {
+        email,
+        otp,
+        newPassword,
+      });
+      return res.data;
+    },
+  });
+};
+
 
 
 export const useLogout = () => {

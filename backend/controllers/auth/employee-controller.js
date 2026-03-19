@@ -54,6 +54,36 @@ export const register = asyncHandler(async (req, res) => {
   // Create and save
   try {
     const user = await Employee.create({ name, email, mobile, role, password });
+
+     // ✅ GENERATE RESET TOKEN
+    const token = crypto.randomBytes(32).toString("hex");
+
+    user.resetToken = token;
+    user.resetTokenExpiry = Date.now() + 15 * 60 * 1000;
+
+    await user.save({ validateBeforeSave: false });
+
+    // ✅ CREATE RESET LINK
+    const resetUrl = `https://admin-brief.onrender.com/forgot-password/${token}`;
+
+    // ✅ SEND EMAIL
+    await sendEmail({
+      email: user.email,
+      subject: "Set Your Password - BriefCasse",
+      html: `
+        <h2>Welcome to BriefCasse 🎉</h2>
+        <p>Your account has been created.</p>
+
+        <p>Click below to set your password:</p>
+        <a href="${resetUrl}" style="color:blue;font-weight:bold">
+          Set Password
+        </a>
+
+        <p>This link expires in 15 minutes.</p>
+      `,
+    });
+
+
     return res.status(201).json({
       success: true,
       user: {

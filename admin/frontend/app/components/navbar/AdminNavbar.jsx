@@ -105,6 +105,14 @@ export default function AdminNavbar() {
             >
               Create
             </Link>
+             <Link
+              href="/admin/new_emp"
+              className="block px-4 py-2 text-sm hover:bg-gray-100 text-custom-blue font-lato font-bold"
+              onClick={() => setProfileOpen(false)}
+            >
+              New Emp
+            </Link>
+
             <button
               onClick={handleLogout}
               className="block w-full text-left px-4 py-2 text-sm font-lato font-bold text-red-600 hover:bg-gray-100"
