@@ -103,7 +103,7 @@
 // app/serviced/page.jsx
 // ⚠️ "use client" வேண்டாம்!
 
-import ServicedClient from "./ServicedClient";
+import ServicedClient from "./ServiceClient";
 
 export const metadata = {
   title: "Our Legal Services | Briefcasse",
