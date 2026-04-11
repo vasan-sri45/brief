@@ -111,6 +111,11 @@ export const metadata: Metadata = {
     shortcut: "/assets/brief_blue.png",   // ✅ Shortcut icon
     apple: "/assets/brief_blue.png",      // ✅ iPhone home screen icon
   },
+
+  verification: {
+    google: "6Eaqre6zKjZGrxKLDto8Ryah9pmSCQy-vEsSYPeqNjA",
+    // ↑ உங்கள் actual verification code (screenshot-ல் இருந்து)
+  },
 };
 
 export default function RootLayout({
