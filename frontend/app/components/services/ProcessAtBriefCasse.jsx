@@ -3,13 +3,8 @@
 import React from "react";
 import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
 
-/* ---------------- ALIGNMENT LOGIC ----------------
-First card always START
-Then wave:
-center → end → end → center → start → start (repeat)
---------------------------------------------------- */
 const getAlignClass = (index) => {
-  // First card fixed to left
+  
   if (index === 0) return "md:self-start";
 
   const cycle = 6;

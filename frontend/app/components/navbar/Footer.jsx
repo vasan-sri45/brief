@@ -57,11 +57,11 @@ const Footer = () => {
               <Image
                 src="/assets/brief_white.png"
                 alt="logo"
-                width={32}
-                height={32}
-                className="mr-1"
+                width={36}
+                height={36}
+                className="mr-0.5"
               />
-              <h2 className="text-xl md:text-3xl font-anton font-semibold tracking-widest">
+              <h2 className="text-xl md:text-3xl font-anton font-normal tracking-wider mt-0.5">
                 BRIEFCASSE
               </h2>
             </div>
@@ -142,7 +142,7 @@ const Footer = () => {
         {/* BOTTOM */}
         <div className="border-t border-gray-600 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-300 text-sm font-lato font-bold">
-            © 2025 Briefcase. All rights reserved
+            © 2025 Briefcasse. All rights reserved
           </p>
 
           <div className="flex gap-4 mt-4 md:mt-0">

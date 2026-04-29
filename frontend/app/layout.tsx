@@ -34,14 +34,6 @@ const poppins = Poppins({
 });
 
 
-// export const metadata: Metadata = {
-//   title: "BriefCasse",
-//   description: "Legal consultant",
-//    icons: {
-//     icon: "/assets/brief_blue.png",
-//   },
-// };
-
 export const metadata: Metadata = {
   title: {
     default: "Briefcasse — Trademark & Legal Services",
@@ -78,7 +70,7 @@ export const metadata: Metadata = {
       "Easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses. Secure your brand with expert support.",
     images: [
       {
-        url: "/assets/brief_blue.png", // ✅ உங்கள் actual logo path
+        url: "/assets/brief_blue.png", 
         width: 1906,
         height: 1450,
         alt: "Briefcasse Logo — Trademark & Legal Services",
@@ -114,7 +106,6 @@ export const metadata: Metadata = {
 
   verification: {
     google: "6Eaqre6zKjZGrxKLDto8Ryah9pmSCQy-vEsSYPeqNjA",
-    // ↑ உங்கள் actual verification code (screenshot-ல் இருந்து)
   },
 };
 

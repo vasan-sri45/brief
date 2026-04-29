@@ -1,16 +1,12 @@
-
 "use client";
-
 import React, { useEffect, useMemo, useCallback, useRef, useState } from "react";
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-
 import { useAuthGuard } from "../../components/route/useAuthGuard";
 import { useGsapScrollReveal } from "../../hooks/useGsapScrollReveal";
 import { useServiceBySlug } from "../../hooks/useServiceBySlug";
 import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
-
 import ServiceHero from "../../components/services/ServiceHero";
 import LegalCard from "../../components/services/LegalCard";
 import DocumentsRequired from "../../components/services/DocumentsRequired";
