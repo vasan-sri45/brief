@@ -48,51 +48,43 @@ export default async function Page() {
 
   return (
     <>
-      {/* ✅ Server-side HTML — Google படிக்கும் */}
-      <section className="w-full bg-white">
-        <div className="max-w-7xl mx-auto px-5 pt-8 pb-2">
-
-          <h1 className="font-anton text-2xl md:text-4xl text-custom-blue text-center tracking-wider mb-3">
-            Trademark Registration & Legal Services India
-          </h1>
-
-          <p className="text-letter1 text-center text-base md:text-lg font-lato max-w-3xl mx-auto mb-6">
-            Briefcasse offers easy and reliable trademark registration and legal
-            services for startups, entrepreneurs, and businesses in India.
-            Secure your brand with expert support.
-          </p>
-
-          {categories.map((cat) => {
-            const filtered = services.filter(
-              (s) => s.title?.trim().toLowerCase() === cat.title.trim().toLowerCase()
-            );
-            if (filtered.length === 0) return null;
-
-            return (
-              <div key={cat.title} className="mb-6">
-                <h2 className="font-anton text-xl text-custom-blue text-center tracking-wider mb-1">
-                  {cat.title}
-                </h2>
-                <p className="text-letter1 text-center text-sm font-lato mb-2">
-                  {cat.subTitle}
-                </p>
-                <div className="flex flex-wrap justify-center gap-2">
-                  {filtered.map((s) => (
-                    <a
-                      key={s.slug}
-                      href={`/services/${s.slug}`}
-                      className="px-3 py-1 border border-custom-blue rounded-full text-sm text-custom-blue hover:bg-custom-blue hover:text-white transition font-lato"
-                    >
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          top: "-9999px",
+          left: "-9999px",
+          width: "1px",
+          height: "1px",
+          overflow: "hidden",
+          opacity: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <h1>Trademark Registration & Legal Services India</h1>
+        <p>Briefcasse offers easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses in India.</p>
+        {categories.map((cat) => {
+          const filtered = services.filter(
+            (s) => s.title?.trim().toLowerCase() === cat.title.trim().toLowerCase()
+          );
+          if (filtered.length === 0) return null;
+          return (
+            <div key={cat.title}>
+              <h2>{cat.title}</h2>
+              <p>{cat.subTitle}</p>
+              <ul>
+                {filtered.map((s) => (
+                  <li key={s.slug}>
+                    <a href={`/services/${s.slug}`}>
                       {s.heading || s.name}
                     </a>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-
-        </div>
-      </section>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </div>
 
       {/* ✅ உங்கள் existing Home — எந்த மாற்றமும் இல்லை */}
       <Home />
