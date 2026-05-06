@@ -52,18 +52,18 @@ export const metadata: Metadata = {
     "Briefcasse",
   ],
 
-  authors: [{ name: "Briefcasse", url: "https://www.briefcasse.com" }],
+  authors: [{ name: "Briefcasse", url: "https://briefcasse.com" }],
   creator: "Briefcasse",
   publisher: "Briefcasse",
 
-  metadataBase: new URL("https://www.briefcasse.com"),
+  metadataBase: new URL("https://briefcasse.com"),
   alternates: {
     canonical: "/",
   },
 
   openGraph: {
     type: "website",
-    url: "https://www.briefcasse.com",
+    url: "https://briefcasse.com",
     siteName: "Briefcasse",
     title: "Briefcasse — Trademark & Legal Services",
     description:
@@ -71,8 +71,8 @@ export const metadata: Metadata = {
     images: [
       {
         url: "/assets/brief_blue.png", 
-        width: 1906,
-        height: 1450,
+        width: 1200,
+        height: 630,
         alt: "Briefcasse Logo — Trademark & Legal Services",
       },
     ],
@@ -84,7 +84,7 @@ export const metadata: Metadata = {
     title: "Briefcasse — Trademark & Legal Services",
     description:
       "Easy and reliable trademark registration and legal services for startups and businesses.",
-    images: ["/assets/brief_blue.png"], // ✅ உங்கள் actual logo path
+    images: ["/assets/brief_blue.png"], 
   },
 
   robots: {
@@ -99,14 +99,44 @@ export const metadata: Metadata = {
   },
 
   icons: {
-    icon: "/assets/brief_blue.png",       // ✅ Browser tab icon
-    shortcut: "/assets/brief_blue.png",   // ✅ Shortcut icon
-    apple: "/assets/brief_blue.png",      // ✅ iPhone home screen icon
+    icon: "/assets/brief_blue.png",       
+    shortcut: "/assets/brief_blue.png",  
+    apple: "/assets/brief_blue.png",      
   },
 
   verification: {
     google: "6Eaqre6zKjZGrxKLDto8Ryah9pmSCQy-vEsSYPeqNjA",
   },
+};
+
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "LegalService",
+  "name": "Briefcasse",
+  "url": "https://briefcasse.com",
+  "logo": "https://briefcasse.com/assets/brief_blue.png",
+  "description":
+    "Briefcasse offers easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses in India.",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "IN"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "contactType": "customer service",
+    "url": "https://briefcasse.com/contact"
+  },
+  "serviceType": [
+    "Trademark Registration",
+    "Startup Registration",
+    "Intellectual Property",
+    "Tax Filing",
+    "MCA Compliance",
+    "Legal Advisory"
+  ],
+  "areaServed": "IN",
+  "priceRange": "₹₹"
 };
 
 export default function RootLayout({
@@ -116,6 +146,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+        <head>
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+          />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} ${anton.variable} ${poppins.variable}antialiased`}>
         <Providers>
           <AppLayout>
