@@ -19,7 +19,7 @@ export const metadata = {
     title: "Contact Us | Briefcasse",
     description:
       "Reach out to Briefcasse for trademark registration and legal services. Expert support for startups and businesses in India.",
-    url: "https://www.briefcasse.com/contact",
+    url: "https://briefcasse.com/contact",
     siteName: "Briefcasse",
     images: [
       {

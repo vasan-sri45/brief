@@ -27,7 +27,7 @@ export default function sitemap() {
       priority: 0.7,
     },
     {
-      url: "https://briefcasse.com/user/contact",
+      url: "https://briefcasse.com/contact",
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.6,
