@@ -14,6 +14,6 @@ export default function robots() {
       },
     ],
     sitemap: "https://briefcasse.com/sitemap.xml",
-    host: "https://briefcasse.com",
+    // host: "https://briefcasse.com",
   };
 }
