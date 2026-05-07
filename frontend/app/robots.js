@@ -7,7 +7,6 @@ export default function robots() {
         allow: "/",
         disallow: [
           "/api/",      // API routes Google index வேண்டாம்
-          "/user/",     // User private pages
           "/login/",    // Login page
           "/store/",    // Internal store
         ],
