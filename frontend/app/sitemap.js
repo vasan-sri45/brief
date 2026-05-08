@@ -1,6 +1,6 @@
 // app/sitemap.js — புதிய file create செய்யுங்கள்
 
-export default function sitemap() {
+export default async function sitemap() {
 
    let serviceUrls = [];
   try {
