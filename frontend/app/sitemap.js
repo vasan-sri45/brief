@@ -1,6 +1,24 @@
 // app/sitemap.js — புதிய file create செய்யுங்கள்
 
 export default function sitemap() {
+
+   let serviceUrls = [];
+  try {
+    const res = await fetch(
+      "https://brief-ewyr.onrender.com/api/services",
+      { next: { revalidate: 3600 } }
+    );
+    const data = await res.json();
+    serviceUrls = (data?.items || []).map((s) => ({
+      url: `https://briefcasse.com/services/${s.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9, // ✅ High priority — main service pages
+    }));
+  } catch {
+    serviceUrls = [];
+  }
+
   return [
     {
       url: "https://briefcasse.com",
@@ -32,5 +50,6 @@ export default function sitemap() {
       changeFrequency: "monthly",
       priority: 0.6,
     },
+    ...serviceUrls
   ];
 }
