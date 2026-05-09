@@ -222,7 +222,7 @@ const Footer = () => {
                 height={36}
                 className="mr-0.5"
               />
-              <h2 className="text-xl md:text-3xl font-anton font-normal tracking-wider mt-0.5">
+              <h2 className="text-3xl font-anton font-normal tracking-wider mt-0.5">
                 BRIEFCASSE
               </h2>
             </div>
@@ -240,7 +240,7 @@ const Footer = () => {
               {mainMenuLinks.map((item) => (
                 <li key={item.name}>
                   <Link
-                    href={item.href}
+                    href="/"
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
                     {item.name}
