@@ -58,6 +58,8 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.freepik.com",
       },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "brief-ewyr.onrender.com" },
     ],
     formats: ["image/avif", "image/webp"], // Performance boost
   },
