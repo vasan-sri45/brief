@@ -17,7 +17,7 @@ const TopBar = () => {
   // Get user from Redux state
   const user = useSelector((state) => state.auth.user);
 
-  const handleLogin = () => {
+   const handleLogin = () => {
     router.push(`/login`);
   };
 

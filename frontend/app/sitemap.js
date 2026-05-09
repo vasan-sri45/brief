@@ -1,5 +1,3 @@
-// app/sitemap.js — புதிய file create செய்யுங்கள்
-
 export default async function sitemap() {
 
    let serviceUrls = [];
@@ -13,7 +11,7 @@ export default async function sitemap() {
       url: `https://briefcasse.com/services/${s.slug}`,
       lastModified: new Date(),
       changeFrequency: "monthly",
-      priority: 0.9, // ✅ High priority — main service pages
+      priority: 0.9, 
     }));
   } catch {
     serviceUrls = [];

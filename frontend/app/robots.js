@@ -1,4 +1,4 @@
-// // app/robots.js
+
 export default function robots() {
   return {
     rules: [
@@ -10,9 +10,9 @@ export default function robots() {
         ],
         disallow: [
            "/user/", 
-          "/api/",      // API routes Google index வேண்டாம்
-          "/login/",    // Login page
-          "/store/",    // Internal store
+          "/api/",      
+          "/login/",    
+          "/store/",   
         ],
       },
     ],
