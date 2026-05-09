@@ -387,26 +387,26 @@ const MegaMenuNavbar = () => {
             </button>
 
             {user ? (
-  <button
-    onClick={() => {
-      logout.mutate();
-      
-    }}
-    className="text-red-300 font-bold"
-  >
-    Logout
-  </button>
-) : (
-  <button
-    onClick={() => {
-      handleLogin();
-     
-    }}
-    className="text-white font-bold"
-  >
-    Login
-  </button>
-)}
+              <button
+                onClick={() => {
+                  logout.mutate();
+                  
+                }}
+                className="text-red-300 font-bold"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  handleLogin();
+                
+                }}
+                className="text-red-300 font-bold"
+              >
+                Login
+              </button>
+            )}
 
             {/* <button
               onClick={() => {

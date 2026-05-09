@@ -1,48 +1,209 @@
+// "use client";
+
+// import React from "react";
+
+// import {
+//   Facebook,
+//   Instagram,
+//   Twitter,
+//   Youtube,
+//   Phone,
+//   Mail,
+//   MapPin,
+// } from "lucide-react";
+// import Image from "next/image";
+
+// const Footer = () => {
+
+//   const socialLinks = [
+//     {
+//       icon: Facebook,
+//       href: "https://www.facebook.com/yourpage",
+//       label: "Facebook",
+//     },
+//     {
+//       icon: Instagram,
+//       href: "https://www.instagram.com/briefcasse_?igsh=emI0MW1mcGdnMzVj",
+//       label: "Instagram",
+//     },
+//     {
+//       icon: Twitter,
+//       href: "https://twitter.com/yourprofile",
+//       label: "Twitter",
+//     },
+//     {
+//       icon: Youtube,
+//       href: "https://www.youtube.com/@yourchannel",
+//       label: "YouTube",
+//     },
+//   ];
+
+//   const links = [
+//   { name: "About Us", href: "/user/about" },
+//   { name: "Blogs", href: "/blogs" },
+//   { name: "Contact", href: "/user/contact" },
+// ];
+
+//   return (
+//     <footer className="w-full bg-custom-blue text-white">
+//       <div className="mx-auto p-6 max-w-[1800px] mt-5 md:mt-14">
+
+//         {/* GRID */}
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+
+//           {/* LOGO */}
+//           <div>
+//             <div className="flex items-center mb-4">
+//               <Image
+//                 src="/assets/brief_white.png"
+//                 alt="logo"
+//                 width={36}
+//                 height={36}
+//                 className="mr-0.5"
+//               />
+//               <h2 className="text-xl md:text-3xl font-anton font-normal tracking-wider mt-0.5">
+//                 BRIEFCASSE
+//               </h2>
+//             </div>
+
+//             <p className="text-gray-300 text-sm leading-relaxed font-lato font-semibold">
+//               Briefcasse is your trusted partner for legal, tax, compliance, and business registration services,
+//                delivering reliable solutions for individuals, startups, and enterprises.
+//             </p>
+//           </div>
+
+//           {/* MAIN MENU */}
+//           <div>
+//             <h3 className="text-lg font-lato font-bold mb-4">Main Menu</h3>
+//             <ul className="space-y-2 text-sm">
+//               {[
+//                 "Start Ups",
+//                 "Intellectual Properties",
+//                 "Tax Filing",
+//                 "MCA Compliance",
+//                 "Registration",
+//                 "Legal Advisory & Agreement",
+//                 "Other Services",
+//               ].map((item) => (
+//                 <li key={item}>
+//                   <a
+//                     href="/"
+//                     className="text-gray-300 hover:text-white font-poppins font-semibold"
+//                   >
+//                     {item}
+//                   </a>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+
+//           {/* QUICK LINKS */}
+//           <div>
+//             <h3 className="text-lg font-lato font-bold mb-4">Quick Links</h3>
+//             <ul className="space-y-2 text-sm">
+//               {links.map((item) => (
+//                 <li key={item.name}>
+//                   <a
+//                     href={item.href}
+//                     className="text-gray-300 hover:text-white font-poppins font-semibold"
+//                   >
+//                     {item.name}
+//                   </a>
+//                 </li>
+//               ))}
+//             </ul>
+//           </div>
+
+//           {/* CONTACT */}
+//           <div>
+//             <h3 className="text-lg mb-4 font-lato font-bold">Contact Us</h3>
+//             <div className="space-y-3 text-sm text-gray-300 font-lato font-semibold">
+//               <div className="flex items-center">
+//                 <Phone size={16} className="mr-2" />
+//                +91 9600606897
+//               </div>
+
+//               <div className="flex items-center">
+//                 <Mail size={16} className="mr-2" />
+//                 admin@briefcasse.com
+//               </div>
+
+//               <div className="flex items-start">
+//                 <MapPin size={16} className="mr-2 mt-1" />
+//                 <div>
+//                   <p>296, 10th Street, 3rd Main Road,
+//                     Astalakshmi Nagar, Valasaravakam, Chennai - 116</p>
+//                 </div>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+
+//         {/* BOTTOM */}
+//         <div className="border-t border-gray-600 pt-6 flex flex-col md:flex-row justify-between items-center">
+//           <p className="text-gray-300 text-sm font-lato font-bold">
+//             © 2025 Briefcasse. All rights reserved
+//           </p>
+
+//           <div className="flex gap-4 mt-4 md:mt-0">
+//             {socialLinks.map(({ icon: Icon, href, label }, i) => (
+//               <a
+//                 key={i}
+//                 href={href}
+//                 target="_blank"
+//                 rel="noopener noreferrer"
+//                 aria-label={label}
+//                 className="p-2 rounded-full hover:bg-gray-700 transition hover:scale-110"
+//               >
+//                 <Icon size={20} />
+//               </a>
+//             ))}
+//           </div>
+//         </div>
+//       </div>
+//     </footer>
+//   );
+// };
+
+// export default Footer;
+
+
+
 "use client";
 
 import React from "react";
-import { useSelector } from "react-redux";
 import {
-  Facebook,
-  Instagram,
-  Twitter,
-  Youtube,
-  Phone,
-  Mail,
-  MapPin,
+  Facebook, Instagram, Twitter, Youtube,
+  Phone, Mail, MapPin,
 } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link"; // ✅ Next.js Link
 
 const Footer = () => {
 
   const socialLinks = [
-    {
-      icon: Facebook,
-      href: "https://www.facebook.com/yourpage",
-      label: "Facebook",
-    },
-    {
-      icon: Instagram,
-      href: "https://www.instagram.com/briefcasse_?igsh=emI0MW1mcGdnMzVj",
-      label: "Instagram",
-    },
-    {
-      icon: Twitter,
-      href: "https://twitter.com/yourprofile",
-      label: "Twitter",
-    },
-    {
-      icon: Youtube,
-      href: "https://www.youtube.com/@yourchannel",
-      label: "YouTube",
-    },
+    { icon: Facebook, href: "https://www.facebook.com/yourpage", label: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/briefcasse_?igsh=emI0MW1mcGdnMzVj", label: "Instagram" },
+    { icon: Twitter, href: "https://twitter.com/yourprofile", label: "Twitter" },
+    { icon: Youtube, href: "https://www.youtube.com/@yourchannel", label: "YouTube" },
   ];
 
-  const links = [
-  { name: "About Us", href: "/user/about" },
-  { name: "Blogs", href: "/blogs" },
-  { name: "Contact", href: "/user/contact" },
-];
+  // ✅ Main Menu - சரியான Routes சேர்க்கவும்
+  const mainMenuLinks = [
+    { name: "Start Ups", href: "/services/startup" },
+    { name: "Intellectual Properties", href: "/services/intellectual-property" },
+    { name: "Tax Filing", href: "/services/tax-filing" },
+    { name: "MCA Compliance", href: "/services/mca-compliance" },
+    { name: "Registration", href: "/services/registration" },
+    { name: "Legal Advisory & Agreement", href: "/services/legal-advisory" },
+    { name: "Other Services", href: "/services/other-services" },
+  ];
+
+  const quickLinks = [
+    { name: "About Us", href: "/user/about" },
+    { name: "Blogs", href: "/blogs" },
+    { name: "Contact", href: "/user/contact" },
+  ];
 
   return (
     <footer className="w-full bg-custom-blue text-white">
@@ -56,7 +217,7 @@ const Footer = () => {
             <div className="flex items-center mb-4">
               <Image
                 src="/assets/brief_white.png"
-                alt="logo"
+                alt="Briefcasse logo"
                 width={36}
                 height={36}
                 className="mr-0.5"
@@ -65,50 +226,42 @@ const Footer = () => {
                 BRIEFCASSE
               </h2>
             </div>
-
             <p className="text-gray-300 text-sm leading-relaxed font-lato font-semibold">
-              Briefcasse is your trusted partner for legal, tax, compliance, and business registration services,
-               delivering reliable solutions for individuals, startups, and enterprises.
+              Briefcasse is your trusted partner for legal, tax, compliance, and
+              business registration services, delivering reliable solutions for
+              individuals, startups, and enterprises.
             </p>
           </div>
 
-          {/* MAIN MENU */}
+          {/* MAIN MENU ✅ Fixed */}
           <div>
             <h3 className="text-lg font-lato font-bold mb-4">Main Menu</h3>
             <ul className="space-y-2 text-sm">
-              {[
-                "Start Ups",
-                "Intellectual Properties",
-                "Tax Filing",
-                "MCA Compliance",
-                "Registration",
-                "Legal Advisory & Agreement",
-                "Other Services",
-              ].map((item) => (
-                <li key={item}>
-                  <a
-                    href="/"
+              {mainMenuLinks.map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* QUICK LINKS */}
+          {/* QUICK LINKS ✅ Fixed */}
           <div>
             <h3 className="text-lg font-lato font-bold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              {links.map((item) => (
+              {quickLinks.map((item) => (
                 <li key={item.name}>
-                  <a
+                  <Link
                     href={item.href}
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -119,32 +272,31 @@ const Footer = () => {
             <h3 className="text-lg mb-4 font-lato font-bold">Contact Us</h3>
             <div className="space-y-3 text-sm text-gray-300 font-lato font-semibold">
               <div className="flex items-center">
-                <Phone size={16} className="mr-2" />
-               +91 9600606897
+                <Phone size={16} className="mr-2 shrink-0" />
+                <a href="tel:+919600606897" className="hover:text-white">
+                  +91 9600606897
+                </a>
               </div>
-
               <div className="flex items-center">
-                <Mail size={16} className="mr-2" />
-                admin@briefcasse.com
+                <Mail size={16} className="mr-2 shrink-0" />
+                <a href="mailto:admin@briefcasse.com" className="hover:text-white">
+                  admin@briefcasse.com
+                </a>
               </div>
-
               <div className="flex items-start">
-                <MapPin size={16} className="mr-2 mt-1" />
-                <div>
-                  <p>296, 10th Street, 3rd Main Road,
-                    Astalakshmi Nagar, Valasaravakam, Chennai - 116</p>
-                </div>
+                <MapPin size={16} className="mr-2 mt-1 shrink-0" />
+                <p>296, 10th Street, 3rd Main Road,
+                  Astalakshmi Nagar, Valasaravakam, Chennai - 116</p>
               </div>
             </div>
           </div>
         </div>
 
-        {/* BOTTOM */}
+        {/* BOTTOM ✅ Dynamic Year */}
         <div className="border-t border-gray-600 pt-6 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-300 text-sm font-lato font-bold">
-            © 2025 Briefcasse. All rights reserved
+            © {new Date().getFullYear()} Briefcasse. All rights reserved
           </p>
-
           <div className="flex gap-4 mt-4 md:mt-0">
             {socialLinks.map(({ icon: Icon, href, label }, i) => (
               <a
@@ -160,6 +312,7 @@ const Footer = () => {
             ))}
           </div>
         </div>
+
       </div>
     </footer>
   );

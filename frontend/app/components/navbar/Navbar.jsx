@@ -1,5 +1,4 @@
 "use client";
-import { useSelector } from "react-redux";
 import Image from "next/image";
 import TopBar from "./TopBar";
 import MegaMenu from "./MegaMenu";
@@ -31,19 +30,17 @@ const Navbar = () => {
           alt="Briefcasse banner"
           fill
           priority
+          quality={75}
           className=""
         />
       </div>
 
-      {/* CONTENT CONTAINER */}
       <div className="relative h-full max-w-[1800px] mx-auto px-3 lg:px-6 flex flex-col justify-start">
-        {/* TopBar */}
+        
         <TopBar />
 
-        {/* MegaMenu */}
         <MegaMenu />
 
-        {/* HeroStrip */}
         <div className="mt-auto pb-2">
           <HeroStrip />
         </div>
