@@ -9,7 +9,7 @@ export default function robots() {
           "/user/contact",  
         ],
         disallow: [
-           "/user/", 
+          //  "/user/", 
           "/api/",      
           "/login/",    
           "/store/",   
