@@ -75,7 +75,7 @@ export default function BlogDetailPage() {
         )}
 
         <img
-          className="w-full h-[220px] md:h-[450px] object-center mb-4 shadow"
+          className="w-full h-[220px] md:h-[450px] object-cover mb-4 shadow"
           src={cover}
           alt={blog.title}
         />
