@@ -1,6 +1,8 @@
 export default async function sitemap() {
 
    let serviceUrls = [];
+   let blogUrls = [];
+
   try {
     const res = await fetch(
       "https://brief-ewyr.onrender.com/api/services",
@@ -15,6 +17,27 @@ export default async function sitemap() {
     }));
   } catch {
     serviceUrls = [];
+  }
+
+   // Blogs
+  try {
+    const res = await fetch(
+      "https://brief-ewyr.onrender.com/api/blogs",
+      {
+        next: { revalidate: 3600 },
+      }
+    );
+
+    const data = await res.json();
+
+    blogUrls = (data?.items || []).map((blog) => ({
+      url: `https://briefcasse.com/blogs/${blog.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.8,
+    }));
+  } catch {
+    blogUrls = [];
   }
 
   return [
@@ -48,6 +71,7 @@ export default async function sitemap() {
       changeFrequency: "monthly",
       priority: 0.6,
     },
-    ...serviceUrls
+    ...serviceUrls,
+    ...blogUrls,
   ];
 }
