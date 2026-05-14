@@ -35,7 +35,7 @@ export default function BlogDetailPage() {
   const cover = blog.documents?.[0]?.url || "/placeholder.png";
   const date = new Date(blog.createdAt).toLocaleDateString("en-GB");
 
-  // ✨ SAFE NORMALIZATION
+  //  SAFE NORMALIZATION
   let contentBlocks = [];
   try {
     if (Array.isArray(blog.content)) {
