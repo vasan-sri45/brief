@@ -26,7 +26,7 @@ const Navbar = () => {
 
       <div className="absolute inset-0 hidden lg:block -z-10">
         <Image
-          src="/assets/brief_banner2.png" 
+          src="/assets/navbar_banner.png" 
           alt="Briefcasse banner"
           fill
           priority
