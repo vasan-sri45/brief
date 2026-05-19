@@ -415,7 +415,7 @@ export default function ServicePricingPage() {
 
   return (
 
-    <section className="w-full py-10 bg-gray-50 min-h-screen">
+    <section className="w-full py-10 min-h-screen">
 
       <div className="max-w-6xl mx-auto px-4">
 
