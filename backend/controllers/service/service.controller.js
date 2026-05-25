@@ -24,11 +24,11 @@ const serviceOrder = [
   "Trademark Assignment",
   "Trademark Renewal",
 
+  "Copyright Registration",
+
   "Patent Search",
   "Provisional Patent",
   "Permanent Patent",
-
-  "Copyright Registration",
 
   "Design",
   "Geographical Indication (GI)",
