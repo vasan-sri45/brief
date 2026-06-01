@@ -2,7 +2,7 @@ import React from 'react';
 import StartUpPackage from "../components/services/StartUpPackage";
 
 export const metadata = {
-  title: "Startup Registration | Briefcasse",
+  title: "Startup Registration",
   description:
     "Register your startup easily with Briefcasse. Get expert legal support for incorporation, trademark, and compliance services for new businesses.",
   alternates: {

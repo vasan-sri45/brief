@@ -1,167 +1,82 @@
-// "use client";
-// import React from "react";
-// import Link from "next/link";
-// import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
-// import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
-// import {ArrowRight} from "lucide-react";
-
-// const LatestBlogCard = ({ blog }) => {
-//   const headingRef = useGsapSectionHeading(0.2);
-//   const underlineRef = useGsapUnderlineLoop();
-
-//   console.log(blog)
-
-//   return (
-//     <section>
-//        <div className="text-start">
-//           <h2 
-//             ref={headingRef}
-//             className="section-heading font-anton font-normal text-[1rem] md:text-[1.1rem] lg:text-[1.3rem] text-custom-blue tracking-wide"
-//           >
-//             Latest Blog
-//           </h2>
-        
-//           <div className="flex justify-start mb-3 overflow-hidden">
-//             <span className="relative h-[3px] w-16 rounded-full bg-custom-blue">
-//               {/* GSAP-driven infinite underline */}
-//               <span
-//                 ref={underlineRef}
-//                 className="underline-glow absolute inset-0 rounded-full bg-white/70"
-//               />
-//             </span>
-//           </div>
-//         </div>
-//     <div className="w-full h-[380px] md:h-[450px] lg:h-[560px] p-4 rounded-md border-2 border-custom-blue">
-
-//       <div className="p-1 flex flex-col h-full">
-//         {/* Image */}
-//         <img 
-//           src={blog.documents?.[0]?.url || "/placeholder.png"} 
-//           className="w-full h-[220px] md:h-[280px] lg:h-[360px] bg-[#E0B15F] border-2 border-custom-blue rounded-md mb-2 shrink-0"
-//         />
-//         {/* Content */}
-//         <div className="flex flex-col flex-1">
-          
-//           <h3 className="text-custom-blue font-anton font-normal text-[0.9rem] md:text-[0.9rem] lg:text-[1.1rem] leading-snug mb-1 tracking-wide uppercase">
-//             {blog.title}
-//           </h3>
-
-
-//           <p className="text-[0.7rem] md:text-[1rem] text-letter1 mb-2 line-clamp-3 font-lato font-bold">
-//             {blog.content?.slice(0, 120) + "..."}
-//           </p>
-
-//           {/* DATE + READ MORE (FIXED) */}
-//           <div className="flex items-center justify-between">
-//             <p className="text-[0.7rem] md:text-[0.8rem] text-gray-400 text-anton font-normal">
-//               {new Date(blog.createdAt).toLocaleDateString()}
-//             </p>
-
-//             <Link
-//               href={`/blogs/${blog.slug}`}
-//               className="text-startbtn text-[0.8rem] font-anton font-normal tracking-wide"
-//             >
-//               <button
-//               className="mt-6 inline-flex items-center"
-//             >
-//               Read More
-//               <ArrowRight className="ml-2 w-5 h-5" />
-//             </button>
-//             </Link>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//     </section>
-//   );
-// };
-
-// export default LatestBlogCard;
-
-
 "use client";
-import React from "react";
+
 import Link from "next/link";
 import Image from "next/image";
-import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
-import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
 import { ArrowRight } from "lucide-react";
+import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
 const LatestBlogCard = ({ blog }) => {
-  const headingRef = useGsapSectionHeading(0.2);
-  const underlineRef = useGsapUnderlineLoop();
-
-  // ✅ Safe content slice
-  const excerpt = blog.content
-    ? blog.content.slice(0, 120) + "..."
-    : "Read this blog to learn more...";
+  const excerpt = getBlogExcerpt(blog);
 
   return (
     <section>
-      {/* Heading */}
       <div className="text-start">
-        <h2
-          ref={headingRef}
-          className="section-heading font-anton font-normal text-[1rem] md:text-[1.1rem] lg:text-[1.3rem] text-custom-blue tracking-wide"
-        >
+        <h2 className="font-anton text-[1rem] font-normal tracking-wide text-custom-blue md:text-[1.1rem] lg:text-[1.3rem]">
           Latest Blog
         </h2>
 
-        <div className="flex justify-start mb-3 overflow-hidden">
+        <div className="mb-3 flex justify-start overflow-hidden">
           <span className="relative h-[3px] w-16 rounded-full bg-custom-blue">
-            <span
-              ref={underlineRef}
-              className="underline-glow absolute inset-0 rounded-full bg-white/70"
-            />
+            <span className="absolute inset-0 rounded-full bg-white/70" />
           </span>
         </div>
       </div>
 
-      {/* Card */}
-      <div className="w-full h-[380px] md:h-[450px] lg:h-[560px] p-4 rounded-md border-2 border-custom-blue">
-        <div className="p-1 flex flex-col h-full">
-
-          {/* ✅ Image Fixed */}
-          <div className="relative w-full h-[220px] md:h-[280px] lg:h-[360px] shrink-0 mb-2 rounded-md overflow-hidden border-2 border-custom-blue bg-[#E0B15F]">
+      <article className="w-full overflow-hidden rounded-3xl border border-blue-500 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
+        <div className="flex h-full flex-col p-1">
+          <Link
+            href={`/blogs/${blog.slug}`}
+            className="relative mb-4 block h-[220px] shrink-0 overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 md:h-[320px] lg:h-[390px]"
+          >
             <Image
-              src={blog.documents?.[0]?.url || "/placeholder.png"}
-              alt={blog.title || "Blog image"}
+              src={getBlogCover(blog)}
+              alt={blog.title || "Briefcasse blog image"}
               fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover transition duration-500 hover:scale-[1.03]"
+              sizes="(max-width: 768px) 100vw, 60vw"
+              priority
             />
-          </div>
+          </Link>
 
-          {/* Content */}
-          <div className="flex flex-col flex-1">
-            <h3 className="text-custom-blue font-anton font-normal text-[0.9rem] lg:text-[1.1rem] leading-snug mb-1 tracking-wide uppercase">
+          <div className="flex flex-1 flex-col">
+            <h3 className="mb-2 text-xl font-extrabold leading-snug text-custom-blue md:text-2xl">
               {blog.title}
             </h3>
 
-            {/* ✅ Safe excerpt */}
-            <p className="text-[0.7rem] md:text-[1rem] text-letter1 mb-2 line-clamp-3 font-lato font-bold">
+            {blog.tags?.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {blog.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            <p className="mb-4 line-clamp-3 text-sm font-bold leading-relaxed text-letter1 md:text-base">
               {excerpt}
+              {excerpt?.length >= 170 ? "..." : ""}
             </p>
 
-            {/* Date + Read More */}
-            <div className="flex items-center justify-between mt-auto">
-              <p className="text-[0.7rem] md:text-[0.8rem] text-gray-400 font-normal">
-                {new Date(blog.createdAt).toLocaleDateString()}
+            <div className="mt-auto flex items-center justify-between">
+              <p className="text-sm font-bold text-slate-400">
+                {new Date(blog.createdAt).toLocaleDateString("en-IN")}
               </p>
 
-              {/* ✅ Link மட்டும் — button நீக்கியது */}
               <Link
                 href={`/blogs/${blog.slug}`}
-                className="inline-flex items-center text-startbtn text-[0.8rem] font-anton font-normal tracking-wide hover:underline"
+                className="inline-flex items-center text-sm font-bold text-starttext hover:text-blue-700"
               >
                 Read More
-                <ArrowRight className="ml-2 w-5 h-5" />
+                <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </div>
           </div>
-
         </div>
-      </div>
+      </article>
     </section>
   );
 };

@@ -2,7 +2,7 @@
 import BlogClient from "./BlogClient";
 
 export const metadata = {
-  title: "Legal Blogs & Articles | Briefcasse",
+  title: "Legal Blogs & Articles",
   description:
     "Read the latest legal blogs and articles on trademark registration, startup incorporation, tax filing, MCA compliance, and more. Stay informed with Briefcasse.",
   keywords: [

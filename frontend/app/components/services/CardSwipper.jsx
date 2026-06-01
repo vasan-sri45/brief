@@ -109,7 +109,11 @@ const CardSwipper = ({ servicesData = [] }) => {
 
               {/* DESCRIPTION */}
               <p className="text-sm font-semibold text-gray-600 flex-grow line-clamp-4">
-                {shortText(service.description)}
+                {shortText(
+                  service.shortDescription ||
+                    service.description ||
+                    service.fullDescription
+                )}
               </p>
 
               {/* BUTTON */}

@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lato, Anton, Poppins } from "next/font/google";
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { Anton, Geist, Geist_Mono, Lato, Poppins } from "next/font/google";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import Providers from "./Providers";
 import AppLayout from "./components/route/AppLayout";
+import { SITE } from "./config/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -14,7 +15,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
 
 const lato = Lato({
   subsets: ["latin"],
@@ -34,99 +34,17 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
-
-// export const metadata: Metadata = {
-//   title: {
-//     default: "Briefcasse — Trademark & Legal Services",
-//     template: "%s | Briefcasse",
-//   },
-//   description:
-//     "Briefcasse offers easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses. Secure your brand with expert support.",
-
-//   keywords: [
-//     "trademark registration",
-//     "legal services",
-//     "brand protection",
-//     "startup legal help",
-//     "trademark filing India",
-//     "intellectual property",
-//     "Briefcasse",
-//   ],
-
-//   authors: [{ name: "Briefcasse", url: "https://briefcasse.com" }],
-//   creator: "Briefcasse",
-//   publisher: "Briefcasse",
-
-//   metadataBase: new URL("https://briefcasse.com"),
-//   alternates: {
-//     canonical: "/",
-//   },
-
-//   openGraph: {
-//     type: "website",
-//     url: "https://briefcasse.com",
-//     siteName: "Briefcasse",
-//     title: "Briefcasse — Trademark & Legal Services",
-//     description:
-//       "Easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses. Secure your brand with expert support.",
-//     images: [
-//       {
-//         url: "/assets/brief_blue.png", 
-//         width: 1200,
-//         height: 630,
-//         alt: "Briefcasse Logo — Trademark & Legal Services",
-//       },
-//     ],
-//     locale: "en_IN",
-//   },
-
-//   twitter: {
-//     card: "summary_large_image",
-//     title: "Briefcasse — Trademark & Legal Services",
-//     description:
-//       "Easy and reliable trademark registration and legal services for startups and businesses.",
-//     images: ["/assets/brief_blue.png"], 
-//   },
-
-//   robots: {
-//     index: true,
-//     follow: true,
-//     googleBot: {
-//       index: true,
-//       follow: true,
-//       "max-image-preview": "large",
-//       "max-snippet": -1,
-//     },
-//   },
-
-//   icons: {
-//     icon: "/assets/brief_blue.png",       
-//     shortcut: "/assets/brief_blue.png",  
-//     apple: "/assets/brief_blue.png",      
-//   },
-
-//   verification: {
-//     google: "6Eaqre6zKjZGrxKLDto8Ryah9pmSCQy-vEsSYPeqNjA",
-//   },
-// };
-
-
 export const metadata: Metadata = {
   title: {
-    default: "Briefcasse — Trademark Registration & Legal Services India",
+    default: "Briefcasse - Trademark Registration & Legal Services India",
     template: "%s | Briefcasse",
   },
-
-  // ✅ 155 chars-க்குள்
   description:
     "Register your trademark easily with Briefcasse. Expert legal services for startups & businesses in India. Fast, affordable & reliable support.",
-
   keywords: [
-    // Brand keywords
     "Briefcasse",
     "Briefcasse legal services",
     "Briefcasse trademark",
-    // Service keywords
     "trademark registration India",
     "trademark registration online",
     "trademark registration Chennai",
@@ -138,44 +56,37 @@ export const metadata: Metadata = {
     "MCA compliance India",
     "copyright registration India",
     "patent registration India",
-    // Long-tail keywords
     "trademark registration for startups India",
     "affordable trademark registration India",
-    "online trademark registration India 2026",
   ],
-
-  authors: [{ name: "Briefcasse", url: "https://briefcasse.com" }],
-  creator: "Briefcasse",
-  publisher: "Briefcasse",
-  metadataBase: new URL("https://briefcasse.com"),
+  authors: [{ name: SITE.name, url: SITE.url }],
+  creator: SITE.name,
+  publisher: SITE.name,
+  metadataBase: new URL(SITE.url),
   alternates: { canonical: "/" },
-
   openGraph: {
     type: "website",
-    url: "https://briefcasse.com",
-    siteName: "Briefcasse",
-    title: "Briefcasse — Trademark Registration & Legal Services India",
+    url: SITE.url,
+    siteName: SITE.name,
+    title: "Briefcasse - Trademark Registration & Legal Services India",
     description:
       "Easy trademark registration & legal services for startups in India. Register your brand with expert support. Fast & affordable.",
     images: [
       {
-        url: "/assets/brief_blue.png",
+        url: SITE.logo,
         width: 1200,
         height: 630,
-        alt: "Briefcasse — Trademark & Legal Services India",
+        alt: "Briefcasse - Trademark & Legal Services India",
       },
     ],
     locale: "en_IN",
   },
-
   twitter: {
     card: "summary_large_image",
-    title: "Briefcasse — Trademark Registration & Legal Services India",
-    description:
-      "Easy trademark registration & legal services for startups in India.",
-    images: ["/assets/brief_blue.png"],
+    title: "Briefcasse - Trademark Registration & Legal Services India",
+    description: "Easy trademark registration & legal services for startups in India.",
+    images: [SITE.logo],
   },
-
   robots: {
     index: true,
     follow: true,
@@ -186,13 +97,11 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-
   icons: {
-    icon: "/assets/brief_blue.png",
-    shortcut: "/assets/brief_blue.png",
-    apple: "/assets/brief_blue.png",
+    icon: SITE.logo,
+    shortcut: SITE.logo,
+    apple: SITE.logo,
   },
-
   verification: {
     google: "6Eaqre6zKjZGrxKLDto8Ryah9pmSCQy-vEsSYPeqNjA",
   },
@@ -201,30 +110,35 @@ export const metadata: Metadata = {
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "LegalService",
-  "name": "Briefcasse",
-  "url": "https://briefcasse.com",
-  "logo": "https://briefcasse.com/assets/brief_blue.png",
-  "description":
-    "Briefcasse offers easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses in India.",
-  "address": {
+  name: SITE.name,
+  url: SITE.url,
+  logo: `${SITE.url}${SITE.logo}`,
+  description:
+    "Briefcasse is a Chennai-based legal services platform for trademark, tax, compliance, startup registration, and business legal support.",
+  address: {
     "@type": "PostalAddress",
-    "addressCountry": "IN"
+    streetAddress: SITE.address,
+    addressLocality: SITE.locality,
+    addressRegion: SITE.region,
+    addressCountry: SITE.country,
   },
-  "contactPoint": {
+  contactPoint: {
     "@type": "ContactPoint",
-    "contactType": "customer service",
-    "url": "https://briefcasse.com/contact"
+    contactType: "customer service",
+    email: SITE.email,
+    telephone: SITE.telephone,
+    url: `${SITE.url}/user/contact`,
   },
-  "serviceType": [
+  serviceType: [
     "Trademark Registration",
     "Startup Registration",
     "Intellectual Property",
     "Tax Filing",
     "MCA Compliance",
-    "Legal Advisory"
+    "Legal Advisory",
   ],
-  "areaServed": "IN",
-  "priceRange": "₹₹"
+  areaServed: "IN",
+  priceRange: "INR",
 };
 
 export default function RootLayout({
@@ -234,22 +148,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-        <head>
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-          />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} ${anton.variable} ${poppins.variable}antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} ${anton.variable} ${poppins.variable} antialiased`}
+      >
         <Providers>
-          <AppLayout>
-            {children}
-          </AppLayout>
+          <AppLayout>{children}</AppLayout>
         </Providers>
-         <GoogleAnalytics gaId="G-ZFHD6QC9HK" />
+        <GoogleAnalytics gaId="G-ZFHD6QC9HK" />
       </body>
     </html>
   );
 }
-
-

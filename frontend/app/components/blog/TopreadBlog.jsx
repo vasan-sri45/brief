@@ -1,116 +1,70 @@
 "use client";
-import React, { useEffect, useRef } from "react";
-import Link from "next/link";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
-import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
-import {ArrowRight} from "lucide-react";
 
-gsap.registerPlugin(ScrollTrigger);
+import Image from "next/image";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 const TopReadBlogs = ({ blogs = [] }) => {
-  const headingRef = useGsapSectionHeading(0.2);
-  const underlineRef = useGsapUnderlineLoop();
-  const listRef = useRef([]);
-
-  useEffect(() => {
-    if (!listRef.current.length) return;
-
-    gsap.fromTo(
-      listRef.current,
-      {
-        opacity: 0,
-        y: 30,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 0.6,
-        ease: "power3.out",
-        stagger: 0.15,
-        scrollTrigger: {
-          trigger: listRef.current[0],
-          start: "top 85%",
-        },
-      }
-    );
-  }, [blogs]);
-
   return (
     <section>
-      {/* Heading */}
       <div className="text-start">
-        <h2
-          ref={headingRef}
-          className="section-heading font-poppins font-semibold text-[1rem] md:text-[1.1rem] lg:text-[1.3rem] text-custom-blue"
-        >
+        <h2 className="font-poppins text-[1rem] font-semibold text-custom-blue md:text-[1.1rem] lg:text-[1.3rem]">
           Top Read
         </h2>
 
-        <div className="flex justify-start mb-3 overflow-hidden">
+        <div className="mb-3 flex justify-start overflow-hidden">
           <span className="relative h-[3px] w-16 rounded-full bg-custom-blue">
-            <span
-              ref={underlineRef}
-              className="underline-glow absolute inset-0 rounded-full bg-white/70"
-            />
+            <span className="absolute inset-0 rounded-full bg-white/70" />
           </span>
         </div>
       </div>
 
-      {/* Blog List */}
       <div className="w-full rounded-md">
-        <div className="h-[350px] md:h-[450px] lg:h-[540px] overflow-y-auto pr-1 flex flex-col gap-4">
-          {blogs.map((blog, index) => {
+        <div className="flex h-[350px] flex-col gap-4 overflow-y-auto pr-1 md:h-[450px] lg:h-[540px]">
+          {blogs.map((blog) => {
             const thumb = blog.documents?.[0]?.url || "/placeholder.png";
             const date = blog.createdAt
-              ? new Date(blog.createdAt).toLocaleDateString()
+              ? new Date(blog.createdAt).toLocaleDateString("en-IN")
               : "";
 
             return (
-              <div
-                key={blog._id || index}
-                ref={(el) => (listRef.current[index] = el)}
-                className="flex gap-3"
+              <Link
+                key={blog._id || blog.slug}
+                href={`/blogs/${blog.slug}`}
+                className="group flex gap-3 rounded-xl p-2 transition hover:bg-blue-50"
               >
-                {/* Thumbnail */}
-                <img
-                  src={thumb}
-                  alt={blog.title}
-                  className="w-24 h-24 rounded-sm object-cover border border-custom-blue/70"
-                />
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-sm border border-custom-blue/70 bg-slate-100">
+                  <Image
+                    src={thumb}
+                    alt={blog.title || "Blog thumbnail"}
+                    fill
+                    className="object-cover transition group-hover:scale-105"
+                    sizes="96px"
+                  />
+                </div>
 
-                {/* Content */}
-                <div className="flex flex-col w-full">
-                  <h3 className="text-custom-blue text-[0.7rem] lg:text-[0.8rem] font-anton font-normal tracking-wide leading-snug line-clamp-2 mb-2">
+                <div className="flex w-full min-w-0 flex-col">
+                  <h3 className="mb-2 line-clamp-2 font-anton text-[0.7rem] font-normal leading-snug tracking-wide text-custom-blue lg:text-[0.8rem]">
                     {blog.title}
                   </h3>
 
-                  <div className="flex items-center justify-between">
-                    <p className="text-[0.7rem] md:text-[0.8rem] text-gray-400 font-bold">
+                  <div className="mt-auto flex items-center justify-between gap-2">
+                    <p className="text-[0.7rem] font-bold text-gray-400 md:text-[0.8rem]">
                       {date}
                     </p>
 
-                    <Link
-                      href={`/blogs/${blog.slug}`}
-                      className="text-starttext text-[0.8rem] font-anton font-normal tracking-wide"
-                    >
-                      <button
-              className="mt-6 inline-flex items-center"
-            >
-              Read More
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </button>
-                    </Link>
+                    <span className="inline-flex items-center text-[0.8rem] font-anton font-normal tracking-wide text-starttext">
+                      Read More
+                      <ArrowRight className="ml-2 h-5 w-5" />
+                    </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
 
-          {/* If empty */}
           {!blogs.length && (
-            <p className="text-center text-gray-400 text-sm mt-4">
+            <p className="mt-4 text-center text-sm text-gray-400">
               No blogs available yet.
             </p>
           )}

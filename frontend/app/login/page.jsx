@@ -15,13 +15,13 @@ export default function LoginPage() {
 
   const toggle = () => setIsLogin((v) => !v);
 
-  const redirect = searchParams.get("redirect") || "/";
+  const redirect = searchParams.get("redirect") || "/serviced";
+  const safeRedirect = redirect.startsWith("/login") ? "/serviced" : redirect;
 
   useEffect(() => {
     if (!hydrated) return;
-    // if (user) router.replace("/");
-    if (user) router.replace(redirect);
-  }, [hydrated, user, router]);
+    if (user) router.replace(safeRedirect);
+  }, [hydrated, user, router, safeRedirect]);
 
   if (!hydrated || user) return null;
 

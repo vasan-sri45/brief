@@ -240,7 +240,7 @@ const Footer = () => {
               {mainMenuLinks.map((item) => (
                 <li key={item.name}>
                   <Link
-                    href="/"
+                    href={item.href}
                     className="text-gray-300 hover:text-white font-poppins font-semibold"
                   >
                     {item.name}

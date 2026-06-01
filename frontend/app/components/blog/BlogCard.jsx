@@ -2,11 +2,10 @@
 import React from "react";
 import Link from "next/link";
 import {ArrowRight} from "lucide-react";
+import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
 const BlogCard = ({ blog }) => {
-  const img =
-    blog.documents?.[0]?.url ||
-    "https://placehold.co/300x200?text=Blog";
+  const img = getBlogCover(blog);
 
   return (
     <div
@@ -38,8 +37,7 @@ const BlogCard = ({ blog }) => {
       </h3>
 
       <p className="text-[11px] text-letter1 line-clamp-2 mb-2 font-bold tracking-wide">
-        {blog.content?.[0]?.body?.slice(0, 80) ||
-          blog.content?.slice(0, 80)}
+        {getBlogExcerpt(blog, 80)}
       </p>
 
       <div className="mt-auto">

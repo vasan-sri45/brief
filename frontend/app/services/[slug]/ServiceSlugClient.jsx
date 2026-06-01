@@ -3,7 +3,6 @@ import React, { useEffect, useMemo, useCallback, useRef, useState } from "react"
 import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useAuthGuard } from "../../components/route/useAuthGuard";
 import { useGsapScrollReveal } from "../../hooks/useGsapScrollReveal";
 import { useServiceBySlug } from "../../hooks/useServiceBySlug";
 import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
@@ -12,15 +11,16 @@ import LegalCard from "../../components/services/LegalCard";
 import DocumentsRequired from "../../components/services/DocumentsRequired";
 import LegalRequired from "../../components/services/LegalRequired";
 import IncorporationProcess from "../../components/services/InCoporationProcess";
-import ProcessAtBriefcase from "../../components/services/ProcessAtBriefCasse";
+import ProcessAtBriefcasse from "../../components/services/ProcessAtBriefCasse";
 import BoxClasses from "../../components/services/ClassGrid";
 import SocialMedia from "../../components/common/SocialMedia";
+import { getServiceFaqs, getServiceTitle } from "../../config/site";
 
 gsap.registerPlugin(ScrollTrigger);
 
 
 
-export default function ServiceSlugPage() {
+export default function ServiceSlugPage({ initialService = null, initialSeo = null }) {
 
 const [activeTab, setActiveTab] = useState("description");
 const titleRef = useGsapHeroTitle();
@@ -35,7 +35,8 @@ const searchParams = useSearchParams();
 const contentFilter = searchParams?.get("content")?.toLowerCase().trim();
 
 /* ================= DATA ================= */
-const { service, isLoading, error } = useServiceBySlug(slug);
+const { service: fetchedService, isLoading, error } = useServiceBySlug(slug);
+const service = fetchedService || initialService;
 
 /* ================= SECTION REFS ================= */
 const sectionRefs = {
@@ -118,22 +119,30 @@ useGsapScrollReveal(briefcaseRef, { y: 50, stagger: 0.2 });
 // return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
 // }
 
-if (error || !filteredData) {
+if (isLoading && !initialService) {
+return <div className="min-h-screen flex items-center justify-center">Loading service...</div>;
+}
+
+if ((error && !initialService) || !filteredData) {
 return <div className="min-h-screen flex items-center justify-center">Service not found</div>;
 }
 
+const seoTitle = initialSeo?.title || getServiceTitle(filteredData, slug);
+const seoDescription = initialSeo?.description || filteredData.description;
+const faqs = getServiceFaqs(filteredData, slug);
+
 /* ================= JSX ================= */
 return ( <div className="overflow-hidden">
-  <div className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0 mt-4">
+  <div className="w-full mx-auto px-4 py-2 md:p-4 lg:w-10/12 lg:p-0 mt-4">
      <h1
           ref={titleRef}
-          className="hero-title font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-3 uppercase tracking-[0.08em]"
+          className="hero-title break-words font-anton font-medium text-[1.35rem] leading-tight md:text-[1.8rem] text-custom-blue mb-3 uppercase tracking-[0.08em]"
         >
-          {service?.heading}
+          {seoTitle}
         </h1>
   </div>
   {/* TABS NAVBAR */}
-  <div className="w-full mx-auto px-2 lg:w-10/12 lg:p-0 hero-tabs flex gap-6 text-sm md:text-lg text-custom-blue font-lato font-bold sticky  bg-white z-40">
+  <div className="w-full mx-auto px-4 lg:w-10/12 lg:px-0 hero-tabs flex gap-3 overflow-x-auto whitespace-nowrap text-sm md:gap-6 md:text-lg text-custom-blue font-lato font-bold sticky bg-white z-40">
     {["description", "documents", "process"].map((tab) => (
       <button
         key={tab}
@@ -156,6 +165,38 @@ return ( <div className="overflow-hidden">
   {/* DESCRIPTION */}
   <section ref={sectionRefs.description}>
     <ServiceHero service={filteredData} />
+  </section>
+
+  <section className="w-full mx-auto px-4 py-2 md:p-4 lg:w-10/12 lg:p-0">
+      <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <div className="rounded-2xl border border-custom-blue/20 bg-white p-5 shadow-sm">
+        <h2 className="font-lato text-lg font-bold text-custom-blue">Who This Helps</h2>
+        <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">
+          Individuals, founders, startups, and business owners who need clear legal,
+          tax, compliance, or registration support in India.
+        </p>
+      </div>
+      <div className="rounded-2xl border border-custom-blue/20 bg-white p-5 shadow-sm">
+        <h2 className="font-lato text-lg font-bold text-custom-blue">How Briefcasse Works</h2>
+        <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">
+          We review your requirement, confirm the document checklist, prepare the
+          filing or advisory path, and guide you through submission and follow-up.
+        </p>
+      </div>
+      <div className="rounded-2xl border border-custom-blue/20 bg-white p-5 shadow-sm">
+        <h2 className="font-lato text-lg font-bold text-custom-blue">Local Trust</h2>
+        <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">
+          Briefcasse is a Chennai-based legal services platform serving clients
+          across India with transparent communication and practical next steps.
+        </p>
+      </div>
+    </div>
+
+    {seoDescription && (
+      <p className="mt-6 max-w-4xl text-sm font-lato font-semibold leading-8 text-letter1">
+        {seoDescription}
+      </p>
+    )}
   </section>
 
   {/* LEGAL CONTENT */}
@@ -188,10 +229,10 @@ return ( <div className="overflow-hidden">
     </section>
   )}
 
-  {/* BRIEFCASE PROCESS */}
+  {/* BRIEFCASSE PROCESS */}
   {filteredData.processAtBriefcase?.length > 0 && (
     <section ref={briefcaseRef}>
-      <ProcessAtBriefcase brief={filteredData.processAtBriefcase} />
+      <ProcessAtBriefcasse brief={filteredData.processAtBriefcase} />
     </section>
   )}
 
@@ -199,6 +240,22 @@ return ( <div className="overflow-hidden">
   {filteredData.trademark?.length > 0 && (
     <section ref={boxClassesRef}>
       <BoxClasses trade={filteredData.trademark} />
+    </section>
+  )}
+
+  {faqs.length > 0 && (
+    <section className="w-full mx-auto px-4 py-8 md:p-4 lg:w-10/12 lg:p-0">
+      <h2 className="font-anton font-medium text-[1.25rem] leading-tight md:text-[1.8rem] text-custom-blue mb-5 uppercase tracking-[0.08em]">
+        Frequently Asked Questions
+      </h2>
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        {faqs.map((faq, index) => (
+          <article key={`${faq.question}-${index}`} className="rounded-2xl border border-custom-blue/20 bg-white p-5 shadow-sm">
+            <h3 className="break-words font-lato text-base font-bold text-custom-blue">{faq.question}</h3>
+            <p className="mt-2 break-words text-sm font-lato font-semibold leading-7 text-letter1">{faq.answer}</p>
+          </article>
+        ))}
+      </div>
     </section>
   )}
 

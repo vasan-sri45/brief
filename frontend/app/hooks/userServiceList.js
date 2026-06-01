@@ -13,5 +13,18 @@ export const useAllServices = () =>
   useQuery({
     queryKey: ["service-list"],
     queryFn: fetchServiceList,
-    staleTime: 5 * 60 * 1000,
+    staleTime: 30 * 1000,
+    refetchOnMount: "always",
+  });
+
+export const useMyPurchasedServices = (enabled = true) =>
+  useQuery({
+    queryKey: ["my-purchased-services"],
+    queryFn: async () => {
+      const res = await api.get("/payment/my-orders");
+      return res.data;
+    },
+    enabled,
+    retry: false,
+    staleTime: 60_000,
   });

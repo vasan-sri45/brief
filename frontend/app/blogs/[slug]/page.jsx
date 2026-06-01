@@ -1,14 +1,14 @@
-
-
 import BlogDetailClient from "./BlogDetailClient";
+import { API_BASE_URL, SITE } from "../../config/site";
+import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
 export async function generateMetadata({ params }) {
+  const { slug } = await params;
+
   try {
-    // ✅ Direct backend fetch — server side
-    const res = await fetch(
-      `https://brief-ewyr.onrender.com/api/blogs/${params.slug}`,
-      { cache: "no-store" }
-    );
+    const res = await fetch(`${API_BASE_URL}/api/blogs/${slug}`, {
+      next: { revalidate: 3600 },
+    });
 
     if (!res.ok) return fallbackMetadata();
 
@@ -17,60 +17,41 @@ export async function generateMetadata({ params }) {
 
     if (!blog) return fallbackMetadata();
 
-    // ✅ Blog cover image
-    const coverImage = blog.documents?.[0]?.url || "/assets/brief_blue.png";
-
-    // ✅ Blog content — first block body preview as description
-    let description = blog.subtitle || "";
-    if (!description && Array.isArray(blog.content)) {
-      description = blog.content?.[0]?.body?.slice(0, 160) || "";
-    }
+    const coverImage = getBlogCover(blog);
+    const description =
+      getBlogExcerpt(blog, 160) ||
+      "Read the latest legal insights from Briefcasse.";
+    const title = blog.metaTitle || blog.title || "Legal Blog";
 
     return {
-      // ✅ ஒவ்வொரு blog-க்கும் தனி title
-      title: blog.title
-        ? `${blog.title} | Briefcasse Blog`
-        : "Legal Blog | Briefcasse",
-
-      description:
-        description ||
-        "Read the latest legal insights and articles from Briefcasse on trademark, startup, tax filing and more.",
-
+      title,
+      description,
       alternates: {
-        canonical: `/blogs/${params.slug}`,
+        canonical: `/blogs/${slug}`,
       },
-
-      // ✅ Open Graph — WhatsApp share-ல் blog image + title தெரியும்
       openGraph: {
         type: "article",
-        title: blog.title || "Legal Blog | Briefcasse",
-        description:
-          description ||
-          "Read the latest legal insights from Briefcasse.",
-        url: `https://www.briefcasse.com/blogs/${params.slug}`,
-        siteName: "Briefcasse",
+        title,
+        description,
+        url: `${SITE.url}/blogs/${slug}`,
+        siteName: SITE.name,
         images: [
           {
-            url: coverImage,   // ✅ Blog-ன் actual cover image
+            url: coverImage,
             width: 1200,
             height: 630,
-            alt: blog.title || "Briefcasse Blog",
+            alt: blog.title || `${SITE.name} Blog`,
           },
         ],
         locale: "en_IN",
         publishedTime: blog.createdAt,
       },
-
-      // ✅ Twitter Card
       twitter: {
         card: "summary_large_image",
-        title: blog.title || "Legal Blog | Briefcasse",
-        description:
-          description ||
-          "Read the latest legal insights from Briefcasse.",
+        title,
+        description,
         images: [coverImage],
       },
-
       robots: {
         index: true,
         follow: true,
@@ -83,16 +64,16 @@ export async function generateMetadata({ params }) {
 
 function fallbackMetadata() {
   return {
-    title: "Legal Blog | Briefcasse",
+    title: "Legal Blog",
     description:
       "Read the latest legal insights and articles from Briefcasse on trademark, startup, tax filing and more.",
     openGraph: {
-      title: "Legal Blog | Briefcasse",
+      title: `Legal Blog | ${SITE.name}`,
       images: [{ url: "/assets/brief_blue.png" }],
     },
   };
 }
 
-export default function BlogDetailPage({ params }) {
+export default function BlogDetailPage() {
   return <BlogDetailClient />;
 }

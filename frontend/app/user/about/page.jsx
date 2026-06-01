@@ -2,7 +2,7 @@ import React from 'react';
 import AboutUs from "../../components/common/About";
 
 export const metadata = {
-  title: "Startup Registration | Briefcasse",
+  title: "About Us",
   description:
     "Register your startup easily with Briefcasse. Get expert legal support for incorporation, trademark, and compliance services for new businesses in India.",
   keywords: [

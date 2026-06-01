@@ -106,7 +106,7 @@
 import ServicedClient from "./ServiceClient";
 
 export const metadata = {
-  title: "Our Legal Services | Briefcasse",
+  title: "Our Legal Services",
   description:
     "Explore Briefcasse's complete range of legal services — Startup Registration, Trademark, Tax Filing, MCA Compliance, Legal Advisory and more. Expert support for businesses in India.",
   keywords: [

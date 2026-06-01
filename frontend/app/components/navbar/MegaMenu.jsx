@@ -34,7 +34,7 @@ const MegaMenuNavbar = () => {
   const services = data?.items || [];
 
    const handleLogin = () => {
-    router.push(`/login`);
+    router.push(user ? "/serviced" : "/login");
   };
 
   useEffect(() => {

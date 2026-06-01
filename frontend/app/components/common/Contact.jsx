@@ -2,6 +2,7 @@
 import React from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import InquiryForm from "./InquiryForm";
+import { SITE } from "../../config/site";
 
 export default function Contact() {
   return (
@@ -26,12 +27,12 @@ export default function Contact() {
 
           <ContactCard
             icon={<Mail size={28} />}
-            text="admin@briefcase.com"
+            text={SITE.email}
           />
 
           <ContactCard
             icon={<MapPin size={28} />}
-            text="296, 10th Street, 3rd Main Road, Astalakshmi Nagar, Valasaravakam, Chennai - 116"
+            text={SITE.address}
           />
 
         </div>

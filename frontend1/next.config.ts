@@ -1,0 +1,108 @@
+
+// import type { NextConfig } from "next";
+
+// const nextConfig: NextConfig = {
+//   async rewrites() {
+//     return [
+//       {
+//         source: "/api/:path*",
+//         destination: "https://brief-ewyr.onrender.com/api/:path*",
+//       },
+//     ];
+//   },
+
+//   // ✅ llms.txt correct content-type
+//   async headers() {
+//     return [
+//       {
+//         source: "/llms.txt",
+//         headers: [
+//           {
+//             key: "Content-Type",
+//             value: "text/plain; charset=utf-8",
+//           },
+//         ],
+//       },
+//       // ✅ Security headers — SEO audit-ல் இதுவும் கேட்கும்
+//       {
+//         source: "/(.*)",
+//         headers: [
+//           {
+//             key: "X-Content-Type-Options",
+//             value: "nosniff",
+//           },
+//           {
+//             key: "X-Frame-Options",
+//             value: "DENY",
+//           },
+//           {
+//             key: "Referrer-Policy",
+//             value: "strict-origin-when-cross-origin",
+//           },
+//         ],
+//       },
+//     ];
+//   },
+// };
+
+// export default nextConfig;
+
+
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "img.freepik.com",
+      },
+      { protocol: "https", hostname: "res.cloudinary.com" },
+      { protocol: "https", hostname: "brief-ewyr.onrender.com" },
+    ],
+    formats: ["image/avif", "image/webp"], // Performance boost
+  },
+
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://brief-ewyr.onrender.com/api/:path*",
+      },
+    ];
+  },
+
+  async headers() {
+    return [
+      {
+        source: "/llms.txt",
+        headers: [
+          {
+            key: "Content-Type",
+            value: "text/plain; charset=utf-8",
+          },
+        ],
+      },
+      {
+        source: "/(.*)",
+        headers: [
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+          {
+            key: "X-Frame-Options",
+            value: "DENY",
+          },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+        ],
+      },
+    ];
+  },
+};
+
+export default nextConfig;

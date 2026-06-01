@@ -1,190 +1,200 @@
-// import ServiceSlugClient from "./ServiceSlugClient";
-
-// export async function generateMetadata({ params }) {
-  
-//   const { slug } = await params;
-
-//   try {
-//     const res = await fetch(
-//       `https://brief-ewyr.onrender.com/api/services`,
-//       { cache: "no-store" }
-//     );
-
-//     if (!res.ok) return fallbackMetadata();
-
-//     const data = await res.json();
-//     const service = data?.items?.find((s) => s.slug === slug);
-
-//     if (!service) return fallbackMetadata();
-
-//     return {
-//       title: service?.heading || "Legal Service",
-//       description:
-//         service?.description ||
-//         `${service?.heading} — Reliable trademark & legal services by Briefcasse.`,
-//       alternates: {
-//         canonical: `/services/${slug}`,
-//       },
-//       openGraph: {
-//         type: "website",
-//         title: `${service?.heading || "Legal Service"} | Briefcasse`,
-//         description:
-//           service?.description ||
-//           "Easy and reliable trademark registration and legal services.",
-//         url: `https://www.briefcasse.com/services/${slug}`,
-//         siteName: "Briefcasse",
-//         images: [
-//           {
-//             url: service?.image || "/assets/brief_blue.png",
-//             width: 1200,
-//             height: 630,
-//             alt: service?.heading || "Briefcasse Legal Service",
-//           },
-//         ],
-//         locale: "en_IN",
-//       },
-//       twitter: {
-//         card: "summary_large_image",
-//         title: `${service?.heading || "Legal Service"} | Briefcasse`,
-//         description:
-//           service?.description ||
-//           "Easy and reliable trademark registration and legal services.",
-//         images: [service?.image || "/assets/brief_blue.png"],
-//       },
-//       robots: {
-//         index: true,
-//         follow: true,
-//       },
-//     };
-//   } catch {
-//     return fallbackMetadata();
-//   }
-// }
-
-// function fallbackMetadata() {
-//   return {
-//     title: "Legal Services | Briefcasse",
-//     description:
-//       "Briefcasse offers easy and reliable trademark registration and legal services.",
-//     openGraph: {
-//       title: "Legal Services | Briefcasse",
-//       images: [{ url: "/assets/brief_blue.png" }],
-//     },
-//   };
-// }
-
-// export default async function ServiceSlugPage({ params }) {
-  
-//   const { slug } = await params;
-//   return <ServiceSlugClient />;
-// }
-
-
 import ServiceSlugClient from "./ServiceSlugClient";
+import { SERVICES } from "../../config/services";
+import {
+  SERVICE_API_URL,
+  SITE,
+  getServiceImage,
+  getServiceKeywords,
+  getReadableSlug,
+  getServiceDescription,
+  getServiceFaqs,
+  getServiceTitle,
+} from "../../config/site";
+
+async function getServiceBySlug(slug) {
+  try {
+    const res = await fetch(SERVICE_API_URL, { next: { revalidate: 3600 } });
+
+    if (!res.ok) {
+      throw new Error("Service request failed");
+    }
+
+    const data = await res.json();
+    const service = data?.items?.find((item) => item.slug === slug);
+
+    if (service) {
+      return service;
+    }
+  } catch {
+    // Fall through to the local service index so pages still render for crawlers.
+  }
+
+  const localService = SERVICES.find((item) => item.slug === slug);
+  if (!localService) return null;
+
+  return {
+    ...localService,
+    heading: localService.title,
+    description: localService.summary,
+  };
+}
+
+export async function generateStaticParams() {
+  return SERVICES.map((service) => ({ slug: service.slug }));
+}
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
-
-  try {
-    const res = await fetch(
-      `https://brief-ewyr.onrender.com/api/services`,
-      { cache: "no-store" }
-    );
-
-    if (!res.ok) return fallbackMetadata(slug);
-
-    const data = await res.json();
-    const service = data?.items?.find((s) => s.slug === slug);
-
-    if (!service) return fallbackMetadata(slug);
-
-    
-    const readableSlug = slug
-      .split("-")
-      .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-      .join(" ");
-
-    
-    const title = service?.heading || readableSlug;
-
-    
-    const description =
-      service?.description ||
-      `${title} in India — Fast, reliable and affordable ${title.toLowerCase()} services for startups and businesses. Expert support by Briefcasse, Chennai.`;
-
-    return {
-      //Title — keyword + brand
-      title: `${title} | Briefcasse`,
-
-      //Description
-      description: description.slice(0, 155),
-
-      // Keywords — service-specific
-      keywords: [
-        `${title.toLowerCase()} India`,
-        `${title.toLowerCase()} online`,
-        `${title.toLowerCase()} Chennai`,
-        `${title.toLowerCase()} for startups`,
-        "legal services India",
-        "Briefcasse",
-      ],
-
-      alternates: {
-        canonical: `/services/${slug}`,
-      },
-
-      openGraph: {
-        type: "website",
-        title: `${title} | Briefcasse — Legal Services India`,
-        description: description.slice(0, 155),
-        url: `https://briefcasse.com/services/${slug}`,
-        siteName: "Briefcasse",
-        images: [
-          {
-            url: service?.image || "/assets/brief_blue.png",
-            width: 1200,
-            height: 630,
-            alt: `${title} — Briefcasse Legal Services`,
-          },
-        ],
-        locale: "en_IN",
-      },
-
-      twitter: {
-        card: "summary_large_image",
-        title: `${title} | Briefcasse`,
-        description: description.slice(0, 155),
-        images: [service?.image || "/assets/brief_blue.png"],
-      },
-
-      robots: {
-        index: true,
-        follow: true,
-      },
-    };
-  } catch {
-    return fallbackMetadata(slug);
-  }
-}
-
-function fallbackMetadata(slug = "") {
-  const readableSlug = slug
-    .split("-")
-    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-    .join(" ");
+  const service = await getServiceBySlug(slug);
+  const title = getServiceTitle(service, slug);
+  const description = getServiceDescription(service, slug).slice(0, 155);
+  const image = getServiceImage(service);
+  const canonical = service?.canonicalUrl || `/services/${slug}`;
+  const ogTitle = service?.openGraphTitle || `${title} | ${SITE.name}`;
+  const ogDescription = service?.openGraphDescription || description;
 
   return {
-    title: `${readableSlug || "Legal Service"} | Briefcasse`,
-    description:
-      "Briefcasse offers easy and reliable trademark registration and legal services for startups and businesses in India.",
+    title,
+    description,
+    keywords: getServiceKeywords(service, title),
+    alternates: {
+      canonical,
+    },
     openGraph: {
-      title: `${readableSlug || "Legal Services"} | Briefcasse`,
-      images: [{ url: "/assets/brief_blue.png" }],
+      type: "website",
+      title: ogTitle,
+      description: ogDescription,
+      url: `${SITE.url}/services/${slug}`,
+      siteName: SITE.name,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: `${title} by ${SITE.name}`,
+        },
+      ],
+      locale: "en_IN",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ogTitle,
+      description: ogDescription,
+      images: [image],
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }
 
+function buildServiceSchema(service, slug) {
+  const title = getServiceTitle(service, slug);
+  const description = getServiceDescription(service, slug);
+  const faqs = getServiceFaqs(service, slug);
+  const customSchema = parseSchemaJson(service?.schemaMarkupJson);
+
+  return [
+    ...(customSchema ? [customSchema] : []),
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: title,
+      description,
+      provider: {
+        "@type": "LegalService",
+        name: SITE.name,
+        url: SITE.url,
+        email: SITE.email,
+        telephone: SITE.telephone,
+        address: {
+          "@type": "PostalAddress",
+          streetAddress: SITE.address,
+          addressLocality: SITE.locality,
+          addressRegion: SITE.region,
+          addressCountry: SITE.country,
+        },
+      },
+      areaServed: {
+        "@type": "Country",
+        name: "India",
+      },
+      serviceType: service?.serviceCategory || service?.category || title,
+      url: `${SITE.url}/services/${slug}`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: "Home",
+          item: SITE.url,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: "Services",
+          item: `${SITE.url}/serviced`,
+        },
+        {
+          "@type": "ListItem",
+          position: 3,
+          name: title,
+          item: `${SITE.url}/services/${slug}`,
+        },
+      ],
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: faqs.map((faq) => ({
+        "@type": "Question",
+        name: faq.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: faq.answer,
+        },
+      })),
+    },
+  ];
+}
+
+function parseSchemaJson(schemaMarkupJson) {
+  if (!schemaMarkupJson) return null;
+
+  try {
+    return JSON.parse(schemaMarkupJson);
+  } catch {
+    return null;
+  }
+}
+
 export default async function ServiceSlugPage({ params }) {
   const { slug } = await params;
-  return <ServiceSlugClient />;
+  const service = await getServiceBySlug(slug);
+  const title = getServiceTitle(service, slug);
+  const description = getServiceDescription(service, slug);
+  const faqs = getServiceFaqs(service, slug);
+  const schema = buildServiceSchema(service, slug);
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <ServiceSlugClient
+        initialService={service}
+        initialSeo={{
+          title,
+          description,
+          faqs,
+          readableSlug: getReadableSlug(slug),
+        }}
+      />
+    </>
+  );
 }

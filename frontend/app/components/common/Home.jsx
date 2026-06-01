@@ -1,11 +1,8 @@
 "use client";
 import CardSwipper from "../../components/services/CardSwipper";
-import { useAuthGuard } from "../../components/route/useAuthGuard";
 import { useAllServices } from "../../hooks/userServiceList";
 
 export default function ServicePage() {
-  const { loading: authLoading } = useAuthGuard(["user"]);
-
   const {
     data: servicesData,
     isLoading,
@@ -14,7 +11,7 @@ export default function ServicePage() {
 
   const services = servicesData?.items || [];
 
-  if (authLoading || isLoading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         Loading services...

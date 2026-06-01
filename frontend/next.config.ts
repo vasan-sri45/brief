@@ -50,6 +50,10 @@
 
 import type { NextConfig } from "next";
 
+const backendUrl =
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
+  "https://brief-ewyr.onrender.com";
+
 const nextConfig: NextConfig = {
   
   images: {
@@ -68,7 +72,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "https://brief-ewyr.onrender.com/api/:path*",
+        destination: `${backendUrl}/api/:path*`,
       },
     ];
   },

@@ -48,11 +48,15 @@ export const useVerifyOtp = () => {
     onSuccess: (data) => {
       if (!data?.user) return;
 
-      // Save user in Redux + localStorage
       dispatch(setUser(data.user));
 
-      // Redirect to app
-      router.replace("/serviced");
+      const params =
+        typeof window !== "undefined"
+          ? new URLSearchParams(window.location.search)
+          : null;
+      const redirect = params?.get("redirect") || "/serviced";
+
+      router.replace(redirect.startsWith("/login") ? "/serviced" : redirect);
     },
   });
 };

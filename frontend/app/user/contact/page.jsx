@@ -2,7 +2,7 @@ import React from 'react'
 import Contact from "../../components/common/Contact";
 
 export const metadata = {
-  title: "Contact Us | Briefcasse",
+  title: "Contact Us",
   description:
     "Get in touch with Briefcasse for trademark registration, legal services, and business support. Our experts are ready to help your startup succeed.",
   keywords: [

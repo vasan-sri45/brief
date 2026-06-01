@@ -18,7 +18,7 @@ const TopBar = () => {
   const user = useSelector((state) => state.auth.user);
 
    const handleLogin = () => {
-    router.push(`/login`);
+    router.push(user ? "/serviced" : "/login");
   };
 
   useEffect(() => {

@@ -63,7 +63,7 @@ const defaultSteps = [
 ];
 
 /* ---------------- MAIN COMPONENT ---------------- */
-const ProcessAtBriefcase = ({ brief }) => {
+const ProcessAtBriefcasse = ({ brief }) => {
   const underlineRef = useGsapUnderlineLoop();
 
   const steps =
@@ -164,4 +164,4 @@ const ProcessCard = ({ step, index }) => {
   );
 };
 
-export default ProcessAtBriefcase;
+export default ProcessAtBriefcasse;
