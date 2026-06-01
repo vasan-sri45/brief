@@ -26,6 +26,26 @@ const blogSchema = new mongoose.Schema(
       // select: false,
     },
 
+    metaTitle: {
+      type: String,
+      trim: true,
+      maxlength: 70,
+      default: "",
+    },
+
+    metaDescription: {
+      type: String,
+      trim: true,
+      maxlength: 180,
+      default: "",
+    },
+
+    tags: {
+      type: [String],
+      default: [],
+      index: true,
+    },
+
     /* ================= DOCUMENTS (FILES) ================= */
     documents: {
       type: [
@@ -91,7 +111,7 @@ const blogSchema = new mongoose.Schema(
 /* ================= INDEXES ================= */
 
 // Full-text search on title & content
-blogSchema.index({ title: "text", content: "text" });
+blogSchema.index({ title: "text", content: "text", tags: "text" });
 
 // Sort by newest first
 blogSchema.index({ createdAt: -1 });

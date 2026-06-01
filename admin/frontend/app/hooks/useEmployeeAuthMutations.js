@@ -6,10 +6,30 @@ import { api } from "../api/api";
 import { setUser, clearUser } from "../store/features/auth.slice";
 
 export const useRegisterEmployee = () => {
+  const qc = useQueryClient();
+
   return useMutation({
     mutationFn: async (formData) => {
       const res = await api.post("/employee", formData);
       return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["employees"] });
+    },
+  });
+};
+
+export const useUpdateEmployee = () => {
+  const qc = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, payload }) => {
+      const res = await api.patch(`/employee/${id}`, payload);
+      return res.data;
+    },
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["employees"] });
+      qc.invalidateQueries({ queryKey: ["payroll"] });
     },
   });
 };
@@ -42,21 +62,23 @@ export const useEmployeeLogin = () => {
       if (user.role === "admin") {
         router.replace("/admin/dashboard");
       } else {
-        router.replace("/employee");
+        router.replace("/employee/dashboard");
       }
     },
   });
 };
 
-export const useGetEmployees = () => {
+export const useGetEmployees = (filters = {}) => {
   const user = useSelector((state) => state.auth.user);
 
   return useQuery({
-    queryKey: ["employees"],
-    enabled: user?.role === "admin",     // 🔥 only runs for admins
+    queryKey: ["employees", filters],
+    enabled: user?.role === "admin",
 
     queryFn: async () => {
-      const res = await api.get("/employee/get");
+      const res = await api.get("/employee/get", {
+        params: filters,
+      });
       return res.data; // { success, users }
     },
 
@@ -117,6 +139,47 @@ export const useResetPassword = () => {
         newPassword,
       });
       return res.data;
+    },
+  });
+};
+
+
+export const useUploadProfileImage = () => {
+  const qc = useQueryClient();
+  const dispatch = useDispatch();
+
+  return useMutation({
+    mutationFn: async (file) => {
+      const formData = new FormData();
+      formData.append("image", file);
+
+      const res = await api.put("/profile-image", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      return res.data; // { profileImage }
+    },
+
+    onSuccess: (data) => {
+      // ✅ 1. Update React Query cache instantly
+      qc.setQueryData(["me"], (oldData) => {
+        if (!oldData) return oldData;
+
+        return {
+          ...oldData,
+          user: {
+            ...oldData.user,
+            profileImage: data.profileImage,
+          },
+        };
+      });
+
+      dispatch(setUser({
+  ...qc.getQueryData(["me"])?.user,
+  profileImage: data.profileImage,
+}));
     },
   });
 };

@@ -1,176 +1,92 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
-import Link from "next/link";
-import { useSelector } from "react-redux";
-import { useLogout } from "../../hooks/useEmployeeAuthMutations";
-import gsap from "gsap";
+
 import Image from "next/image";
-import {Menu, X} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSelector } from "react-redux";
+import {
+  BarChart3,
+  BookOpenText,
+  BriefcaseBusiness,
+  CalendarCheck,
+  FilePlus2,
+  LogOut,
+  ReceiptText,
+  Ticket,
+  UserPlus,
+  UsersRound,
+} from "lucide-react";
+import { useLogout } from "../../hooks/useEmployeeAuthMutations";
+
+const navItems = [
+  { label: "Dashboard", href: "/admin/dashboard", icon: BarChart3 },
+  { label: "Transactions", href: "/admin/transaction", icon: ReceiptText },
+  { label: "Ticket", href: "/admin/ticket", icon: Ticket },
+  { label: "Employees", href: "/admin/employee", icon: UsersRound },
+  { label: "New Employee", href: "/admin/new_emp", icon: UserPlus },
+  { label: "Attendance", href: "/admin/attendance", icon: CalendarCheck },
+  { label: "Payroll", href: "/admin/payroll", icon: BriefcaseBusiness },
+  { label: "Blogs", href: "/admin/status", icon: BookOpenText },
+  { label: "Create Blog", href: "/admin/blog/create", icon: FilePlus2 },
+  { label: "Services", href: "/admin/srv_form", icon: BriefcaseBusiness },
+];
 
 export default function AdminNavbar() {
-  /* ================= STATE & HOOKS ================= */
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false);
-
+  const pathname = usePathname();
   const { user, hydrated } = useSelector((state) => state.auth);
-  const logout = useLogout("/login");
+  const logout = useLogout("/");
 
-  const menuRefs = useRef([]);
-
-  /* ================= GSAP HOVER ================= */
-  useEffect(() => {
-    menuRefs.current.forEach((el) => {
-      if (!el) return;
-
-      const enter = () =>
-        gsap.to(el, { scale: 1.1, y: -2, duration: 0.2 });
-      const leave = () =>
-        gsap.to(el, { scale: 1, y: 0, duration: 0.2 });
-
-      el.addEventListener("mouseenter", enter);
-      el.addEventListener("mouseleave", leave);
-
-      return () => {
-        el.removeEventListener("mouseenter", enter);
-        el.removeEventListener("mouseleave", leave);
-      };
-    });
-  }, []);
-
-  /* ================= ROLE CHECK ================= */
-  const isAllowed =
-    hydrated && user && user.role === "admin";
-
-  /* ================= ACTIONS ================= */
-  const handleLogout = () => {
-    setMenuOpen(false);
-    setProfileOpen(false);
-    logout.mutate();
-  };
-
-  if (!isAllowed) return null; // ✅ SAFE: after all hooks
-
-  const menuItems = [
-    { label: "DASHBOARD", href: "/admin/dashboard" },
-    { label: "TRANSACTION", href: "/admin/transaction" },
-    { label: "BLOGS", href: "/admin/status" },
-    { label: "TICKET", href: "/admin/employee" },
-  ];
+  if (!hydrated || user?.role !== "admin") return null;
 
   return (
-    <nav className="w-full bg-custom-blue py-4 px-4 flex items-center justify-between md:shadow-[0_8px_24px_rgba(0,0,0,0.25)]">
-
-      {/* LOGO */}
-       <div className="flex items-center mb-4 justify-center">
-               
-                     <Image
-                      src="/assets/brief_white.png"
-                      alt="logo"
-                      width={32}
-                      height={32}
-                      className=" rounded mr-1"
-                    />
-                    <h2 className="text-xl text-white font-anton font-normal tracking-widest mt-1">BRIEFCASSE</h2>
-          </div>
-
-      {/* DESKTOP MENU */}
-      <div className="hidden md:flex gap-8 absolute left-1/2 -translate-x-1/2">
-        {menuItems.map((item, i) => (
-          <Link key={item.href} href={item.href}>
-            <span
-              ref={(el) => (menuRefs.current[i] = el)}
-              className="text-white font-lato font-bold text-sm cursor-pointer inline-block tracking-wide"
-            >
-              {item.label}
-            </span>
-          </Link>
-        ))}
-      </div>
-
-      {/* PROFILE */}
-      <div className="hidden md:block relative">
-        <button
-          onClick={() => setProfileOpen(!profileOpen)}
-          className="text-white font-bold flex items-center gap-1"
-        >
-          {user.name || "ADMIN"} <span className="text-xs">▼</span>
-        </button>
-
-        {profileOpen && (
-          <div className="absolute right-0 mt-2 w-40 bg-white rounded shadow-lg z-50">
-            <Link
-              href="/admin/blog/create"
-              className="block px-4 py-2 text-sm hover:bg-gray-100 text-custom-blue font-lato font-bold"
-              onClick={() => setProfileOpen(false)}
-            >
-              Create
-            </Link>
-             <Link
-              href="/admin/new_emp"
-              className="block px-4 py-2 text-sm hover:bg-gray-100 text-custom-blue font-lato font-bold"
-              onClick={() => setProfileOpen(false)}
-            >
-              New Emp
-            </Link>
-
-            <button
-              onClick={handleLogout}
-              className="block w-full text-left px-4 py-2 text-sm font-lato font-bold text-red-600 hover:bg-gray-100"
-            >
-              Logout
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* MOBILE BUTTON */}
-      <button
-        className="md:hidden text-white text-xl mt-[-14px]"
-        onClick={() => setMenuOpen(true)}
-      >
-       <Menu size={28}/>
-      </button>
-
-      {/* MOBILE MENU */}
-      <div
-        className={`fixed top-0 left-0 h-full w-64 bg-custom-blue z-50 transform transition-transform ${
-          menuOpen ? "translate-x-0" : "-translate-x-full"
-        }`}
-      >
-        <div className="flex justify-between p-4 border-b border-blue-700">
-          <span className="text-white font-bold">Admin</span>
-          <button onClick={() => setMenuOpen(false)} className="text-white">
-            <X />
-          </button>
+    <aside className="fixed inset-x-0 bottom-0 z-50 border-t border-blue-900/20 bg-custom-blue text-white md:inset-y-0 md:left-0 md:right-auto md:w-72 md:border-r md:border-t-0">
+      <div className="hidden items-center gap-3 border-b border-white/10 px-6 py-6 md:flex">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10">
+          <Image src="/assets/brief_white.png" alt="Briefcasse" width={30} height={30} />
         </div>
-
-        <ul className="p-4 space-y-4 text-white">
-          {menuItems.map((item) => (
-            <li key={item.href} className="text-white text-[0.8rem] font-lato font-bold tracking-wide">
-              <Link href={item.href} onClick={() => setMenuOpen(false)}>
-                {item.label}
-              </Link>
-            </li>
-          ))}
-
-          <li className="border-t border-blue-700 pt-4 font-lato font-bold text-[0.8rem] tracking-wide">
-            <Link href="/admin/blogs">Blogs</Link>
-            <button
-              onClick={handleLogout}
-              className="block mt-3 text-red-400 font-bold"
-            >
-              Logout
-            </button>
-          </li>
-        </ul>
+        <div>
+          <h2 className="font-anton text-xl tracking-widest">BRIEFCASSE</h2>
+          <p className="text-xs font-semibold text-white/60">Admin Console</p>
+        </div>
       </div>
 
-      {menuOpen && (
-        <div
-          className="fixed inset-0 bg-black/40 z-40"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-    </nav>
+      <nav className="flex gap-1 overflow-x-auto px-2 py-2 md:block md:space-y-1 md:overflow-visible md:p-4">
+        {navItems.map((item) => {
+          const Icon = item.icon;
+          const active =
+            pathname === item.href ||
+            (item.href !== "/admin/dashboard" && pathname?.startsWith(item.href));
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex min-w-[84px] flex-col items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold transition md:min-w-0 md:flex-row md:gap-3 md:px-4 md:py-3 md:text-sm ${
+                active
+                  ? "bg-white text-custom-blue"
+                  : "text-white/75 hover:bg-white/10 hover:text-white"
+              }`}
+            >
+              <Icon size={18} />
+              <span className="whitespace-nowrap">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+
+      <div className="hidden p-4 md:absolute md:bottom-0 md:left-0 md:right-0 md:block">
+        <div className="mb-3 rounded-2xl bg-white/10 p-4">
+          <p className="text-sm font-bold">{user?.name || "Admin"}</p>
+          <p className="text-xs text-white/60">{user?.email || "Admin"}</p>
+        </div>
+        <button
+          onClick={() => logout.mutate()}
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-3 text-sm font-bold text-white hover:bg-red-600"
+        >
+          <LogOut size={18} />
+          Logout
+        </button>
+      </div>
+    </aside>
   );
 }

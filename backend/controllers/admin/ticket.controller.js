@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import Ticket from '../../models/admin/ticket.model.js';
-// import Employee from '../../models/auth/employee.js';
 import asyncHandler from "express-async-handler";
 
 // Create
@@ -71,11 +70,11 @@ export const getMyTickets = async (req, res) => {
     }
 
     const tickets = await Ticket.find({
-      createdBy: req.user._id, // ✅ FIX HERE
+      createdBy: req.user._id, 
     })
       .select('ticketNo department requestType date remark status createdAt createdBy')
       .sort({ createdAt: -1 })
-      .populate('createdBy', 'name') // empId only if exists in schema
+      .populate('createdBy', 'name') 
       .lean();
 
     return res.status(200).json({
@@ -104,7 +103,6 @@ export const getTicketById = async (req, res) => {
       });
     }
 
-    // 2️⃣ Fetch ticket
     const ticket = await Ticket.findById(ticketId)
       .populate('createdBy', 'empId name email role')
       .lean();
@@ -116,7 +114,6 @@ export const getTicketById = async (req, res) => {
       });
     }
 
-    // 3️⃣ Authorization (Owner OR Admin)
     const isOwner =
       String(ticket.createdBy?._id) === String(req.user._id);
 
@@ -129,7 +126,6 @@ export const getTicketById = async (req, res) => {
       });
     }
 
-    // 4️⃣ Success
     return res.status(200).json({
       success: true,
       data: ticket,
@@ -238,7 +234,7 @@ export const deleteTicket = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1️⃣ Validate Mongo ObjectId
+    
     if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).json({
         success: false,
@@ -246,7 +242,7 @@ export const deleteTicket = async (req, res) => {
       });
     }
 
-    // 2️⃣ Find ticket
+    
     const ticket = await Ticket.findById(id).select('createdBy');
     if (!ticket) {
       return res.status(404).json({
@@ -255,7 +251,7 @@ export const deleteTicket = async (req, res) => {
       });
     }
 
-    // 3️⃣ Authorization (Owner OR Admin)
+    
     const isOwner = String(ticket.createdBy) === String(req.user._id);
     const isAdmin = req.user.role === 'admin';
 
@@ -266,7 +262,7 @@ export const deleteTicket = async (req, res) => {
       });
     }
 
-    // 4️⃣ HARD DELETE (PERMANENT)
+    
     await Ticket.findByIdAndDelete(id);
 
     return res.status(200).json({
@@ -288,7 +284,7 @@ export const deleteTicket = async (req, res) => {
 // // Admin: list all tickets
 export const getAllTickets = async (req, res) => {
   try {
-    // 🔐 Admin guard
+    
     if (!req.user || req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,

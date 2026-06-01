@@ -1,122 +1,3 @@
-// "use client";
-// import { useState, useMemo } from "react";
-// import TicketsStatus from "./TicketStatus";
-// import WelcomeCard from "./WelcomeCard";
-// import TicketHeader from "./TicketHeader";
-// import TicketTable from "./TicketTable";
-// import { useGetPaidServices } from "../../hooks/useService";
-// import { useAuth } from "../../hooks/useAuth";
-
-// export default function Dashboard() {
-//   const { data, isLoading, isError } = useGetPaidServices();
-//   console.log(data);
-
-//   const { user } = useAuth();
-
-//   const services = data?.data || [];
-
-//   const [filter, setFilter] = useState("ALL");
-
-//   console.log(services)
-
-//   /* =========================
-//      STATS (SOURCE OF TRUTH)
-//   ========================== */
-//   const stats = useMemo(() => {
-//     const total = services.length;
-
-//     const availed = services.filter(
-//       (s) => s.paymentStatus === "Paid"
-//     ).length;
-
-//     const notAvailed = services.filter(
-//       (s) => s.paymentStatus !== "Paid"
-//     ).length;
-
-//     const checklist = services.filter(
-//       (s) =>
-//         s.assignedTo?._id == user?.id
-//     ).length;
-
-//     return [
-//       {
-//         key: "ALL",
-//         title: "Total Ticket Raised",
-//         value: total,
-//         bg: "bg-[#B7CDB3]",
-//       },
-//       {
-//         key: "AVAILED",
-//         title: "Availed",
-//         value: availed,
-//         bg: "bg-[#FFE8CC]",
-//       },
-//       {
-//         key: "NOT_AVAILED",
-//         title: "Not Availed",
-//         value: notAvailed,
-//         bg: "bg-[#FFDCD8]",
-//       },
-//       {
-//         key: "CHECKLIST",
-//         title: "Checklist",
-//         value: checklist,
-//         bg: "bg-[#C7D0F0]",
-//       },
-//     ];
-//   }, [services]);
-
-//   /* =========================
-//      FILTER TABLE DATA
-//   ========================== */
-//   const filteredServices = useMemo(() => {
-//     if (filter === "ALL") return services;
-
-//     if (filter === "AVAILED") {
-//       return services.filter(
-//         (s) => s.paymentStatus === "Paid"
-//       );
-//     }
-
-//     if (filter === "NOT_AVAILED") {
-//       return services.filter(
-//         (s) => s.paymentStatus !== "Paid"
-//       );
-//     }
-
-//     if (filter === "CHECKLIST") {
-//       return services.filter(
-//         (s) =>
-//           s.assignedTo?._id == user?.id
-//       );
-//     }
-
-//     return services;
-//   }, [filter, services]);
-
-//   return (
-//     <section className="mt-2 mb-6">
-//       <TicketHeader />
-
-//       <WelcomeCard name="John Doe" code="EMP-1023"/>
-
-//       <TicketsStatus
-//         stats={stats}
-//         activeKey={filter}
-//         onSelect={setFilter}
-//       />
-
-//       <TicketTable
-//         services={filteredServices}
-//         loading={isLoading}
-//         error={isError}
-//       />
-//     </section>
-//   );
-// }
-
-
-
 "use client";
 
 import { useMemo, useState } from "react";
@@ -129,7 +10,9 @@ import {
   useGetPaidServices,
   useGetPaymentServices,
   useUpdatePaidService,
-  useUpdatePaymentService
+  useUpdatePaymentService,
+  useSoftDeletePaidService,
+  useSoftDeletePaymentService
 } from "../../hooks/useService";
 
 import { useAuth } from "../../hooks/useAuth";
@@ -137,13 +20,15 @@ import { useAuth } from "../../hooks/useAuth";
 export default function Dashboard() {
 
   const { data: onlineData, isLoading: onlineLoading } =
-    useGetPaymentServices();
+    useGetPaymentServices({ limit: 100 });
 
   const { data: officeData, isLoading: officeLoading, isError } =
-    useGetPaidServices();
+    useGetPaidServices({ limit: 100 });
 
   const updatePaidMutation = useUpdatePaidService();
   const updatePaymentMutation = useUpdatePaymentService();
+  const softDeletePaidMutation = useSoftDeletePaidService();
+  const softDeletePaymentMutation = useSoftDeletePaymentService();
 
   const { user } = useAuth();
 
@@ -156,7 +41,8 @@ export default function Dashboard() {
     const online = Array.isArray(onlineData?.orders)
       ? onlineData.orders.map((item) => ({
           _id: item._id,
-          serviceNo: item.razorpayOrderId || "-",
+          serviceNo: item.serviceNo || item.razorpayOrderId || "-",
+          razorpayPaymentId: item.razorpayPaymentId,
 
           clientName:
             item.customer?.name ||
@@ -175,6 +61,8 @@ export default function Dashboard() {
 
           serviceTitle: item.serviceId?.title || "-",
           service: item.serviceId?.heading || "-",
+          serviceId: item.serviceId?._id || item.serviceId || "",
+          serviceName: item.serviceId?.heading || item.serviceId?.title || "-",
 
           totalPayment: item.amount || 0,
           paymentMode: item.paymentMode || "Online",
@@ -187,6 +75,15 @@ export default function Dashboard() {
             item.assignedTo && typeof item.assignedTo === "object"
               ? item.assignedTo._id
               : item.assignedTo || null,
+          assignedToName:
+            item.assignedTo && typeof item.assignedTo === "object"
+              ? item.assignedTo.name
+              : "",
+          createdBy:
+            item.createdBy && typeof item.createdBy === "object"
+              ? item.createdBy._id
+              : item.createdBy || null,
+          progressMessages: item.progressMessages || [],
 
           source: "online",
         }))
@@ -201,8 +98,10 @@ export default function Dashboard() {
           mobile: item.customer?.mobile || "-",
           email: item.customer?.email || "-",
 
-          serviceTitle: item.service?.title || "-",
-          service: item.service?.heading || "-",
+          serviceTitle: item.serviceTitle || item.service?.title || "-",
+          service: item.serviceName || item.service?.heading || "-",
+          serviceId: item.service?._id || item.service || "",
+          serviceName: item.serviceName || item.service?.heading || item.service?.title || "-",
 
           totalPayment: item.totalPayment || 0,
           paymentMode: item.paymentMode || "-",
@@ -215,6 +114,15 @@ export default function Dashboard() {
             item.assignedTo && typeof item.assignedTo === "object"
               ? item.assignedTo._id
               : item.assignedTo || null,
+          assignedToName:
+            item.assignedTo && typeof item.assignedTo === "object"
+              ? item.assignedTo.name
+              : "",
+          createdBy:
+            item.createdBy && typeof item.createdBy === "object"
+              ? item.createdBy._id
+              : item.createdBy || null,
+          progressMessages: item.progressMessages || [],
 
           source: "office",
         }))
@@ -227,8 +135,9 @@ export default function Dashboard() {
   /* ================= EMPLOYEE SERVICES ================= */
 
   const employeeServices = useMemo(() => {
+    const currentUserId = user?.id || user?._id;
     return services.filter(
-      (s) => s.assignedTo === user?.id
+      (s) => s.assignedTo === currentUserId || s.createdBy === currentUserId
     );
   }, [services, user]);
 
@@ -239,11 +148,11 @@ export default function Dashboard() {
     const total = employeeServices.length;
 
     const availed = employeeServices.filter(
-      (s) => s.paymentStatus === "paid"
+      (s) => String(s.paymentStatus || "").toLowerCase() === "paid"
     ).length;
 
     const notAvailed = employeeServices.filter(
-      (s) => s.paymentStatus !== "paid"
+      (s) => String(s.paymentStatus || "").toLowerCase() !== "paid"
     ).length;
 
     const checklist = employeeServices.length;
@@ -285,13 +194,13 @@ export default function Dashboard() {
 
     if (filter === "AVAILED") {
       return employeeServices.filter(
-        (s) => s.paymentStatus === "paid"
+        (s) => String(s.paymentStatus || "").toLowerCase() === "paid"
       );
     }
 
     if (filter === "NOT_AVAILED") {
       return employeeServices.filter(
-        (s) => s.paymentStatus !== "paid"
+        (s) => String(s.paymentStatus || "").toLowerCase() !== "paid"
       );
     }
 
@@ -306,14 +215,16 @@ export default function Dashboard() {
   if (onlineLoading || officeLoading)
     return <div className="text-center py-10">Loading...</div>;
 
+  console.log(user)
+
   return (
     <section className="mt-2 mb-6">
 
-      <TicketHeader />
+      {/* <TicketHeader /> */}
 
       <WelcomeCard
         name={user?.name || "Employee"}
-        code={user?.employeeCode || ""}
+        code={user?.employee_id || ""}
       />
 
       <TicketsStatus
@@ -341,6 +252,13 @@ export default function Dashboard() {
             });
           }
 
+        }}
+        onSoftDelete={async ({ id, source }) => {
+          if (source === "online") {
+            await softDeletePaymentMutation.mutateAsync(id);
+          } else {
+            await softDeletePaidMutation.mutateAsync(id);
+          }
         }}
       />
 

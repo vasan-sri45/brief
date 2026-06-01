@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createPaidService, getAllPaidServices, updatePaidService} from '../../controllers/selling/paidService.controller.js';
+import { createPaidService, getAllPaidServices, getCustomerByUserCode, softDeletePaidService, updatePaidService} from '../../controllers/selling/paidService.controller.js';
 import {wrapAsync} from '../../utils/wrapAsync.js';
 import { employeeProtectRoute, allowRoles } from '../../middleware/protectRoute.js';
 
@@ -12,6 +12,10 @@ router.route('/')
 // router.get("/:id", employeeProtectRoute,allowRoles(['admin','employee']),wrapAsync(getPaidServiceById));
 // router.get("/service-no/:serviceNo", getPaidServiceByServiceNo);
 // router.get("/my", getMyPaidServices);
+
+router.get("/customer/:userCode", employeeProtectRoute, allowRoles(['admin','employee']), wrapAsync(getCustomerByUserCode));
+
+router.patch("/:id/soft-delete", employeeProtectRoute, allowRoles(['admin','employee']), wrapAsync(softDeletePaidService));
 
 router.put("/:id", employeeProtectRoute, allowRoles(['admin','employee']), updatePaidService);
 

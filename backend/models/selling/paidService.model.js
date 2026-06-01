@@ -10,6 +10,12 @@ const paidServiceSchema = new mongoose.Schema(
     },
 
     customer: {
+      userCode: {
+        type: String,
+        trim: true,
+        uppercase: true,
+        index: true,
+      },
       name: { type: String, required: true },
       mobile: { type: String, required: true },
       email: { type: String, default: null },
@@ -18,10 +24,13 @@ const paidServiceSchema = new mongoose.Schema(
     serviceNo: {
       type: String,
       unique: true,
+      sparse: true,
       index: true,
     },
 
     serviceType: { type: String, required: true },
+    serviceTitle: { type: String, trim: true, default: "" },
+    serviceName: { type: String, trim: true, default: "" },
        service: { 
       type: mongoose.Schema.Types.ObjectId,
       ref: "Service",
@@ -66,10 +75,40 @@ const paidServiceSchema = new mongoose.Schema(
 
     notes: { type: String, default: "" },
 
+    progressMessages: {
+      type: [
+        {
+          message: { type: String, required: true, trim: true },
+          createdBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Employee",
+            required: true,
+          },
+          createdAt: { type: Date, default: Date.now },
+        },
+      ],
+      default: [],
+    },
+
     isDeleted: { type: Boolean, default: false },
+
+    employeeHidden: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
   { timestamps: true }
 );
+
+const staleCustomerUniqueFields = new Set([
+  "name",
+  "email",
+  "mobile",
+  "customer.name",
+  "customer.email",
+  "customer.mobile",
+]);
 
 paidServiceSchema.pre("save", async function (next) {
   if (this.serviceNo) return next();
@@ -90,5 +129,37 @@ paidServiceSchema.pre("save", async function (next) {
 const PaidService =
   mongoose.models.PaidService ||
   mongoose.model("PaidService", paidServiceSchema);
+
+const cleanupStalePaidServiceIndexes = async () => {
+  try {
+    const indexes = await PaidService.collection.indexes();
+    const staleIndexes = indexes.filter((index) => {
+      const keys = Object.keys(index.key || {});
+      return (
+        index.unique &&
+        keys.length === 1 &&
+        staleCustomerUniqueFields.has(keys[0])
+      );
+    });
+
+    await Promise.all(
+      staleIndexes.map((index) => PaidService.collection.dropIndex(index.name))
+    );
+  } catch (error) {
+    if (process.env.NODE_ENV !== "production") {
+      console.warn("Paid service index cleanup skipped:", error.message);
+    }
+  }
+};
+
+if (!globalThis.__paidServiceIndexCleanupScheduled) {
+  globalThis.__paidServiceIndexCleanupScheduled = true;
+
+  if (mongoose.connection.readyState === 1) {
+    cleanupStalePaidServiceIndexes();
+  } else {
+    mongoose.connection.once("open", cleanupStalePaidServiceIndexes);
+  }
+}
 
 export default PaidService;

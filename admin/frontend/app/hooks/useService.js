@@ -8,10 +8,15 @@ import { api } from "../api/api";
    Employee/Admin creates service
 ================================ */
 export const useCreatePaidService = () => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (payload) => {
       const res = await api.post("/paid", payload);
       return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["paid-services"] });
     },
   });
 };
@@ -151,6 +156,73 @@ export const useExportTransactions = () => {
       document.body.appendChild(link);
       link.click();
       link.remove();
+    },
+  });
+};
+
+export const useGetServices = (params = {}) =>
+  useQuery({
+    queryKey: ["services", params],
+    queryFn: async () => {
+      const res = await api.get("/services", { params });
+      return res.data;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+
+export const useCreateServiceConfig = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload) => {
+      const res = await api.post("/services", payload);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
+    },
+  });
+};
+
+export const useSoftDeletePaymentService = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id) => {
+      const { data } = await api.patch(`/payment/soft-delete/${id}`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["payment-services"] });
+    },
+  });
+};
+
+export const useSoftDeletePaidService = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id) => {
+      const { data } = await api.patch(`/paid/${id}/soft-delete`);
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["paid-services"] });
+    },
+  });
+};
+
+export const useUpdateServiceConfig = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, payload }) => {
+      const res = await api.patch(`/services/${id}`, payload);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["services"] });
     },
   });
 };

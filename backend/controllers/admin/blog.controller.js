@@ -3,7 +3,14 @@ import { uploadToCloudinary, cloudinary } from '../../helpers/cloudinary.js'; //
 
 export const createBlog = async (req, res, next) => {
   try {
-    const { title, content, status = 'published' } = req.body;
+    const {
+      title,
+      content,
+      status = 'published',
+      metaTitle = '',
+      metaDescription = '',
+      tags = '',
+    } = req.body;
 
     if (!title || !content) {
       return res.status(400).json({
@@ -59,6 +66,11 @@ export const createBlog = async (req, res, next) => {
       title,
       slug,
       content,
+      metaTitle,
+      metaDescription,
+      tags: typeof tags === 'string'
+        ? tags.split(',').map((tag) => tag.trim()).filter(Boolean)
+        : tags,
       documents,
       status,
       createdBy: req.user._id
@@ -82,6 +94,7 @@ export const getAllBlogs = async (req, res, next) => {
 
     const query = {
       isDeleted: false,
+      status: 'published',
       title: { $regex: search, $options: 'i' },
     };
 
@@ -95,11 +108,18 @@ export const getAllBlogs = async (req, res, next) => {
     res.status(200).json({
       success: true,
       data: blogs,
+      meta: {
+        page: Number(page),
+        limit: Number(limit),
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
       pagination: {
         page: Number(page),
         limit: Number(limit),
         total,
         pages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limit),
       },
     });
   } catch (error) {
@@ -142,7 +162,14 @@ export const getBlogBySlug = async (req, res, next) => {
 export const updateBlog = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { title, content, status } = req.body;
+    const {
+      title,
+      content,
+      status,
+      metaTitle,
+      metaDescription,
+      tags,
+    } = req.body;
 
     const blog = await Blog.findById(id);
     if (!blog || blog.isDeleted) {
@@ -164,6 +191,13 @@ export const updateBlog = async (req, res, next) => {
 
     if (content) blog.content = content;
     if (status) blog.status = status;
+    if (metaTitle !== undefined) blog.metaTitle = metaTitle;
+    if (metaDescription !== undefined) blog.metaDescription = metaDescription;
+    if (tags !== undefined) {
+      blog.tags = typeof tags === 'string'
+        ? tags.split(',').map((tag) => tag.trim()).filter(Boolean)
+        : tags;
+    }
 
     /* ================= ADD NEW DOCUMENTS ================= */
     const files = Array.isArray(req.files?.documents)

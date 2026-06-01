@@ -3,84 +3,77 @@
 const CATEGORY_LABELS = [
   "Startup",
   "Intellectual Property",
-  "Tax Filling",
+  "Tax Filing",
   "MCA Compliance",
   "Registration",
   "Legal Advisory & Agreement",
   "Other Services",
 ];
 
-const BarChart = ({ revenueData = {} }) => {
-  const width = 600;
-  const height = 200;
-  const padding = 40;
+const shortLabel = (label) =>
+  label
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 4);
 
-  const values = CATEGORY_LABELS.map(
-    (label) => revenueData[label] || 0
-  );
-
+export default function BarChart({
+  revenueData = {},
+  selectedCategory,
+  onSelect,
+}) {
+  const values = CATEGORY_LABELS.map((label) => revenueData[label] || 0);
   const maxValue = Math.max(...values, 1);
 
-  const barWidth =
-    (width - padding * 2) / CATEGORY_LABELS.length - 15;
-
   return (
-    <div className="rounded-2xl shadow-lg p-8 w-[900px] bg-white border-3 border-custom-blue">
-      <span className="text-custom-blue font-anton font-normal tracking-wider text-lg mb-4 block">
-        Monthly Revenue Overview
-      </span>
+    <div className="h-[380px] rounded-3xl border border-blue-100 bg-white p-5 shadow-[0_10px_35px_rgba(37,99,235,0.08)] sm:p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h2 className="text-xl font-bold text-custom-blue">
+            Monthly Revenue Overview
+          </h2>
+          <p className="text-sm font-medium text-slate-500">
+            Bar chart by service category
+          </p>
+        </div>
 
-      <svg viewBox={`0 0 ${width} ${height}`} className="w-full">
-        {/* Bars */}
-        {values.map((value, index) => {
-          const barHeight =
-            (value / maxValue) * (height - padding * 2);
+        <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-600">
+          Monthly
+        </span>
+      </div>
 
-          const x =
-            padding +
-            index *
-              ((width - padding * 2) /
-                CATEGORY_LABELS.length);
-
-          const y =
-            height - padding - barHeight;
+      <div className="flex h-[255px] items-end gap-3 overflow-x-auto pb-2">
+        {CATEGORY_LABELS.map((label) => {
+          const value = revenueData[label] || 0;
+          const height = Math.max((value / maxValue) * 210, value ? 20 : 8);
+          const active = selectedCategory === label;
 
           return (
-            <g key={index}>
-              <rect
-                x={x}
-                y={y}
-                width={barWidth}
-                height={barHeight}
-                fill="#325cda"
-                rx="6"
+            <button
+              type="button"
+              key={label}
+              onClick={() => onSelect?.(label)}
+              className="flex min-w-[82px] flex-1 flex-col items-center justify-end gap-2"
+              title={label}
+            >
+              <span className="text-xs font-bold text-blue-700">
+                Rs. {value.toLocaleString()}
+              </span>
+              <span
+                className={`w-12 rounded-t-2xl transition-all ${
+                  active
+                    ? "bg-gradient-to-t from-indigo-700 to-blue-500"
+                    : "bg-gradient-to-t from-blue-500 to-blue-300"
+                }`}
+                style={{ height }}
               />
-
-              {/* Value Label */}
-              <text
-                x={x + barWidth / 2}
-                y={y - 5}
-                textAnchor="middle"
-                fontSize="12"
-                fill="#3f3c3c"
-              >
-                ₹{value.toLocaleString()}
-              </text>
-            </g>
+              <span className="text-xs font-bold text-slate-500">
+                {shortLabel(label)}
+              </span>
+            </button>
           );
         })}
-      </svg>
-
-      {/* Category Labels */}
-      <div className="flex justify-between text-xs font-bold mt-4">
-        {CATEGORY_LABELS.map((label, i) => (
-          <div key={i} className="text-center w-full font-lato text-xs lg:text-sm text-letter1">
-            {label.slice(0, 4)}
-          </div>
-        ))}
       </div>
     </div>
   );
-};
-
-export default BarChart;
+}

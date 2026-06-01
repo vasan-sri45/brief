@@ -1,14 +1,16 @@
-// app/admin/blogs/edit/[id]/page.jsx
-import EditBlog from "../../../../components/blog/EditBlog";
+"use client";
 
-export default function Page({ params }) {
-  const blog = {
-    _id: params.id,
-    title: "Sample Blog",
-    slug: "sample-blog",
-    content: "Sample content",
-    image: "/demo.jpg",
-  };
+import EditBlog from "../../../../components/blog/EditBlog";
+import { useGetBlogs } from "../../../../hooks/useBlogMutation";
+import { useParams } from "next/navigation";
+
+export default function Page() {
+  const params = useParams();
+  const { data, isLoading, isError } = useGetBlogs(1, 100);
+  const blog = data?.data?.find((item) => item._id === params.id);
+
+  if (isLoading) return <div className="p-6 font-semibold text-gray-500">Loading blog...</div>;
+  if (isError || !blog) return <div className="p-6 font-semibold text-red-600">Blog not found.</div>;
 
   return <EditBlog blog={blog} onClose={() => {}} />;
 }

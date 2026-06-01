@@ -66,12 +66,10 @@
 
 
 "use client";
-import { useState } from "react";
 import Image from "next/image";
 import EmployeeLoginForm from "./EmployeeLoginForm";
 import FormFooter from "./FormFooter";
 import BriefCasse from "../../../public/assets/brief_white.png";
-import BriefHeading from "../../../public/assets/brief_heading.png";
 
 const LoginForm = ({ handleClick }) => {
 
@@ -105,7 +103,6 @@ const LoginForm = ({ handleClick }) => {
 
             <button
               type="button"
-              onClick={() => setLoginType("employee")}
               className="px-4 py-1 rounded-full text-sm font-lato font-bold bg-white text-custom-blue" >
               Employee / Admin
             </button>

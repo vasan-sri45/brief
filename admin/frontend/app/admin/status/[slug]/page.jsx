@@ -48,11 +48,35 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <main className="w-full py-10 px-4">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="font-anton font-normal text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-3 uppercase text-center tracking-wide">
+    <main className="w-full bg-slate-50 px-4 py-10">
+      <div className="mx-auto max-w-5xl">
+        <div className="mb-8 text-center">
+          <p className="mx-auto mb-3 inline-flex rounded-full bg-blue-50 px-4 py-2 text-xs font-bold uppercase tracking-wide text-blue-700">
+            Briefcasse Insights
+          </p>
+          <h1 className="mx-auto max-w-4xl text-3xl font-extrabold leading-tight text-slate-950 md:text-5xl">
           {blog.title}
-        </h1>
+          </h1>
+
+          {blog.metaDescription && (
+            <p className="mx-auto mt-4 max-w-3xl text-base font-medium leading-relaxed text-slate-600 md:text-lg">
+              {blog.metaDescription}
+            </p>
+          )}
+
+          {blog.tags?.length > 0 && (
+            <div className="mt-5 flex flex-wrap justify-center gap-2">
+              {blog.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-white px-3 py-1 text-xs font-bold text-blue-700 ring-1 ring-blue-100"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
 
         {blog.subtitle && (
           <p className="text-center text-[1rem] md:text-[1.2rem] text-letter1 mb-6 font-lato font-bold">
@@ -61,26 +85,26 @@ export default function BlogDetailPage() {
         )}
 
         <img
-          className="w-full h-[220px] md:h-[450px] object-cover mb-4 shadow"
+          className="mb-5 h-[240px] w-full rounded-3xl object-cover shadow-[0_18px_55px_rgba(15,23,42,0.12)] md:h-[520px]"
           src={cover}
           alt={blog.title}
         />
 
-        <p className="text-[0.7rem] md:text-[0.8rem] text-gray-500 mb-4 font-bold">
+        <p className="mb-6 text-sm font-bold text-slate-400">
           {date}
         </p>
 
-        <article className="text-[13px] leading-6 space-y-6 text-justify">
+        <article className="rounded-3xl bg-white p-5 text-base leading-8 text-slate-700 shadow-[0_14px_45px_rgba(15,23,42,0.06)] md:p-8">
           {contentBlocks.length > 0 ? (
             contentBlocks.map((block, index) => (
               <div key={index}>
                 {block.heading && (
-                  <h3 className="text-[1rem] md:text-[1.4rem] text-custom-blue mb-2 font-lato font-bold tracking-wide">
+                  <h3 className="mb-3 text-xl font-extrabold text-slate-950 md:text-2xl">
                     {block.heading}
                   </h3>
                 )}
 
-                <div className="font-lato font-bold text-letter1 text-[0.8rem] md:text-[0.9rem] leading-relaxed tracking-wide space-y-2">
+                <div className="space-y-3 font-medium leading-8 text-slate-700">
                   {block.body
                     ?.split(".")
                     .filter(Boolean)
@@ -98,7 +122,7 @@ export default function BlogDetailPage() {
         <div className="flex justify-end mt-12">
            <Link
               href={`/admin/status`}
-              className="bg-starttext text-white text-[0.9rem] md:text-[1.1rem] font-anton font-normal tracking-wide rounded-full flex justify-center items-center px-3 py-2"
+              className="flex items-center justify-center rounded-2xl bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-blue-100 hover:bg-blue-700"
             >
               Back to blogs
               <ArrowRight className="ml-2 w-5 h-5 md:w-7 md:h-7" />

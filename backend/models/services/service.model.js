@@ -43,6 +43,15 @@ const trademarkSchema = new mongoose.Schema(
   { _id: false }
 );
 
+const faqSchema = new mongoose.Schema(
+  {
+    question: { type: String, required: true, trim: true },
+    answer: { type: String, required: true, trim: true },
+    displayOrder: { type: Number, default: 0 },
+  },
+  { _id: false }
+);
+
 const serviceSchema = new mongoose.Schema(
   {
     title: { type: String, required: true },        // "Startup", "Intellectual Property"
@@ -51,6 +60,28 @@ const serviceSchema = new mongoose.Schema(
 
     heading: { type: String, required: true },
     description: { type: String, default: "" },
+    shortDescription: { type: String, default: "", trim: true },
+    fullDescription: { type: String, default: "", trim: true },
+    serviceIcon: { type: String, default: "", trim: true },
+    serviceBannerImage: { type: String, default: "", trim: true },
+    featuredImage: { type: String, default: "", trim: true },
+    serviceCategory: { type: String, default: "", trim: true, index: true },
+    displayOrder: { type: Number, default: 0, index: true },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+      index: true,
+    },
+    seoTitle: { type: String, default: "", maxlength: 60, trim: true },
+    metaDescription: { type: String, default: "", maxlength: 160, trim: true },
+    metaKeywords: { type: String, default: "", trim: true },
+    canonicalUrl: { type: String, default: "", trim: true },
+    openGraphTitle: { type: String, default: "", trim: true },
+    openGraphDescription: { type: String, default: "", trim: true },
+    openGraphImage: { type: String, default: "", trim: true },
+    schemaMarkupJson: { type: String, default: "", trim: true },
+    faqs: { type: [faqSchema], default: [] },
 
     documents: { type: [documentSchema], default: [] },
     process: { type: [processStepSchema], default: [] },
@@ -58,7 +89,25 @@ const serviceSchema = new mongoose.Schema(
     content: {type: [contentSchema], default: []},
     custom:{type: [customizedSchema], default: []},
     trademark: {type: [trademarkSchema], default: []},
-    price: {type: String, default: null},
+    // price: {type: String, default: null},
+  prices: [
+  {
+    amount: {
+      type: String,
+      default: "",
+    },
+      type: {
+      type: String,
+      enum: ["payment", "contact"],
+      default: "payment",
+    },
+
+    features: {
+      type: [String],
+      default: [],
+    },
+  },
+],
     images: {
       type: [
         {

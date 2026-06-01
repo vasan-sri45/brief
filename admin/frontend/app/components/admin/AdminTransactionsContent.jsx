@@ -11,26 +11,30 @@ import {
   useGetPaidServices,
   useUpdatePaidService,
   useUpdatePaymentService,
+  useSoftDeletePaidService,
+  useSoftDeletePaymentService,
 } from "../../hooks/useService";
 import { useAuth } from "../../hooks/useAuth";
 
 import { useGetEmployees } from "../../hooks/useEmployeeAuthMutations";
 
 export default function AdminTransactionsContent() {
-  const { month, date, search, status } = useSelector((s) => s.ui);
+  const { month, date, search, status, assigned } = useSelector((s) => s.ui);
   const {user} = useAuth();
 
   const { data: onlineData, isLoading: onlineLoading } =
-    useGetPaymentServices();
+    useGetPaymentServices({ limit: 100 });
 
   const { data: officeData, isLoading: officeLoading } =
-    useGetPaidServices();
+    useGetPaidServices({ limit: 100 });
 
     // console.log(onlineData)
     // console.log(officeData)
 
   const updatePaidMutation = useUpdatePaidService();
   const updatePaymentMutation = useUpdatePaymentService();
+  const softDeletePaidMutation = useSoftDeletePaidService();
+  const softDeletePaymentMutation = useSoftDeletePaymentService();
 
   const { data: empRes } = useGetEmployees();
   const employeeList = Array.isArray(empRes?.users)
@@ -45,7 +49,8 @@ export default function AdminTransactionsContent() {
     const online = Array.isArray(onlineData?.orders)
       ? onlineData.orders.map((item) => ({
           _id: item._id,
-          serviceNo: item.razorpayOrderId || "-",
+          serviceNo: item.serviceNo || item.razorpayOrderId || "-",
+          razorpayPaymentId: item.razorpayPaymentId,
 
           clientName:
             item.customer?.name ||
@@ -64,6 +69,8 @@ export default function AdminTransactionsContent() {
           service:
             item.serviceId?.heading||
             "-",
+          serviceId: item.serviceId?._id || item.serviceId || "",
+          serviceName: item.serviceId?.heading || item.serviceId?.title || "-",
 
           totalPayment: item.amount || 0,
           paymentMode: item.paymentMode || "Online",
@@ -76,6 +83,11 @@ export default function AdminTransactionsContent() {
             item.assignedTo && typeof item.assignedTo === "object"
               ? item.assignedTo._id
               : item.assignedTo || null,
+          assignedToName:
+            item.assignedTo && typeof item.assignedTo === "object"
+              ? item.assignedTo.name
+              : "",
+          progressMessages: item.progressMessages || [],
 
           source: "online",
         }))
@@ -91,9 +103,11 @@ export default function AdminTransactionsContent() {
           email: item.customer?.email || "-",
 
           serviceType: item.serviceType || "-",
-          serviceTitle: item.service?.title||
+          serviceTitle: item.serviceTitle || item.service?.title||
             "-",
-          service: item.service?.heading || "-",
+          service: item.serviceName || item.service?.heading || "-",
+          serviceId: item.service?._id || item.service || "",
+          serviceName: item.serviceName || item.service?.heading || item.service?.title || "-",
 
           totalPayment: item.totalPayment || 0,
           paymentMode: item.paymentMode || "-",
@@ -106,6 +120,11 @@ export default function AdminTransactionsContent() {
             item.assignedTo && typeof item.assignedTo === "object"
               ? item.assignedTo._id
               : item.assignedTo || null,
+          assignedToName:
+            item.assignedTo && typeof item.assignedTo === "object"
+              ? item.assignedTo.name
+              : "",
+          progressMessages: item.progressMessages || [],
 
           source: "office",
         }))
@@ -125,6 +144,14 @@ export default function AdminTransactionsContent() {
           s.paymentStatus?.toLowerCase() === status.toLowerCase() ||
           s.serviceStatus?.toLowerCase() === status.toLowerCase()
       );
+    }
+
+    if (assigned === "Assigned") {
+      out = out.filter((s) => !!s.assignedTo);
+    } else if (assigned === "Unassigned") {
+      out = out.filter((s) => !s.assignedTo);
+    } else if (assigned !== "All") {
+      out = out.filter((s) => s.assignedTo === assigned);
     }
 
     if (month) {
@@ -154,7 +181,7 @@ export default function AdminTransactionsContent() {
     }
 
     return out;
-  }, [combinedList, month, date, search, status]);
+  }, [combinedList, month, date, search, status, assigned]);
 
   console.log(combinedList)
 
@@ -191,6 +218,14 @@ export default function AdminTransactionsContent() {
             });
           }
 
+          setSelectedTxn(null);
+        }}
+        onSoftDelete={async (id) => {
+          if (selectedTxn.source === "online") {
+            await softDeletePaymentMutation.mutateAsync(id);
+          } else {
+            await softDeletePaidMutation.mutateAsync(id);
+          }
           setSelectedTxn(null);
         }}
       />

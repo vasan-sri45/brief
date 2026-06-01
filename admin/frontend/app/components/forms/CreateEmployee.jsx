@@ -9,6 +9,24 @@ const CreateEmployee = () => {
     mobile: "",
     password: "",
     role: "",
+    department: "",
+    designation: "",
+    dateOfJoining: "",
+    panNumber: "",
+    hasExistingUan: "false",
+    uanNumber: "",
+    hasExistingEsi: "false",
+    esiNumber: "",
+    bankAccountNumber: "",
+    ifscCode: "",
+    salaryPerMonth: "",
+    basicSalary: "",
+    hra: "",
+    conveyanceAllowance: "",
+    medicalAllowance: "",
+    specialAllowance: "",
+    annualCtc: "",
+    employmentType: "off-role",
   });
 
   const [errorMsg, setErrorMsg] = useState("");
@@ -28,7 +46,7 @@ const CreateEmployee = () => {
     setErrorMsg("");
 
     register.mutate(formData, {
-      onSuccess: (data) => {
+      onSuccess: () => {
         alert("Employee created successfully");
 
         // reset form
@@ -38,6 +56,24 @@ const CreateEmployee = () => {
           mobile: "",
           password: "",
           role: "",
+          department: "",
+          designation: "",
+          dateOfJoining: "",
+          panNumber: "",
+          hasExistingUan: "false",
+          uanNumber: "",
+          hasExistingEsi: "false",
+          esiNumber: "",
+          bankAccountNumber: "",
+          ifscCode: "",
+          salaryPerMonth: "",
+          basicSalary: "",
+          hra: "",
+          conveyanceAllowance: "",
+          medicalAllowance: "",
+          specialAllowance: "",
+          annualCtc: "",
+          employmentType: "off-role",
         });
       },
       onError: (err) => {
@@ -52,20 +88,23 @@ const CreateEmployee = () => {
     formData.name &&
     formData.email &&
     formData.mobile &&
-    formData.password;
+    formData.password &&
+    formData.role &&
+    (formData.hasExistingUan !== "true" || /^\d{12}$/.test(formData.uanNumber)) &&
+    (formData.hasExistingEsi !== "true" || /^\d+$/.test(formData.esiNumber));
 
   return (
-    <div className="flex items-center justify-center mt-10 lg:mt-24">
-      <div className="w-full max-w-md p-8 rounded-2xl shadow-xl bg-custom-blue text-white">
+    <div className="flex items-center justify-center py-6">
+      <div className="w-full max-w-3xl rounded-3xl border border-blue-100 bg-white p-6 shadow-[0_16px_45px_rgba(15,23,42,0.08)] md:p-8">
 
-        <h1 className="text-3xl font-bold text-center mb-2">
+        <h1 className="text-3xl font-bold text-custom-blue mb-2">
           New Employee
         </h1>
-        {/* <p className="text-center text-sm opacity-80 mb-6">
-          Create your account
-        </p> */}
+        <p className="mb-6 text-sm font-medium text-gray-500">
+          Create a login, assign role, and set payroll basics.
+        </p>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form className="grid grid-cols-1 gap-5 md:grid-cols-2" onSubmit={handleSubmit}>
 
           <input
             type="text"
@@ -73,7 +112,7 @@ const CreateEmployee = () => {
             placeholder="Full Name"
             value={formData.name}
             onChange={handleChange}
-            className="w-full bg-transparent border-b border-white/50 py-2"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
           />
 
           <input
@@ -82,7 +121,7 @@ const CreateEmployee = () => {
             placeholder="Email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full bg-transparent border-b border-white/50 py-2"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
           />
 
           <input
@@ -91,7 +130,209 @@ const CreateEmployee = () => {
             placeholder="Mobile No"
             value={formData.mobile}
             onChange={handleChange}
-            className="w-full bg-transparent border-b border-white/50 py-2"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="text"
+            name="designation"
+            placeholder="Designation"
+            value={formData.designation}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="text"
+            name="department"
+            placeholder="Department"
+            value={formData.department}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="date"
+            name="dateOfJoining"
+            value={formData.dateOfJoining}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="salaryPerMonth"
+            placeholder="Monthly Salary"
+            value={formData.salaryPerMonth}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="basicSalary"
+            placeholder="Basic Salary"
+            value={formData.basicSalary}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="hra"
+            placeholder="HRA"
+            value={formData.hra}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="conveyanceAllowance"
+            placeholder="Conveyance Allowance"
+            value={formData.conveyanceAllowance}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="medicalAllowance"
+            placeholder="Medical Allowance"
+            value={formData.medicalAllowance}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="specialAllowance"
+            placeholder="Special Allowance"
+            value={formData.specialAllowance}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="number"
+            name="annualCtc"
+            placeholder="Annual CTC"
+            value={formData.annualCtc}
+            onChange={handleChange}
+            min="0"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <select
+            name="employmentType"
+            value={formData.employmentType}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          >
+            <option value="off-role">Off-role Employee</option>
+            <option value="on-role">On-role Employee</option>
+          </select>
+
+          <div className="rounded-xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm font-semibold text-blue-700">
+            {formData.employmentType === "on-role"
+              ? "On-role payroll applies PF, ESI, TDS and Professional Tax. Allowances are still included."
+              : "Off-role payroll uses salary and allowances only. PF, ESI, TDS and Professional Tax are not applied."}
+          </div>
+
+          <input
+            type="text"
+            name="panNumber"
+            placeholder="PAN Number"
+            value={formData.panNumber}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
+            <p className="text-sm font-bold text-gray-700">
+              Does the employee already have a PF UAN Number from a previous company?
+            </p>
+            <div className="mt-3 flex gap-3">
+              {["true", "false"].map((value) => (
+                <label key={value} className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <input
+                    type="radio"
+                    name="hasExistingUan"
+                    value={value}
+                    checked={formData.hasExistingUan === value}
+                    onChange={handleChange}
+                  />
+                  {value === "true" ? "Yes" : "No"}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {formData.hasExistingUan === "true" && (
+            <input
+              type="text"
+              name="uanNumber"
+              placeholder="UAN Number"
+              maxLength={12}
+              value={formData.uanNumber}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          )}
+
+          <div className="rounded-xl border border-gray-200 bg-white px-4 py-3">
+            <p className="text-sm font-bold text-gray-700">
+              Does the employee already have an ESI Number from a previous company?
+            </p>
+            <div className="mt-3 flex gap-3">
+              {["true", "false"].map((value) => (
+                <label key={value} className="flex items-center gap-2 text-sm font-semibold text-gray-600">
+                  <input
+                    type="radio"
+                    name="hasExistingEsi"
+                    value={value}
+                    checked={formData.hasExistingEsi === value}
+                    onChange={handleChange}
+                  />
+                  {value === "true" ? "Yes" : "No"}
+                </label>
+              ))}
+            </div>
+          </div>
+
+          {formData.hasExistingEsi === "true" && (
+            <input
+              type="text"
+              name="esiNumber"
+              placeholder="ESI Number"
+              value={formData.esiNumber}
+              onChange={handleChange}
+              className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+            />
+          )}
+
+          <input
+            type="text"
+            name="bankAccountNumber"
+            placeholder="Bank Account Number"
+            value={formData.bankAccountNumber}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
+          />
+
+          <input
+            type="text"
+            name="ifscCode"
+            placeholder="IFSC Code"
+            value={formData.ifscCode}
+            onChange={handleChange}
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
           />
 
           {/* <input
@@ -107,7 +348,7 @@ const CreateEmployee = () => {
             name="role"
             value={formData.role}
             onChange={handleChange}
-            className="w-full bg-custom-blue border-b border-white/50 py-2 text-white"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
           >
             <option value="">Select Role</option>
             <option value="employee">Employee</option>
@@ -120,12 +361,12 @@ const CreateEmployee = () => {
             placeholder="Password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full bg-transparent border-b border-white/50 py-2"
+            className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-gray-700 outline-none focus:ring-2 focus:ring-blue-300"
           />
 
           {/* ERROR */}
           {errorMsg && (
-            <p className="text-red-300 text-sm text-center">
+            <p className="md:col-span-2 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
               {errorMsg}
             </p>
           )}
@@ -133,9 +374,7 @@ const CreateEmployee = () => {
           <button
             type="submit"
             disabled={!canSubmit || register.isPending}
-            className="w-full py-3 mt-4 rounded-full 
-            bg-gradient-to-r from-blue-400 to-cyan-400 
-            font-semibold disabled:opacity-60"
+            className="md:col-span-2 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 py-3 font-semibold text-white shadow-lg disabled:opacity-60"
           >
             {register.isPending ? "Creating..." : "Create"}
           </button>

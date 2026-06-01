@@ -4,6 +4,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./utils/database.js";
+
 import employeeAuthRouter from "./routes/auth/employee-route.js";
 import userAuthRouter from "./routes/auth/user-route.js";
 import userServiceRouter from "./routes/service/user-service.js";
@@ -16,6 +17,10 @@ import paymentRoutes from "./routes/service/payment.routes.js";
 import contactRouter from "./routes/service/contact.routes.js";
 import healthRoutes from "./routes/health/health.route.js";
 import exportRoutes from "./routes/service/export.routes.js";
+import attendanceRoutes from "./routes/attendance/attendance-route.js";
+import adminAttendanceRoutes from "./routes/attendance/adminAttendance-route.js";
+import payrollRoutes from "./routes/payroll/payroll.route.js";
+import employeeDetailRoutes from "./routes/auth/employeeDetails.route.js";
 import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 
@@ -50,15 +55,18 @@ app.set("trust proxy", 1);
 app.use("/api", healthRoutes);
 app.use("/api", userAuthRouter);
 app.use("/api", employeeAuthRouter);
+app.use("/api/attendance", attendanceRoutes);
+app.use("/api/admin", adminAttendanceRoutes);
 app.use("/api/user", userServiceRouter);
 app.use("/api/ticket", ticketRouter);
 // app.use("/api/selling", sellingRouter);
 app.use("/api/services", serviceRoutes);
 app.use("/api",BlogRoutes);
 app.use("/api/paid",PaidServiceRoutes);
-
+app.use("/api/payroll", payrollRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api", contactRouter);
+app.use("/api", employeeDetailRoutes);
 app.use("/api/export",exportRoutes);
 
 

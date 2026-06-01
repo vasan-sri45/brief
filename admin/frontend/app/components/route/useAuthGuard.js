@@ -74,9 +74,9 @@ export function useAuthGuard(requiredRoles = []) {
     // ❌ WRONG ROLE
     if (requiredRoles.length && !requiredRoles.includes(role)) {
       if (role === "admin") router.replace("/admin/dashboard");
-      else router.replace("/employee");
+      else router.replace("/employee/dashboard");
     }
-  }, [data, isLoading, isError]);
+  }, [data, isLoading, isError, dispatch, pathname, requiredRoles, router]);
 
   return { loading: isLoading, user: data?.user };
 }

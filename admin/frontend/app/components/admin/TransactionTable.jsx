@@ -1,11 +1,41 @@
 "use client";
+
 import { useMemo, useState } from "react";
 import {
-  useReactTable,
+  flexRender,
   getCoreRowModel,
   getPaginationRowModel,
-  flexRender,
+  useReactTable,
 } from "@tanstack/react-table";
+
+const serviceName = (row) =>
+  typeof row.service === "object"
+    ? row.service?.heading || row.service?.title || "-"
+    : row.service || "-";
+
+const assignedName = (row) =>
+  row.assignedToName || row.assignedTo?.name || "Unassigned";
+
+const statusClass = (value = "") => {
+  const normalized = String(value).toLowerCase();
+
+  if (normalized.includes("completed") || normalized.includes("paid")) {
+    return "bg-emerald-50 text-emerald-700 ring-emerald-100";
+  }
+  if (normalized.includes("progress")) {
+    return "bg-amber-50 text-amber-700 ring-amber-100";
+  }
+  if (normalized.includes("failed") || normalized.includes("cancel")) {
+    return "bg-red-50 text-red-700 ring-red-100";
+  }
+  return "bg-slate-100 text-slate-600 ring-slate-200";
+};
+
+const StatusPill = ({ value }) => (
+  <span className={`inline-flex rounded-full px-3 py-1 text-xs font-bold ring-1 ${statusClass(value)}`}>
+    {value || "-"}
+  </span>
+);
 
 export default function TransactionTable({ data = [], onView }) {
   const [pageIndex, setPageIndex] = useState(0);
@@ -16,22 +46,43 @@ export default function TransactionTable({ data = [], onView }) {
       {
         header: "No",
         id: "rowNo",
-        accessorFn: (_r, i) => i + 1 + pageIndex * pageSize,
+        accessorFn: (_row, index) => index + 1 + pageIndex * pageSize,
       },
-      { header: "Customer", accessorKey: "clientName" },
-      { header: "Service", accessorKey: "service" },
+      {
+        header: "Customer",
+        accessorFn: (row) => row.clientName || row.customer?.name || "-",
+      },
+      {
+        header: "Customer ID",
+        accessorFn: (row) => row.customer?.userCode || "-",
+      },
+      {
+        header: "Service",
+        accessorFn: serviceName,
+      },
+      {
+        header: "Assigned",
+        accessorFn: assignedName,
+      },
       {
         header: "Amount",
         accessorFn: (row) =>
-          `₹${(row.totalPayment || row.amount || 0).toLocaleString()}`,
+          `Rs. ${(row.totalPayment || row.amount || 0).toLocaleString()}`,
       },
       { header: "Payment Mode", accessorKey: "paymentMode" },
-      { header: "Payment Status", accessorKey: "paymentStatus" },
-      { header: "Service Status", accessorKey: "serviceStatus" },
+      {
+        header: "Payment Status",
+        accessorKey: "paymentStatus",
+        cell: (info) => <StatusPill value={info.getValue()} />,
+      },
+      {
+        header: "Service Status",
+        accessorKey: "serviceStatus",
+        cell: (info) => <StatusPill value={info.getValue()} />,
+      },
       {
         header: "Date",
-        accessorFn: (row) =>
-          new Date(row.createdAt).toLocaleDateString(),
+        accessorFn: (row) => new Date(row.createdAt).toLocaleDateString(),
       },
       {
         id: "view",
@@ -39,9 +90,9 @@ export default function TransactionTable({ data = [], onView }) {
         cell: (info) => (
           <button
             onClick={() => onView?.(info.row.original)}
-            className="bg-blue-600 text-white w-7 h-7 rounded hover:bg-blue-700"
+            className="h-9 rounded-xl bg-blue-600 px-4 text-xs font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-700"
           >
-            ▶
+            View
           </button>
         ),
       },
@@ -67,51 +118,93 @@ export default function TransactionTable({ data = [], onView }) {
   });
 
   return (
-    <div className="border rounded bg-white overflow-x-auto">
-      {/* TABLE */}
-      <table className="w-full text-sm">
-        <thead className="bg-gray-100">
-          {table.getHeaderGroups().map((hg) => (
-            <tr key={hg.id}>
-              {hg.headers.map((header) => (
-                <th key={header.id} className="px-4 py-2 border-b">
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </th>
-              ))}
-            </tr>
-          ))}
-        </thead>
-
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr key={row.id} className="hover:bg-gray-50">
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="px-4 py-2 border-b text-center"
+    <div className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.08)]">
+      <div className="grid gap-3 p-4 md:hidden">
+        {data.length > 0 ? (
+          data.map((row) => (
+            <article
+              key={row._id}
+              className="rounded-2xl border border-blue-100 bg-white p-4 shadow-sm"
+            >
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
+                    {row.customer?.userCode || row.serviceNo || "-"}
+                  </p>
+                  <h3 className="mt-1 font-bold text-gray-900">
+                    {row.clientName || row.customer?.name || "-"}
+                  </h3>
+                  <p className="text-sm text-gray-500">{serviceName(row)}</p>
+                </div>
+                <button
+                  onClick={() => onView?.(row)}
+                  className="rounded-xl bg-blue-600 px-3 py-2 text-sm font-bold text-white"
                 >
-                  {flexRender(
-                    cell.column.columnDef.cell,
-                    cell.getContext()
-                  )}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                  View
+                </button>
+              </div>
 
-      {/* PAGINATION CONTROLS */}
-      <div className="flex items-center justify-between p-4 border-t">
-        {/* Previous / Next */}
+              <div className="mt-4 grid grid-cols-2 gap-3 text-sm">
+                <Info
+                  label="Amount"
+                  value={`Rs. ${row.totalPayment || row.amount || 0}`}
+                />
+                <Info label="Status" value={<StatusPill value={row.serviceStatus} />} />
+                <Info label="Payment" value={<StatusPill value={row.paymentStatus} />} />
+                <Info label="Assigned" value={assignedName(row)} />
+              </div>
+            </article>
+          ))
+        ) : (
+          <div className="rounded-2xl bg-gray-50 p-6 text-center font-semibold text-gray-500">
+            No transactions found.
+          </div>
+        )}
+      </div>
+
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full text-sm">
+          <thead className="bg-slate-900 text-white">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <tr key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <th key={header.id} className="px-4 py-4 text-xs font-bold uppercase tracking-wide">
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </th>
+                ))}
+              </tr>
+            ))}
+          </thead>
+
+          <tbody>
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className="odd:bg-white even:bg-slate-50/70 hover:bg-blue-50/60"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="border-b border-slate-100 px-4 py-4 text-center font-medium text-slate-700"
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="flex flex-col gap-3 border-t border-slate-100 bg-slate-50 p-4 md:flex-row md:items-center md:justify-between">
         <div className="flex gap-2">
           <button
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
           >
             Previous
           </button>
@@ -119,47 +212,48 @@ export default function TransactionTable({ data = [], onView }) {
           <button
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="px-3 py-1 bg-gray-200 rounded disabled:opacity-50"
+            className="rounded-xl bg-white px-4 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200 disabled:opacity-50"
           >
             Next
           </button>
         </div>
 
-        {/* Page Numbers */}
-        <div className="flex gap-1">
-          {Array.from({ length: table.getPageCount() }).map((_, i) => (
+        <div className="flex flex-wrap gap-1">
+          {Array.from({ length: table.getPageCount() }).map((_, index) => (
             <button
-              key={i}
-              onClick={() => setPageIndex(i)}
-              className={`px-3 py-1 rounded ${
-                pageIndex === i
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200"
+              key={index}
+              onClick={() => setPageIndex(index)}
+              className={`rounded-xl px-3 py-2 text-sm font-bold ${
+                pageIndex === index ? "bg-blue-600 text-white" : "bg-white text-slate-700 ring-1 ring-slate-200"
               }`}
             >
-              {i + 1}
+              {index + 1}
             </button>
           ))}
         </div>
 
-        {/* Page Size Selector */}
-        <div>
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-              setPageIndex(0);
-            }}
-            className="border px-2 py-1 rounded"
-          >
-            {[10, 20, 50].map((size) => (
-              <option key={size} value={size}>
-                Show {size}
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={pageSize}
+          onChange={(event) => {
+            setPageSize(Number(event.target.value));
+            setPageIndex(0);
+          }}
+          className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700"
+        >
+          {[10, 20, 50].map((size) => (
+            <option key={size} value={size}>
+              Show {size}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );
 }
+
+const Info = ({ label, value }) => (
+  <div className="rounded-xl bg-gray-50 p-3">
+    <p className="text-xs font-bold uppercase text-gray-400">{label}</p>
+    <p className="mt-1 font-semibold text-gray-700">{value}</p>
+  </div>
+);

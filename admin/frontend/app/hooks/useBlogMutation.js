@@ -63,6 +63,31 @@ export const useGetBlogs = (page = 1, limit = 10) =>
     refetchOnWindowFocus: false,
   });
 
+export const useGetBlogBySlug = (slug) =>
+  useQuery({
+    queryKey: ["blog", slug],
+    enabled: !!slug,
+    queryFn: async () => {
+      const res = await api.get(`/blogs/${slug}`);
+      return res.data;
+    },
+  });
+
+export const useUpdateBlog = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, formData }) => {
+      const res = await api.put(`/admin/blogs/${id}`, formData);
+      return res.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["blogs"] });
+      queryClient.invalidateQueries({ queryKey: ["blog"] });
+    },
+  });
+};
+
 
   
   export const useDeleteBlog = () => {

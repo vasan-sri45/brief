@@ -14,7 +14,7 @@ const protectFactory = (Model) => async (req, res, next) => {
     const id = decoded.sub;
 
     // Fetch only what is needed for authorization
-    const user = await Model.findById(id).select('_id name email mobile role status');
+    const user = await Model.findById(id).select('_id name email mobile role status profileImage');
     if (!user) return res.status(401).json({ success: false, message: 'Invalid user' });
 
     req.user = user;

@@ -1,5 +1,5 @@
-import TicketForm from "../../components/ticket/TicketForm"
+import AdminEmployeesContent from "../../components/admin/AdminEmployeesContent";
 
 export default function EmployeeAdminPage() {
-  return <TicketForm/>;
+  return <AdminEmployeesContent />;
 }

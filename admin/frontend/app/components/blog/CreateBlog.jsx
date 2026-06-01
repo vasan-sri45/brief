@@ -33,6 +33,9 @@ export default function CreateBlog() {
     formData.append("title", payload.title);
     formData.append("slug", payload.slug);
     formData.append("content", payload.content);
+    formData.append("metaTitle", payload.metaTitle);
+    formData.append("metaDescription", payload.metaDescription);
+    formData.append("tags", payload.tags);
     if (payload.image) {
       formData.append("documents", payload.image); // your backend expects req.files.documents
     }

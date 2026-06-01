@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import asyncHandler from 'express-async-handler';
 import { uploadToCloudinary, cloudinary } from '../../helpers/cloudinary.js';
 
+
 const serviceOrder = [
   "Private Limited Company Registration",
   "Limited Liability Partnership Registration",
@@ -109,8 +110,6 @@ const serviceOrder = [
   "Dissolve a Partnership Firm"
 ];
 
-
-
 const normalizeArray = (schemaName, arr) => {
   if (!Array.isArray(arr)) return [];
   
@@ -120,6 +119,10 @@ const normalizeArray = (schemaName, arr) => {
     if (['documents', 'content', 'trademark'].includes(schemaName)) {
       normalized.name = item.name?.trim() || '';
       normalized.details = item.details?.trim() || '';
+    } else if (schemaName === "faqs") {
+      normalized.question = item.question?.trim() || "";
+      normalized.answer = item.answer?.trim() || "";
+      normalized.displayOrder = Number(item.displayOrder || 0);
     } else if (['process', 'processAtBriefcase'].includes(schemaName)) {
       normalized.days = item.days?.trim() || null;
       normalized.step = typeof item.step === 'number' ? item.step : 
@@ -135,31 +138,75 @@ const normalizeArray = (schemaName, arr) => {
   }).filter(item => 
     ['documents', 'content', 'trademark'].includes(schemaName) 
       ? item.name && item.details 
+      : schemaName === "faqs"
+      ? item.question && item.answer
       : item.details
   );
 };
 
-// CREATE
+const serviceStringFields = [
+  "title",
+  "subTitle",
+  "slug",
+  "heading",
+  "description",
+  "shortDescription",
+  "fullDescription",
+  "serviceIcon",
+  "serviceBannerImage",
+  "featuredImage",
+  "serviceCategory",
+  "status",
+  "seoTitle",
+  "metaDescription",
+  "metaKeywords",
+  "canonicalUrl",
+  "openGraphTitle",
+  "openGraphDescription",
+  "openGraphImage",
+  "schemaMarkupJson",
+];
+
+const pickServiceFields = (body) =>
+  serviceStringFields.reduce((acc, field) => {
+    if (body[field] !== undefined) {
+      acc[field] = body[field]?.toString().trim() || "";
+    }
+
+    return acc;
+  }, {});
+
 export const createService = asyncHandler(async (req, res) => {
   const {
-    title, subTitle, slug, heading, description = '',
-    documents = [], process = [], processAtBriefcase = [],
-    content = [], custom = [], trademark = []
+    title,
+    subTitle,
+    slug,
+    heading,
+    description = '',
+    documents = [],
+    process = [],
+    processAtBriefcase = [],
+    content = [],
+    custom = [],
+    trademark = [],
+    faqs = [],
+    prices = []                    
   } = req.body;
 
   const trimmed = {
+    ...pickServiceFields(req.body),
     title: title?.trim(),
     subTitle: subTitle?.trim(),
     slug: slug?.trim().toLowerCase(),
     heading: heading?.trim(),
-    description: description?.trim() || ''
+    description: description?.trim() || '',
+    displayOrder: Number(req.body.displayOrder || 0),
   };
 
   if (!trimmed.title) return res.status(400).json({ error: 'title is required' });
   if (!trimmed.subTitle) return res.status(400).json({ error: 'subTitle is required' });
   if (!trimmed.slug) return res.status(400).json({ error: 'slug is required' });
   if (!trimmed.heading) return res.status(400).json({ error: 'heading is required' });
-  // if (!trimmed.description) return res.status(400).json({ error: 'description is required' });
 
   const existing = await Service.findOne({ slug: trimmed.slug });
   if (existing) return res.status(409).json({ error: 'slug already exists' });
@@ -171,54 +218,55 @@ export const createService = asyncHandler(async (req, res) => {
     processAtBriefcase: normalizeArray('processAtBriefcase', processAtBriefcase),
     content: normalizeArray('content', content),
     custom: normalizeArray('custom', custom),
-    trademark: normalizeArray('trademark', trademark)
+    trademark: normalizeArray('trademark', trademark),
+    faqs: normalizeArray("faqs", faqs).sort(
+      (a, b) => Number(a.displayOrder || 0) - Number(b.displayOrder || 0)
+    ),
+    prices: Array.isArray(prices) ? prices : []   
   });
 
   res.status(201).json(service);
 });
 
-// LIST (with search & pagination)
-// export const listServices = asyncHandler(async (req, res) => {
-//   const page = Math.max(1, parseInt(req.query.page) || 1);
-//   const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 100));
-//   const skip = (page - 1) * limit;
-//   const search = req.query.search ? { $text: { $search: req.query.search } } : {};
 
-//   const [items, total] = await Promise.all([
-//     Service.find(search)
-//       .select('-__v')
-//       .lean()
-//       .sort({ createdAt: -1 })
-//       .skip(skip)
-//       .limit(limit),
-//     Service.countDocuments(search)
-//   ]);
-
-//   res.json({
-//     items,
-//     pagination: { page, limit, total, pages: Math.ceil(total / limit) }
-//   });
-// });
 
 export const listServices = asyncHandler(async (req, res) => {
   const page = Math.max(1, parseInt(req.query.page) || 1);
   const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 100));
   const skip = (page - 1) * limit;
 
-  const search = req.query.search
-    ? { $text: { $search: req.query.search } }
+  const searchTerm = String(req.query.search || "").trim();
+  const search = searchTerm
+    ? {
+        $or: [
+          { title: { $regex: searchTerm, $options: "i" } },
+          { subTitle: { $regex: searchTerm, $options: "i" } },
+          { heading: { $regex: searchTerm, $options: "i" } },
+          { slug: { $regex: searchTerm, $options: "i" } },
+          { description: { $regex: searchTerm, $options: "i" } },
+        ],
+      }
     : {};
+  const visibility =
+    req.query.includeInactive === "true"
+      ? {}
+      : { status: { $ne: "Inactive" } };
 
-  let items = await Service.find(search)
+  let items = await Service.find({ ...search, ...visibility })
     .select("-__v")
     .lean();
 
   // Custom document order sorting
   items.sort((a, b) => {
-    return (
-      serviceOrder.indexOf(a.name) -
-      serviceOrder.indexOf(b.name)
-    );
+    const aName = a.heading || a.title || "";
+    const bName = b.heading || b.title || "";
+    const aIndex = serviceOrder.indexOf(aName);
+    const bIndex = serviceOrder.indexOf(bName);
+
+    if (aIndex === -1 && bIndex === -1) return aName.localeCompare(bName);
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
   });
 
   const total = items.length;
@@ -250,58 +298,146 @@ export const getServiceById = asyncHandler(async (req, res) => {
   res.json(item);
 });
 
-// UPDATE (PATCH)
 export const updateService = asyncHandler(async (req, res) => {
+
   const { id } = req.params;
+
+  /* ================= VALIDATE ID ================= */
+
   if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({ error: 'Invalid ID format' });
+
+    return res.status(400).json({
+      error: "Invalid ID format",
+    });
+
   }
 
   const updates = {};
-  const fields = ['title', 'subTitle', 'slug', 'heading', 'description'];
-  
-  fields.forEach(field => {
+
+  /* ================= SIMPLE STRING FIELDS ================= */
+
+  const fields = serviceStringFields;
+
+  fields.forEach((field) => {
+
     if (req.body[field] !== undefined) {
-      updates[field] = req.body[field]?.trim() || '';
+
+      updates[field] = req.body[field]?.trim() || "";
+
     }
+
   });
 
-  const arrayFields = ['documents', 'process', 'processAtBriefcase', 'content', 'trademark'];
-  arrayFields.forEach(field => {
+  if (req.body.displayOrder !== undefined) {
+    updates.displayOrder = Number(req.body.displayOrder || 0);
+  }
+
+  /* ================= ARRAY FIELDS ================= */
+
+  const arrayFields = [
+    "documents",
+    "process",
+    "processAtBriefcase",
+    "content",
+    "custom",
+    "trademark",
+    "faqs",
+  ];
+
+  arrayFields.forEach((field) => {
+
     if (req.body[field] !== undefined) {
-      updates[field] = normalizeArray(field, req.body[field]);
+
+      updates[field] = normalizeArray(
+        field,
+        req.body[field]
+      );
+
     }
+
   });
+
+  /* ================= PRICES ================= */
+
+  if (req.body.prices !== undefined) {
+
+    updates.prices = Array.isArray(req.body.prices)
+
+      ? req.body.prices.map((price) => ({
+
+          amount:
+            price.amount?.toString().trim() || "",
+
+          type:
+            price.type || "payment",
+
+          features: Array.isArray(price.features)
+
+            ? price.features.map((feature) =>
+                feature.trim()
+              )
+
+            : [],
+
+        }))
+
+      : [];
+
+  }
+
+  /* ================= DUPLICATE SLUG ================= */
 
   if (updates.slug) {
-    const existing = await Service.findOne({ 
-      slug: updates.slug, 
-      _id: { $ne: id } 
+
+    const existing = await Service.findOne({
+
+      slug: updates.slug,
+
+      _id: { $ne: id },
+
     });
-    if (existing) return res.status(409).json({ error: 'slug already exists' });
+
+    if (existing) {
+
+      return res.status(409).json({
+        error: "slug already exists",
+      });
+
+    }
+
   }
+
+  /* ================= UPDATE SERVICE ================= */
 
   const item = await Service.findByIdAndUpdate(
-    id, 
-    { $set: updates }, 
-    { new: true, runValidators: true }
+
+    id,
+
+    {
+      $set: updates,
+    },
+
+    {
+      new: true,
+      runValidators: true,
+    }
+
   );
 
-  if (!item) return res.status(404).json({ error: 'Service not found' });
-  res.json(item);
-});
+  /* ================= NOT FOUND ================= */
 
-// DELETE
-export const deleteService = asyncHandler(async (req, routes) => {
-  const { id } = req.params;
-  if (!mongoose.isValidObjectId(id)) {
-    return res.status(400).json({ error: 'Invalid ID format' });
+  if (!item) {
+
+    return res.status(404).json({
+      error: "Service not found",
+    });
+
   }
-  
-  const item = await Service.findByIdAndDelete(id);
-  if (!item) return res.status(404).json({ error: 'Service not found' });
-  
-  res.status(204).send();
+
+  /* ================= RESPONSE ================= */
+
+  res.json(item);
+
 });
 
 
@@ -342,3 +478,17 @@ export const updateimage = async (req, res, next) => {
     next(err);
   }
 };
+
+
+// DELETE
+export const deleteService = asyncHandler(async (req, routes) => {
+  const { id } = req.params;
+  if (!mongoose.isValidObjectId(id)) {
+    return res.status(400).json({ error: 'Invalid ID format' });
+  }
+  
+  const item = await Service.findByIdAndDelete(id);
+  if (!item) return res.status(404).json({ error: 'Service not found' });
+  
+  res.status(204).send();
+});

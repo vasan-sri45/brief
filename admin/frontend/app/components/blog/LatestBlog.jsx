@@ -88,7 +88,7 @@ import Link from "next/link";
 import { useAuth } from "../../hooks/useAuth";
 import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
 import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
-import { ArrowRight, Trash2 } from "lucide-react";
+import { ArrowRight, Pencil, Trash2 } from "lucide-react";
 import { useDeleteBlog } from "../../hooks/useBlogMutation";
 
 const LatestBlogCard = ({ blog }) => {
@@ -133,7 +133,7 @@ const LatestBlogCard = ({ blog }) => {
 
       </div>
 
-      <div className="w-full h-[380px] md:h-[450px] lg:h-[560px] p-4 rounded-md border-2 border-custom-blue">
+      <div className="w-full overflow-hidden rounded-3xl border border-blue-100 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
 
         <div className="p-1 flex flex-col h-full">
 
@@ -141,28 +141,42 @@ const LatestBlogCard = ({ blog }) => {
 
           <img
             src={blog.documents?.[0]?.url || "/placeholder.png"}
-            className="w-full h-[220px] md:h-[280px] lg:h-[360px] bg-[#E0B15F] border-2 border-custom-blue rounded-md mb-2 shrink-0"
+            alt={blog.title}
+            className="mb-4 h-[220px] w-full shrink-0 rounded-2xl bg-slate-100 object-cover md:h-[320px] lg:h-[390px]"
           />
 
           <div className="flex flex-col flex-1">
 
             {/* TITLE */}
 
-            <h3 className="text-custom-blue font-anton font-normal text-[0.9rem] md:text-[0.9rem] lg:text-[1.1rem] leading-snug mb-1 tracking-wide uppercase">
+            <h3 className="mb-2 text-xl font-extrabold leading-snug text-slate-950 md:text-2xl">
               {blog.title}
             </h3>
 
+            {blog.tags?.length > 0 && (
+              <div className="mb-3 flex flex-wrap gap-2">
+                {blog.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+
             {/* CONTENT */}
 
-            <p className="text-[0.7rem] md:text-[1rem] text-letter1 mb-2 line-clamp-3 font-lato font-bold">
-              {blog.content?.slice(0, 120) + "..."}
+            <p className="mb-4 line-clamp-3 text-sm font-medium leading-relaxed text-slate-600 md:text-base">
+              {(blog.metaDescription || blog.content || "").slice(0, 160) + "..."}
             </p>
 
             {/* DATE + BUTTONS */}
 
             <div className="flex items-center justify-between mt-auto">
 
-              <p className="text-[0.7rem] md:text-[0.8rem] text-gray-400 text-anton font-normal">
+              <p className="text-sm font-bold text-slate-400">
                 {new Date(blog.createdAt).toLocaleDateString()}
               </p>
 
@@ -172,7 +186,7 @@ const LatestBlogCard = ({ blog }) => {
 
                 <Link
                   href={`/admin/status/${blog.slug}`}
-                  className="text-startbtn text-[0.8rem] font-anton font-normal tracking-wide"
+                  className="text-sm font-bold text-blue-600 hover:text-blue-800"
                 >
                   <span className="inline-flex items-center">
                     Read More
@@ -183,13 +197,22 @@ const LatestBlogCard = ({ blog }) => {
                 {/* DELETE (ADMIN ONLY) */}
 
                 {user?.role === "admin" && (
-                  <button
-                    onClick={handleDelete}
-                    disabled={deleteMutation.isPending}
-                    className="text-red-500 hover:text-red-700"
-                  >
-                    {deleteMutation.isPending ? "..." : <Trash2 size={18} />}
-                  </button>
+                  <>
+                    <Link
+                      href={`/admin/blog/edit/${blog._id}`}
+                      className="text-blue-600 hover:text-blue-800"
+                    >
+                      <Pencil size={18} />
+                    </Link>
+
+                    <button
+                      onClick={handleDelete}
+                      disabled={deleteMutation.isPending}
+                      className="text-red-500 hover:text-red-700"
+                    >
+                      {deleteMutation.isPending ? "..." : <Trash2 size={18} />}
+                    </button>
+                  </>
                 )}
 
               </div>
