@@ -31,6 +31,7 @@ const allowlist = [
   "http://localhost:3001",
   "https://briefcasse.com",
   "https://www.briefcasse.com",
+  "https://admin-brief.onrender.com"
 ];
 
 const corsOptions = {
