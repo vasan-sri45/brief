@@ -26,7 +26,12 @@ import { notFound, errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
-const allowlist = ["https://briefcasse.com","https://admin-brief.onrender.com"];
+const allowlist = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://briefcasse.com",
+  "https://www.briefcasse.com",
+];
 
 const corsOptions = {
   origin(origin, cb) {
