@@ -4,20 +4,14 @@ export default function robots() {
     rules: [
       {
         userAgent: "*",
-         allow: [
-          "/",
-          "/user/contact",  
-        ],
+        allow: "/",
         disallow: [
-          //  "/user/", 
-          "/api/",      
-          "/login/",    
-          "/store/",   
+          "/api/",
         ],
       },
     ],
     sitemap: "https://briefcasse.com/sitemap.xml",
-    // host: "https://briefcasse.com",
+    host: "https://briefcasse.com",
   };
 }
 

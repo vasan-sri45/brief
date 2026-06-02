@@ -1,5 +1,6 @@
 import React from 'react';
 import AboutUs from "../../components/common/About";
+import { SITE } from "../../config/site";
 
 export const metadata = {
   title: "About Us",
@@ -14,28 +15,28 @@ export const metadata = {
     "Briefcasse startup",
   ],
   alternates: {
-    canonical: "/startup",
+    canonical: "/user/about",
   },
   openGraph: {
     type: "website",
-    title: "Startup Registration | Briefcasse",
+    title: "About Us | Briefcasse",
     description:
       "Register your startup easily with Briefcasse. Expert legal support for incorporation, trademark, and compliance services.",
-    url: "https://www.briefcasse.com/startup",
-    siteName: "Briefcasse",
+    url: `${SITE.url}/user/about`,
+    siteName: SITE.name,
     images: [
       {
         url: "/assets/brief_blue.png",
         width: 1200,
         height: 630,
-        alt: "Briefcasse Startup Registration",
+        alt: "About Briefcasse",
       },
     ],
     locale: "en_IN",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Startup Registration | Briefcasse",
+    title: "About Us | Briefcasse",
     description:
       "Register your startup easily with Briefcasse. Expert legal support for new businesses.",
     images: ["/assets/brief_blue.png"],

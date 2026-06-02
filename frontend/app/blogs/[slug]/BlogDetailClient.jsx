@@ -10,6 +10,7 @@ import {
   getBlogExcerpt,
   normalizeBlogContent,
 } from "../../utils/blogContent";
+import { SITE } from "../../config/site";
 
 export default function BlogDetailPage() {
   const { slug } = useParams();
@@ -62,10 +63,10 @@ export default function BlogDetailPage() {
       name: "Briefcasse",
       logo: {
         "@type": "ImageObject",
-        url: "https://www.briefcasse.com/assets/brief_blue.png",
+        url: `${SITE.url}/assets/brief_blue.png`,
       },
     },
-    mainEntityOfPage: `https://www.briefcasse.com/blogs/${blog.slug}`,
+    mainEntityOfPage: `${SITE.url}/blogs/${blog.slug}`,
   };
 
   const backToPrevious = () => {

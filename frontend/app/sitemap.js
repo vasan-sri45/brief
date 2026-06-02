@@ -1,5 +1,7 @@
-const SITE_URL = "https://www.briefcasse.com";
-const API_URL = "https://brief-ewyr.onrender.com/api";
+import { API_BASE_URL, SITE } from "./config/site";
+
+const SITE_URL = SITE.url;
+const API_URL = `${API_BASE_URL}/api`;
 
 const staticRoutes = [
   { path: "", priority: 1, changeFrequency: "weekly" },
@@ -45,7 +47,7 @@ export default async function sitemap() {
       priority: route.priority,
     })),
     ...services
-      .filter((service) => service?.slug)
+      .filter((service) => service?.slug && service?.status !== "Inactive")
       .map((service) => ({
         url: `${SITE_URL}/services/${service.slug}`,
         lastModified: service.updatedAt ? new Date(service.updatedAt) : now,

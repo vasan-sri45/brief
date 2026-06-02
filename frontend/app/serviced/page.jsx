@@ -104,6 +104,7 @@
 // ⚠️ "use client" வேண்டாம்!
 
 import ServicedClient from "./ServiceClient";
+import { SITE } from "../config/site";
 
 export const metadata = {
   title: "Our Legal Services",
@@ -127,8 +128,8 @@ export const metadata = {
     title: "Our Legal Services | Briefcasse",
     description:
       "Startup Registration, Trademark, Tax Filing, MCA Compliance, Legal Advisory and more — all in one place at Briefcasse.",
-    url: "https://www.briefcasse.com/serviced",
-    siteName: "Briefcasse",
+    url: `${SITE.url}/serviced`,
+    siteName: SITE.name,
     images: [
       {
         url: "/assets/brief_blue.png",

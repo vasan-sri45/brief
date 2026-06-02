@@ -52,7 +52,7 @@ import type { NextConfig } from "next";
 
 const backendUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
-  "https://brief-ewyr.onrender.com";
+  "http://localhost:4500";
 
 const nextConfig: NextConfig = {
   
