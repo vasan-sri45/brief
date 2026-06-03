@@ -21,12 +21,33 @@ const formatInvoiceDate = (date) =>
     minute: "2-digit",
   });
 
+const GST_RATE = 18;
+
+const roundCurrency = (value = 0) => Math.round(Number(value || 0));
+
+const calculateGstBreakdown = (baseAmount = 0) => {
+  const taxableAmount = roundCurrency(baseAmount);
+  const gstAmount = roundCurrency((taxableAmount * GST_RATE) / 100);
+  const totalAmount = taxableAmount + gstAmount;
+
+  return {
+    baseAmount: taxableAmount,
+    gstRate: GST_RATE,
+    gstAmount,
+    totalAmount,
+  };
+};
+
 const buildInvoiceEmail = (payment, paymentId) => {
   const serviceName =
     payment.serviceId?.heading ||
     payment.serviceId?.title ||
     payment.serviceSlug ||
     "Briefcasse Service";
+  const baseAmount = Number(payment.baseAmount || payment.amount || 0);
+  const gstRate = Number(payment.gstRate ?? GST_RATE);
+  const gstAmount = Number(payment.gstAmount || 0);
+  const totalAmount = Number(payment.amount || baseAmount + gstAmount || 0);
 
   return `
     <div style="font-family:Arial,sans-serif;background:#f6f8fc;padding:24px;color:#172033">
@@ -62,8 +83,16 @@ const buildInvoiceEmail = (payment, paymentId) => {
               <td style="padding:10px;border-bottom:1px solid #edf2ff">${paymentId}</td>
             </tr>
             <tr>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Service Price</td>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff">${formatCurrency(baseAmount)}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">GST (${gstRate}%)</td>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff">${formatCurrency(gstAmount)}</td>
+            </tr>
+            <tr>
               <td style="padding:10px;color:#64748b">Amount Paid</td>
-              <td style="padding:10px;font-size:22px;font-weight:800;color:#2563eb">${formatCurrency(payment.amount)}</td>
+              <td style="padding:10px;font-size:22px;font-weight:800;color:#2563eb">${formatCurrency(totalAmount)}</td>
             </tr>
           </table>
           <p style="margin-top:24px;color:#475569;line-height:1.6">
@@ -118,7 +147,9 @@ export const createOrder = async (req, res) => {
       });
     }
 
-    const amount = requestedPrice * 100;
+    const { baseAmount, gstRate, gstAmount, totalAmount } =
+      calculateGstBreakdown(requestedPrice);
+    const amount = totalAmount * 100;
 
     const order = await razorpay.orders.create({
       amount,
@@ -138,7 +169,10 @@ export const createOrder = async (req, res) => {
         email: user?.email || "",
       },
       serviceSlug: slug,
-      amount: requestedPrice,
+      baseAmount,
+      gstRate,
+      gstAmount,
+      amount: totalAmount,
       razorpayOrderId: order.id,
       status: "created",
     });
@@ -148,6 +182,10 @@ export const createOrder = async (req, res) => {
       orderId: order.id,
       serviceNo: payment.serviceNo,
       amount: order.amount,
+      baseAmount,
+      gstRate,
+      gstAmount,
+      totalAmount,
       currency: "INR",
       key: process.env.RAZORPAY_KEY_ID,
     });

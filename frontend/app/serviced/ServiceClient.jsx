@@ -144,6 +144,7 @@ function PurchasedServices({ orders }) {
         {orders.map((order) => {
           const isOpen = openId === order._id;
           const isPaid = order.status === "paid";
+          const gstAmount = Number(order.gstAmount || 0);
 
           return (
             <article
@@ -170,6 +171,7 @@ function PurchasedServices({ orders }) {
                 <div className="flex flex-wrap items-center gap-3">
                   <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
                     Rs. {Number(order.amount || 0).toLocaleString("en-IN")}
+                    {gstAmount > 0 ? " incl. GST" : ""}
                   </span>
                   <span className="rounded-full bg-slate-100 px-3 py-1 text-sm font-bold text-slate-700">
                     {order.serviceStatus}
@@ -186,6 +188,14 @@ function PurchasedServices({ orders }) {
                   <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                     <Info label="Payment" value={order.status} />
                     <Info label="Mode" value={order.paymentMode || "Online"} />
+                    <Info
+                      label="GST"
+                      value={
+                        gstAmount > 0
+                          ? `Rs. ${gstAmount.toLocaleString("en-IN")} (${order.gstRate || 18}%)`
+                          : "Not applied"
+                      }
+                    />
                     <Info
                       label="Date"
                       value={new Date(order.paymentDate || order.createdAt).toLocaleDateString("en-IN")}

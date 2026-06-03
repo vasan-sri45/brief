@@ -708,13 +708,29 @@ export default function TicketDetailsModal({
                 }
               />
             ) : (
-              <Detail
-                icon={
-                  <IndianRupee size={18} />
-                }
-                label="Amount"
-                value={`Rs. ${Number(service.totalPayment || service.amount || 0).toLocaleString("en-IN")}`}
-              />
+              <>
+                <Detail
+                  icon={
+                    <IndianRupee size={18} />
+                  }
+                  label="Amount"
+                  value={`Rs. ${Number(service.totalPayment || service.amount || 0).toLocaleString("en-IN")}`}
+                />
+                {Number(service.gstAmount || 0) > 0 && (
+                  <>
+                    <Detail
+                      icon={<IndianRupee size={18} />}
+                      label="Service Price"
+                      value={`Rs. ${Number(service.baseAmount || 0).toLocaleString("en-IN")}`}
+                    />
+                    <Detail
+                      icon={<IndianRupee size={18} />}
+                      label={`GST (${service.gstRate || 18}%)`}
+                      value={`Rs. ${Number(service.gstAmount || 0).toLocaleString("en-IN")}`}
+                    />
+                  </>
+                )}
+              </>
             )}
 
             {/* PAYMENT MODE */}

@@ -128,7 +128,7 @@ export const useUpdatePaymentService = () => {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries(["payment-services"]);
+      queryClient.invalidateQueries({ queryKey: ["payment-services"] });
     },
   });
 };

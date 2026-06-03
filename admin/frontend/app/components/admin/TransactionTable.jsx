@@ -53,8 +53,8 @@ export default function TransactionTable({ data = [], onView }) {
         accessorFn: (row) => row.clientName || row.customer?.name || "-",
       },
       {
-        header: "Customer ID",
-        accessorFn: (row) => row.customer?.userCode || "-",
+        header: "Service ID",
+        accessorFn: (row) => row.serviceNo || row.customer?.userCode || "-",
       },
       {
         header: "Service",
@@ -129,7 +129,7 @@ export default function TransactionTable({ data = [], onView }) {
               <div className="flex items-start justify-between gap-3">
                 <div>
                   <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
-                    {row.customer?.userCode || row.serviceNo || "-"}
+                    {row.serviceNo || row.customer?.userCode || "-"}
                   </p>
                   <h3 className="mt-1 font-bold text-gray-900">
                     {row.clientName || row.customer?.name || "-"}

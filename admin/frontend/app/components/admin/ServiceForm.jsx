@@ -1,13 +1,35 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCreateServiceConfig, useUpdateServiceConfig } from "../../hooks/useService";
+
+const getYouTubeVideoId = (url = "") => {
+  const value = String(url || "").trim();
+  if (!value) return "";
+
+  const patterns = [
+    /youtu\.be\/([^?&/]+)/,
+    /youtube\.com\/watch\?v=([^?&/]+)/,
+    /youtube\.com\/embed\/([^?&/]+)/,
+    /youtube\.com\/shorts\/([^?&/]+)/,
+  ];
+
+  const match = patterns.map((pattern) => value.match(pattern)).find(Boolean);
+  return match?.[1] || "";
+};
+
+const getYouTubeThumbnail = (url = "") => {
+  const videoId = getYouTubeVideoId(url);
+  return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : "";
+};
 
 export default function CreateServicePage({ initialService = null, onDone }) {
   const createService = useCreateServiceConfig();
   const updateService = useUpdateServiceConfig();
   const isEditMode = Boolean(initialService?._id);
+  const [cardPreviewLoaded, setCardPreviewLoaded] = useState(false);
+  const [mediaPreviewLoaded, setMediaPreviewLoaded] = useState(false);
 
   const {
     register,
@@ -28,17 +50,17 @@ export default function CreateServicePage({ initialService = null, onDone }) {
       serviceIcon: "",
       serviceBannerImage: "",
       featuredImage: "",
+      cardImageUrl: "",
+      cardImageFile: "",
+      mediaType: "image",
+      mediaUrl: "",
+      mediaFile: "",
       serviceCategory: "",
       displayOrder: 0,
       status: "Active",
       seoTitle: "",
       metaDescription: "",
       metaKeywords: "",
-      canonicalUrl: "",
-      openGraphTitle: "",
-      openGraphDescription: "",
-      openGraphImage: "",
-      schemaMarkupJson: "",
 
       documents: [{ name: "", details: "" }],
       process: [{ days: "", step: 1, title: "", details: "" }],
@@ -65,17 +87,17 @@ export default function CreateServicePage({ initialService = null, onDone }) {
       serviceIcon: initialService.serviceIcon || "",
       serviceBannerImage: initialService.serviceBannerImage || "",
       featuredImage: initialService.featuredImage || "",
+      cardImageUrl: initialService.cardImageUrl || "",
+      cardImageFile: initialService.cardImageFile || "",
+      mediaType: initialService.mediaType || "image",
+      mediaUrl: initialService.mediaUrl || "",
+      mediaFile: initialService.mediaFile || "",
       serviceCategory: initialService.serviceCategory || "",
       displayOrder: initialService.displayOrder || 0,
       status: initialService.status || "Active",
       seoTitle: initialService.seoTitle || "",
       metaDescription: initialService.metaDescription || "",
       metaKeywords: initialService.metaKeywords || "",
-      canonicalUrl: initialService.canonicalUrl || "",
-      openGraphTitle: initialService.openGraphTitle || "",
-      openGraphDescription: initialService.openGraphDescription || "",
-      openGraphImage: initialService.openGraphImage || "",
-      schemaMarkupJson: initialService.schemaMarkupJson || "",
       documents: initialService.documents?.length ? initialService.documents : [{ name: "", details: "" }],
       process: initialService.process?.length ? initialService.process : [{ days: "", step: 1, title: "", details: "" }],
       processAtBriefcase: initialService.processAtBriefcase?.length ? initialService.processAtBriefcase : [{ days: "", step: 1, title: "", details: "" }],
@@ -89,6 +111,18 @@ export default function CreateServicePage({ initialService = null, onDone }) {
 
   // Watch entire form state for the live preview side panel
   const formData = watch();
+  const mediaPreviewUrl =
+    formData.mediaFile ||
+    formData.mediaUrl ||
+    formData.featuredImage ||
+    formData.serviceBannerImage ||
+    initialService?.images?.[0]?.url ||
+    "";
+  const cardPreviewUrl =
+    formData.cardImageFile ||
+    formData.cardImageUrl ||
+    formData.featuredImage ||
+    "";
 
   // Handle Slug generation automatically from title
   useEffect(() => {
@@ -106,6 +140,41 @@ export default function CreateServicePage({ initialService = null, onDone }) {
     }
   }, [formData.title, setValue]);
 
+  useEffect(() => {
+    setCardPreviewLoaded(false);
+  }, [cardPreviewUrl]);
+
+  useEffect(() => {
+    setMediaPreviewLoaded(false);
+  }, [mediaPreviewUrl]);
+
+  const readImageFile = (file, targetField, urlField) => {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setValue(targetField, reader.result || "", {
+        shouldDirty: true,
+        shouldValidate: true,
+      });
+      setValue(urlField, "", { shouldDirty: true });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleCardImageFileChange = (event) => {
+    readImageFile(event.target.files?.[0], "cardImageFile", "cardImageUrl");
+  };
+
+  const handleMediaFileChange = (event) => {
+    readImageFile(event.target.files?.[0], "mediaFile", "mediaUrl");
+  };
+
+  const handleImageDrop = (event, targetField, urlField) => {
+    event.preventDefault();
+    readImageFile(event.dataTransfer.files?.[0], targetField, urlField);
+  };
+
   // ================= FIELD ARRAYS =================
   const { fields: documentFields, append: addDocument, remove: removeDocument } = useFieldArray({ control, name: "documents" });
   const { fields: processFields, append: addProcess, remove: removeProcess } = useFieldArray({ control, name: "process" });
@@ -119,14 +188,23 @@ export default function CreateServicePage({ initialService = null, onDone }) {
   // ================= SUBMIT =================
   const onSubmit = async (data) => {
     try {
+      const {
+        canonicalUrl,
+        openGraphTitle,
+        openGraphDescription,
+        openGraphImage,
+        schemaMarkupJson,
+        ...payload
+      } = data;
+
       if (isEditMode) {
         await updateService.mutateAsync({
           id: initialService._id,
-          payload: data,
+          payload,
         });
         alert("Service updated successfully");
       } else {
-        await createService.mutateAsync(data);
+        await createService.mutateAsync(payload);
         alert("Service created successfully");
       }
       reset();
@@ -198,6 +276,179 @@ export default function CreateServicePage({ initialService = null, onDone }) {
               <textarea {...register("fullDescription")} placeholder="Full service description..." rows={5} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
             </div>
 
+            <div className="rounded-2xl border border-blue-100 bg-white p-4 space-y-4">
+              <div>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-blue-700">Card Swiper Image</h2>
+                <p className="mt-1 text-xs font-semibold text-slate-500">
+                  This image appears only inside the service card slider.
+                </p>
+              </div>
+
+              <input type="hidden" {...register("cardImageFile")} />
+
+              <div
+                onDrop={(event) => handleImageDrop(event, "cardImageFile", "cardImageUrl")}
+                onDragOver={(event) => event.preventDefault()}
+                className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 p-4 transition hover:border-blue-400"
+              >
+                <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl bg-white p-5 text-center shadow-sm">
+                  <span className="text-sm font-bold text-blue-700">Drag & drop card image here</span>
+                  <span className="text-xs font-semibold text-slate-500">or choose an image from your device</span>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCardImageFileChange}
+                    className="hidden"
+                  />
+                  <span className="rounded-full bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm">
+                    Choose Image
+                  </span>
+                </label>
+              </div>
+
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-medium text-gray-600">Card Image URL</label>
+                <input
+                  {...register("cardImageUrl", {
+                    onChange: () => setValue("cardImageFile", "", { shouldDirty: true }),
+                  })}
+                  placeholder="Image URL for card slider"
+                  className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                />
+              </div>
+
+              {cardPreviewUrl ? (
+                <div className="relative overflow-hidden rounded-2xl border border-slate-100 bg-slate-50">
+                  {!cardPreviewLoaded && (
+                    <div className="absolute inset-0 animate-pulse bg-blue-100" />
+                  )}
+                  <img
+                    src={cardPreviewUrl}
+                    alt="Card swiper preview"
+                    onLoad={() => setCardPreviewLoaded(true)}
+                    className={`h-48 w-full object-contain transition-opacity duration-500 ${
+                      cardPreviewLoaded ? "opacity-100" : "opacity-0"
+                    }`}
+                  />
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-blue-100 bg-blue-50/50 p-6 text-center text-sm font-semibold text-blue-600">
+                  Card image preview will appear here.
+                </div>
+              )}
+            </div>
+
+            <div className="rounded-2xl border border-blue-100 bg-white p-4 space-y-4">
+              <div>
+                <h2 className="text-sm font-bold uppercase tracking-wider text-blue-700">Service Page Media</h2>
+                <p className="mt-1 text-xs font-semibold text-slate-500">
+                  This media appears on the service details page and can be an image or YouTube video.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-1">
+                  <label className="text-xs font-medium text-gray-600">Media Type</label>
+                  <select
+                    {...register("mediaType")}
+                    className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  >
+                    <option value="image">Image</option>
+                    <option value="youtube">YouTube Video</option>
+                  </select>
+                  <input type="hidden" {...register("mediaFile")} />
+                </div>
+
+                {formData.mediaType !== "youtube" && (
+                  <div
+                    onDrop={(event) => handleImageDrop(event, "mediaFile", "mediaUrl")}
+                    onDragOver={(event) => event.preventDefault()}
+                    className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 p-3 transition hover:border-blue-400"
+                  >
+                    <label className="flex cursor-pointer flex-col items-center justify-center gap-1 rounded-xl bg-white p-4 text-center shadow-sm">
+                      <span className="text-xs font-bold text-blue-700">Drag & drop page image</span>
+                      <span className="text-[11px] font-semibold text-slate-500">or choose image</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleMediaFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                )}
+
+                {formData.mediaType !== "youtube" && (
+                  <div className="md:col-span-2 flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600">Enter URL</label>
+                    <input
+                      {...register("mediaUrl", {
+                        onChange: () => setValue("mediaFile", "", { shouldDirty: true }),
+                      })}
+                      placeholder="Image URL"
+                      className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                    />
+                  </div>
+                )}
+
+                {formData.mediaType === "youtube" && (
+                  <div className="md:col-span-2 flex flex-col gap-1">
+                    <label className="text-xs font-medium text-gray-600">YouTube URL</label>
+                    <input
+                      {...register("mediaUrl", {
+                        onChange: () => setValue("mediaFile", "", { shouldDirty: true }),
+                      })}
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                    />
+                  </div>
+                )}
+              </div>
+
+              {mediaPreviewUrl ? (
+                <div className="overflow-hidden rounded-2xl border border-slate-100 bg-slate-50">
+                  {formData.mediaType === "youtube" ? (
+                    <div className="relative h-64 w-full bg-slate-900">
+                      {getYouTubeThumbnail(mediaPreviewUrl) ? (
+                        <img
+                          src={getYouTubeThumbnail(mediaPreviewUrl)}
+                          alt="Service YouTube thumbnail preview"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-slate-300">
+                          Enter a valid YouTube URL to preview the thumbnail.
+                        </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-950/20">
+                        <span className="rounded-full bg-white/95 px-4 py-2 text-sm font-bold text-blue-700 shadow-lg">
+                          YouTube Video Preview
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="relative h-64 w-full">
+                      {!mediaPreviewLoaded && (
+                        <div className="absolute inset-0 animate-pulse bg-blue-100" />
+                      )}
+                      <img
+                        src={mediaPreviewUrl}
+                        alt="Service media preview"
+                        onLoad={() => setMediaPreviewLoaded(true)}
+                        className={`h-full w-full object-cover transition-opacity duration-500 ${
+                          mediaPreviewLoaded ? "opacity-100" : "opacity-0"
+                        }`}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="rounded-2xl border border-dashed border-blue-100 bg-blue-50/50 p-6 text-center text-sm font-semibold text-blue-600">
+                  Media preview will appear here.
+                </div>
+              )}
+            </div>
+
             <div className="rounded-2xl border border-emerald-100 bg-emerald-50/30 p-4 space-y-4">
               <h2 className="text-sm font-bold uppercase tracking-wider text-emerald-700">SEO Metadata</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,23 +456,16 @@ export default function CreateServicePage({ initialService = null, onDone }) {
                   <input {...register("seoTitle", { maxLength: 60 })} placeholder="SEO Title" maxLength={60} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
                   <p className="mt-1 text-xs font-semibold text-slate-500">{(formData.seoTitle || "").length}/60</p>
                 </div>
-                <div>
-                  <input {...register("canonicalUrl")} placeholder="Canonical URL" className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
-                </div>
                 <div className="md:col-span-2">
                   <textarea {...register("metaDescription", { maxLength: 160 })} placeholder="Meta Description" maxLength={160} rows={3} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
                   <p className="mt-1 text-xs font-semibold text-slate-500">{(formData.metaDescription || "").length}/160</p>
                 </div>
                 <input {...register("metaKeywords")} placeholder="Meta Keywords" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
-                <input {...register("openGraphImage")} placeholder="Open Graph Image" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
-                <input {...register("openGraphTitle")} placeholder="Open Graph Title" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
-                <input {...register("openGraphDescription")} placeholder="Open Graph Description" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
-                <textarea {...register("schemaMarkupJson")} placeholder="Schema Markup JSON" rows={5} className="md:col-span-2 rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-100" />
               </div>
               <div className="rounded-xl bg-white p-4 shadow-sm">
                 <p className="text-xs font-bold uppercase text-blue-600">Search Preview</p>
                 <h3 className="mt-2 text-lg font-bold text-blue-700">{formData.seoTitle || formData.heading || "Service SEO Title"}</h3>
-                <p className="text-sm text-emerald-700">{formData.canonicalUrl || `/services/${formData.slug || "service-slug"}`}</p>
+                <p className="text-sm text-emerald-700">{`/services/${formData.slug || "service-slug"}`}</p>
                 <p className="mt-1 text-sm text-slate-600">{formData.metaDescription || formData.shortDescription || "Meta description preview appears here."}</p>
               </div>
             </div>
@@ -491,7 +735,7 @@ export default function CreateServicePage({ initialService = null, onDone }) {
                 {formData.seoTitle || formData.heading || "Service SEO Title"}
               </h3>
               <p className="text-xs text-emerald-300 break-all">
-                {formData.canonicalUrl || `/services/${formData.slug || "service-slug"}`}
+                {`/services/${formData.slug || "service-slug"}`}
               </p>
               <p className="mt-1 text-xs text-slate-400 break-words">
                 {formData.metaDescription || formData.shortDescription || "Meta description preview appears here."}

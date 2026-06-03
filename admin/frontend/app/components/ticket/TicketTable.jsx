@@ -277,6 +277,11 @@ export default function TicketTable({
       },
 
       {
+        header: "Service ID",
+        accessorFn: (row) => row.serviceNo || "-",
+      },
+
+      {
         header: "Service",
         accessorKey: "service",
       },
@@ -299,8 +304,8 @@ export default function TicketTable({
 
         cell: ({ row }) => {
 
-          const status =
-            row.original.paymentStatus;
+          const status = row.original.paymentStatus;
+          const normalized = String(status || "").toLowerCase();
 
           return (
             <span
@@ -308,9 +313,9 @@ export default function TicketTable({
                 px-3 py-1 rounded-full
                 text-xs font-semibold
                 ${
-                  status === "Paid"
+                  normalized === "paid"
                     ? "bg-green-100 text-green-700"
-                    : status === "Pending"
+                    : normalized === "pending"
                     ? "bg-yellow-100 text-yellow-700"
                     : "bg-red-100 text-red-700"
                 }
@@ -487,7 +492,7 @@ export default function TicketTable({
           {/* TABLE */}
           <div className="overflow-x-auto">
 
-            <table className="w-full min-w-[1100px] text-sm">
+            <table className="w-full min-w-[1200px] text-sm">
 
               <thead className="bg-blue-50">
 

@@ -65,6 +65,16 @@ const serviceSchema = new mongoose.Schema(
     serviceIcon: { type: String, default: "", trim: true },
     serviceBannerImage: { type: String, default: "", trim: true },
     featuredImage: { type: String, default: "", trim: true },
+    cardImageUrl: { type: String, default: "", trim: true },
+    cardImageFile: { type: String, default: "" },
+    mediaType: {
+      type: String,
+      enum: ["image", "video", "youtube"],
+      default: "image",
+      trim: true,
+    },
+    mediaUrl: { type: String, default: "", trim: true },
+    mediaFile: { type: String, default: "" },
     serviceCategory: { type: String, default: "", trim: true, index: true },
     displayOrder: { type: Number, default: 0, index: true },
     status: {

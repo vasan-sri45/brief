@@ -47,6 +47,21 @@ const supportItems = [
   },
 ];
 
+const GST_RATE = 18;
+
+const getGstBreakdown = (amount = 0) => {
+  const baseAmount = Math.round(Number(amount || 0));
+  const gstAmount = Math.round((baseAmount * GST_RATE) / 100);
+  return {
+    baseAmount,
+    gstAmount,
+    totalAmount: baseAmount + gstAmount,
+  };
+};
+
+const formatAmount = (amount = 0) =>
+  Number(amount || 0).toLocaleString("en-IN");
+
 export default function ServicePricingPage() {
   const { slug } = useParams();
   const router = useRouter();
@@ -254,6 +269,7 @@ export default function ServicePricingPage() {
                   ? plan.features
                   : fallbackFeatures;
                 const isBusy = loadingPlan === index;
+                const gst = getGstBreakdown(plan.amount);
 
                 return (
                   <article
@@ -281,9 +297,24 @@ export default function ServicePricingPage() {
                         <span className="text-5xl font-black leading-none text-blue-800 md:text-6xl">
                           <span className="inline-flex items-center">
                             <IndianRupee className="h-10 w-10 md:h-12 md:w-12" />
-                            {Number(plan.amount || 0).toLocaleString("en-IN")}
+                            {formatAmount(gst.totalAmount)}
                           </span>
                         </span>
+                      </div>
+
+                      <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50/60 p-4 text-sm font-bold text-slate-700">
+                        <div className="flex justify-between gap-4">
+                          <span>Service price</span>
+                          <span>Rs. {formatAmount(gst.baseAmount)}</span>
+                        </div>
+                        <div className="mt-2 flex justify-between gap-4 text-slate-500">
+                          <span>GST ({GST_RATE}%)</span>
+                          <span>Rs. {formatAmount(gst.gstAmount)}</span>
+                        </div>
+                        <div className="mt-3 flex justify-between gap-4 border-t border-blue-100 pt-3 text-blue-800">
+                          <span>Total payable</span>
+                          <span>Rs. {formatAmount(gst.totalAmount)}</span>
+                        </div>
                       </div>
 
                       <div className="mt-3 inline-flex items-center gap-2 rounded-full bg-slate-50 px-3 py-1 text-xs font-bold text-slate-500">

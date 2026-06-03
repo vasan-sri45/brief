@@ -192,11 +192,11 @@ return ( <div className="overflow-hidden">
       </div>
     </div>
 
-    {seoDescription && (
+    {/* {seoDescription && (
       <p className="mt-6 max-w-4xl text-sm font-lato font-semibold leading-8 text-letter1">
         {seoDescription}
       </p>
-    )}
+    )} */}
   </section>
 
   {/* LEGAL CONTENT */}

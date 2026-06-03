@@ -5,6 +5,20 @@ import jsPDF from "jspdf";
 const formatCurrency = (value) =>
   `Rs. ${Number(value || 0).toLocaleString("en-IN")}`;
 
+const getAmountBreakdown = (service = {}) => {
+  const totalAmount = Number(service.totalPayment || service.amount || 0);
+  const baseAmount = Number(service.baseAmount || totalAmount);
+  const gstRate = Number(service.gstRate ?? 18);
+  const gstAmount = Number(service.gstAmount || 0);
+
+  return {
+    baseAmount,
+    gstRate,
+    gstAmount,
+    totalAmount,
+  };
+};
+
 export const getInvoiceData = (service = {}) => ({
   invoiceNo: service.serviceNo || service.razorpayOrderId || service._id || "-",
   customerName: service.clientName || service.customer?.name || "-",
@@ -23,7 +37,7 @@ export const getInvoiceData = (service = {}) => ({
     service.serviceId?.heading ||
     service.serviceId?.title ||
     "-",
-  amount: service.totalPayment || service.amount || 0,
+  ...getAmountBreakdown(service),
   paymentMode: service.paymentMode || "Online",
   paymentStatus: service.paymentStatus || service.status || "-",
   paymentId: service.razorpayPaymentId || "-",
@@ -64,7 +78,8 @@ export const downloadServiceInvoice = (service) => {
     ["Payment Mode", invoice.paymentMode],
     ["Payment Status", invoice.paymentStatus],
     ["Payment ID", invoice.paymentId],
-    ["Amount", formatCurrency(invoice.amount)],
+    ["Service Price", formatCurrency(invoice.baseAmount)],
+    [`GST (${invoice.gstRate}%)`, formatCurrency(invoice.gstAmount)],
   ];
 
   let y = 106;
@@ -80,7 +95,7 @@ export const downloadServiceInvoice = (service) => {
   doc.rect(20, y + 6, 170, 18, "F");
   doc.setFont("helvetica", "bold");
   doc.setFontSize(14);
-  doc.text(`Total Paid: ${formatCurrency(invoice.amount)}`, 25, y + 18);
+  doc.text(`Total Paid: ${formatCurrency(invoice.totalAmount)}`, 25, y + 18);
 
   doc.setFont("helvetica", "normal");
   doc.setFontSize(9);
@@ -136,6 +151,8 @@ export const printServiceInvoice = (service) => {
             ["Payment Mode", invoice.paymentMode],
             ["Payment Status", invoice.paymentStatus],
             ["Payment ID", invoice.paymentId],
+            ["Service Price", formatCurrency(invoice.baseAmount)],
+            [`GST (${invoice.gstRate}%)`, formatCurrency(invoice.gstAmount)],
           ]
             .map(
               ([label, value]) =>
@@ -143,7 +160,7 @@ export const printServiceInvoice = (service) => {
             )
             .join("")}
         </div>
-        <div class="total">Total Paid: ${formatCurrency(invoice.amount)}</div>
+        <div class="total">Total Paid: ${formatCurrency(invoice.totalAmount)}</div>
       </body>
     </html>
   `);

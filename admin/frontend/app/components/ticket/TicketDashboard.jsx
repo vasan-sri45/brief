@@ -17,6 +17,14 @@ import {
 
 import { useAuth } from "../../hooks/useAuth";
 
+const idString = (value) => {
+  if (!value) return "";
+  if (typeof value === "object") {
+    return String(value._id || value.id || "");
+  }
+  return String(value);
+};
+
 export default function Dashboard() {
 
   const { data: onlineData, isLoading: onlineLoading } =
@@ -43,6 +51,7 @@ export default function Dashboard() {
           _id: item._id,
           serviceNo: item.serviceNo || item.razorpayOrderId || "-",
           razorpayPaymentId: item.razorpayPaymentId,
+          customer: item.customer || {},
 
           clientName:
             item.customer?.name ||
@@ -65,6 +74,9 @@ export default function Dashboard() {
           serviceName: item.serviceId?.heading || item.serviceId?.title || "-",
 
           totalPayment: item.amount || 0,
+          baseAmount: item.baseAmount || item.amount || 0,
+          gstRate: item.gstRate ?? 18,
+          gstAmount: item.gstAmount || 0,
           paymentMode: item.paymentMode || "Online",
           paymentStatus: item.status || "-",
           serviceStatus: item.serviceStatus || "-",
@@ -73,7 +85,7 @@ export default function Dashboard() {
 
           assignedTo:
             item.assignedTo && typeof item.assignedTo === "object"
-              ? item.assignedTo._id
+              ? idString(item.assignedTo)
               : item.assignedTo || null,
           assignedToName:
             item.assignedTo && typeof item.assignedTo === "object"
@@ -81,7 +93,7 @@ export default function Dashboard() {
               : "",
           createdBy:
             item.createdBy && typeof item.createdBy === "object"
-              ? item.createdBy._id
+              ? idString(item.createdBy)
               : item.createdBy || null,
           progressMessages: item.progressMessages || [],
 
@@ -93,6 +105,7 @@ export default function Dashboard() {
       ? officeData.data.map((item) => ({
           _id: item._id,
           serviceNo: item.serviceNo || "-",
+          customer: item.customer || {},
 
           clientName: item.customer?.name || "-",
           mobile: item.customer?.mobile || "-",
@@ -112,7 +125,7 @@ export default function Dashboard() {
 
           assignedTo:
             item.assignedTo && typeof item.assignedTo === "object"
-              ? item.assignedTo._id
+              ? idString(item.assignedTo)
               : item.assignedTo || null,
           assignedToName:
             item.assignedTo && typeof item.assignedTo === "object"
@@ -120,7 +133,7 @@ export default function Dashboard() {
               : "",
           createdBy:
             item.createdBy && typeof item.createdBy === "object"
-              ? item.createdBy._id
+              ? idString(item.createdBy)
               : item.createdBy || null,
           progressMessages: item.progressMessages || [],
 
@@ -135,10 +148,19 @@ export default function Dashboard() {
   /* ================= EMPLOYEE SERVICES ================= */
 
   const employeeServices = useMemo(() => {
-    const currentUserId = user?.id || user?._id;
-    return services.filter(
-      (s) => s.assignedTo === currentUserId || s.createdBy === currentUserId
-    );
+    const currentUserId = idString(user?._id || user?.id);
+    if (!currentUserId) return [];
+
+    return services.filter((service) => {
+      const assignedTo = idString(service.assignedTo);
+      const createdBy = idString(service.createdBy);
+
+      if (assignedTo === currentUserId || createdBy === currentUserId) {
+        return true;
+      }
+
+      return user?.role === "employee" && service.source === "online";
+    });
   }, [services, user]);
 
   /* ================= STATS ================= */
@@ -214,8 +236,6 @@ export default function Dashboard() {
 
   if (onlineLoading || officeLoading)
     return <div className="text-center py-10">Loading...</div>;
-
-  console.log(user)
 
   return (
     <section className="mt-2 mb-6">

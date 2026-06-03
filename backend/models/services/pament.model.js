@@ -116,6 +116,21 @@ const paymentSchema = new mongoose.Schema(
 
     /* ================= PAYMENT DETAILS ================= */
 
+    baseAmount: {
+      type: Number,
+      default: 0,
+    },
+
+    gstRate: {
+      type: Number,
+      default: 18,
+    },
+
+    gstAmount: {
+      type: Number,
+      default: 0,
+    },
+
     amount: {
       type: Number,
       required: true,

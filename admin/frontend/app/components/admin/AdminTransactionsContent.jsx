@@ -18,6 +18,14 @@ import { useAuth } from "../../hooks/useAuth";
 
 import { useGetEmployees } from "../../hooks/useEmployeeAuthMutations";
 
+const idString = (value) => {
+  if (!value) return "";
+  if (typeof value === "object") {
+    return String(value._id || value.id || "");
+  }
+  return String(value);
+};
+
 export default function AdminTransactionsContent() {
   const { month, date, search, status, assigned } = useSelector((s) => s.ui);
   const {user} = useAuth();
@@ -51,6 +59,7 @@ export default function AdminTransactionsContent() {
           _id: item._id,
           serviceNo: item.serviceNo || item.razorpayOrderId || "-",
           razorpayPaymentId: item.razorpayPaymentId,
+          customer: item.customer || {},
 
           clientName:
             item.customer?.name ||
@@ -73,6 +82,9 @@ export default function AdminTransactionsContent() {
           serviceName: item.serviceId?.heading || item.serviceId?.title || "-",
 
           totalPayment: item.amount || 0,
+          baseAmount: item.baseAmount || item.amount || 0,
+          gstRate: item.gstRate ?? 18,
+          gstAmount: item.gstAmount || 0,
           paymentMode: item.paymentMode || "Online",
           paymentStatus: item.status || "-",
           serviceStatus: item.serviceStatus || "-",
@@ -81,7 +93,7 @@ export default function AdminTransactionsContent() {
 
           assignedTo:
             item.assignedTo && typeof item.assignedTo === "object"
-              ? item.assignedTo._id
+              ? idString(item.assignedTo)
               : item.assignedTo || null,
           assignedToName:
             item.assignedTo && typeof item.assignedTo === "object"
@@ -97,6 +109,7 @@ export default function AdminTransactionsContent() {
       ? officeData.data.map((item) => ({
           _id: item._id,
           serviceNo: item.serviceNo || "-",
+          customer: item.customer || {},
 
           clientName: item.customer?.name || "-",
           mobile: item.customer?.mobile || "-",
@@ -118,7 +131,7 @@ export default function AdminTransactionsContent() {
 
           assignedTo:
             item.assignedTo && typeof item.assignedTo === "object"
-              ? item.assignedTo._id
+              ? idString(item.assignedTo)
               : item.assignedTo || null,
           assignedToName:
             item.assignedTo && typeof item.assignedTo === "object"
@@ -151,7 +164,7 @@ export default function AdminTransactionsContent() {
     } else if (assigned === "Unassigned") {
       out = out.filter((s) => !s.assignedTo);
     } else if (assigned !== "All") {
-      out = out.filter((s) => s.assignedTo === assigned);
+      out = out.filter((s) => idString(s.assignedTo) === String(assigned));
     }
 
     if (month) {
@@ -182,8 +195,6 @@ export default function AdminTransactionsContent() {
 
     return out;
   }, [combinedList, month, date, search, status, assigned]);
-
-  console.log(combinedList)
 
   if (onlineLoading || officeLoading)
     return <div className="py-8 text-center">Loading…</div>;

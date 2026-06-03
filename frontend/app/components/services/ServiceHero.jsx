@@ -7,6 +7,7 @@ import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
 import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 import { useSelector } from "react-redux";
+import ServiceMedia from "./ServiceMedia";
 
 const ServiceHero = ({ service }) => {
   const [activeTab, setActiveTab] = useState("description");
@@ -67,17 +68,15 @@ const ServiceHero = ({ service }) => {
             shadow-lg
           ">
 
-            {service?.images?.[0]?.url ? (
-              <img
-                src={service.images[0].url}
-                alt={service?.heading || service?.title || "Briefcasse service"}
-                className="h-full w-full object-cover object-center"
-              />
-            ) : (
+            <ServiceMedia
+              service={service}
+              className="h-full w-full object-cover object-center"
+              fallback={
               <div className="flex h-full w-full items-center justify-center bg-blue-50 text-sm font-bold text-blue-600">
                 Briefcasse Service
               </div>
-            )}
+              }
+            />
 
           </div>
         </div>

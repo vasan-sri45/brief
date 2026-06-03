@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import DashboardCard from "./DashboardCard";
 import { useAllServices } from "../../hooks/userServiceList";
 import { useGetPaymentServices, useGetPaidServices } from "../../hooks/useService";
 import SalesByCategories from "./SalesByCategories";
@@ -42,14 +41,6 @@ export default function AdminDashboardContent() {
   const onlineServices = onlineData?.orders || onlineData?.data || [];
   const officeServices = officeData?.orders || officeData?.data || [];
   const allPayments = [...onlineServices, ...officeServices];
-
-  const cards = useMemo(() => {
-    return CATEGORY_LABELS.map((title) => ({
-      title,
-      value: services.filter((service) => getCategory(service) === title).length,
-      services: "Services",
-    }));
-  }, [services]);
 
   const filteredServices = useMemo(
     () => services.filter((service) => getCategory(service) === selectedCategory),
@@ -108,35 +99,6 @@ export default function AdminDashboardContent() {
 
   return (
     <div className="mx-auto w-full max-w-[1500px] space-y-6 px-4 py-6">
-      <div className="rounded-[32px] border border-blue-100 bg-gradient-to-r from-blue-600 to-indigo-600 p-6 text-white shadow-[0_20px_60px_rgba(37,99,235,0.18)]">
-        <p className="text-sm font-bold uppercase tracking-[0.2em] text-blue-100">
-          Admin Console
-        </p>
-        <h1 className="mt-2 text-3xl font-extrabold md:text-4xl">
-          Business Dashboard
-        </h1>
-        <p className="mt-2 max-w-3xl text-sm font-medium text-blue-100">
-          Track service catalog, monthly revenue and category-wise purchase details.
-        </p>
-      </div>
-
-      <div className="overflow-hidden rounded-[32px] py-2">
-        <div className="dashboard-card-marquee flex w-max gap-5">
-          {[...cards, ...cards].map((card, index) => (
-            <div
-              key={`${card.title}-${index}`}
-              className="w-[280px] shrink-0 sm:w-[320px] xl:w-[350px]"
-            >
-              <DashboardCard
-                {...card}
-                active={selectedCategory === card.title}
-                onClick={() => setSelectedCategory(card.title)}
-              />
-            </div>
-          ))}
-        </div>
-      </div>
-
       <div className="grid gap-6 xl:grid-cols-2">
         <LineChart
           revenueData={categoryRevenue}
@@ -152,7 +114,7 @@ export default function AdminDashboardContent() {
 
       <div className="grid gap-6 xl:grid-cols-2">
         <section className="rounded-3xl border border-blue-100 bg-white p-5 shadow-[0_14px_45px_rgba(15,23,42,0.06)]">
-          <div className="mb-4 flex items-center justify-between">
+          <div className="mb-4 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
               <h2 className="text-xl font-bold text-slate-900">
                 {selectedCategory} Services
@@ -161,9 +123,24 @@ export default function AdminDashboardContent() {
                 Showing services only for the selected category.
               </p>
             </div>
-            <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
-              {filteredServices.length}
-            </span>
+
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <select
+                value={selectedCategory}
+                onChange={(event) => setSelectedCategory(event.target.value)}
+                className="min-w-[240px] rounded-2xl border border-blue-100 bg-blue-50/70 px-4 py-3 text-sm font-bold text-slate-800 outline-none transition focus:border-blue-300 focus:bg-white focus:ring-4 focus:ring-blue-100"
+              >
+                {CATEGORY_LABELS.map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
+              </select>
+
+              <span className="rounded-full bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700">
+                {filteredServices.length}
+              </span>
+            </div>
           </div>
 
           <div className="max-h-[420px] space-y-3 overflow-y-auto pr-2">
@@ -231,32 +208,6 @@ export default function AdminDashboardContent() {
           </div>
         </section>
       </div>
-
-      <style jsx>{`
-        .dashboard-card-marquee {
-          animation: dashboard-card-marquee 32s linear infinite;
-        }
-
-        .dashboard-card-marquee:hover {
-          animation-play-state: paused;
-        }
-
-        @keyframes dashboard-card-marquee {
-          from {
-            transform: translateX(0);
-          }
-          to {
-            transform: translateX(calc(-50% - 10px));
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .dashboard-card-marquee {
-            animation: none;
-            overflow-x: auto;
-          }
-        }
-      `}</style>
     </div>
   );
 }

@@ -1,11 +1,12 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination, Navigation, Autoplay } from "swiper/modules";
 import { RxArrowTopRight } from "react-icons/rx";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import { getServiceCardImageUrl } from "./ServiceMedia";
 
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -15,6 +16,7 @@ import "swiper/css/navigation";
 const CardSwipper = ({ servicesData = [] }) => {
   const prevRef = useRef(null);
   const nextRef = useRef(null);
+  const [loadedCards, setLoadedCards] = useState({});
 
   const shortText = (text, length = 120) => {
     if (!text || typeof text !== "string") return "No description available";
@@ -99,12 +101,33 @@ const CardSwipper = ({ servicesData = [] }) => {
               </h3>
 
               {/* IMAGE */}
-              <div className="h-32 w-full flex items-center justify-center mb-3">
-                <img
-                  src={service?.images?.[0]?.url || "/assets/brief_man.png"}
-                  alt={service?.heading}
-                  className="max-h-full max-w-full object-contain"
-                />
+              <div className="h-32 w-full flex items-center justify-center mb-3 overflow-hidden rounded-xl">
+                {getServiceCardImageUrl(service) ? (
+                  <div className="relative h-full w-full">
+                    {!loadedCards[service._id] && (
+                      <div className="absolute inset-0 animate-pulse bg-blue-100" />
+                    )}
+                    <img
+                      src={getServiceCardImageUrl(service)}
+                      alt={service?.heading || "Briefcasse service"}
+                      onLoad={() =>
+                        setLoadedCards((current) => ({
+                          ...current,
+                          [service._id]: true,
+                        }))
+                      }
+                      className={`h-full w-full object-contain transition-opacity duration-500 ${
+                        loadedCards[service._id] ? "opacity-100" : "opacity-0"
+                      }`}
+                    />
+                  </div>
+                ) : (
+                  <img
+                    src="/assets/brief_man.png"
+                    alt={service?.heading || "Briefcasse service"}
+                    className="max-h-full max-w-full object-contain"
+                  />
+                )}
               </div>
 
               {/* DESCRIPTION */}
