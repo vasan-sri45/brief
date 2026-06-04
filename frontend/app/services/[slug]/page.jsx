@@ -1,5 +1,5 @@
 import ServiceSlugClient from "./ServiceSlugClient";
-import { notFound, redirect } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { SERVICES } from "../../config/services";
 import { getCanonicalServiceSlug, serviceMatchesSlug } from "../../utils/serviceSlug";
@@ -45,7 +45,14 @@ async function getServiceBySlug(slug) {
   } catch {
     // Fall through to the local service index so pages still render for crawlers.
   }
-  return null;
+  const readableTitle = getReadableSlug(slug);
+  return {
+    slug,
+    title: "Startup",
+    heading: readableTitle,
+    description: `${readableTitle} support in India from Briefcasse. Get help with documents, process, filing timelines, compliance steps, and expert guidance for individuals, startups, and businesses.`,
+    status: "Active",
+  };
 }
 
 export async function generateStaticParams() {
@@ -57,8 +64,8 @@ export async function generateMetadata({ params }) {
   const service = await getServiceBySlug(slug);
   const title = getServiceTitle(service, slug);
   const description = getServiceDescription(service, slug).slice(0, 155);
-  const image = getServiceImage(service);
-  const canonical = service?.canonicalUrl || `/services/${slug}`;
+  const image = toAbsoluteUrl(getServiceImage(service));
+  const canonical = toAbsoluteUrl(service?.canonicalUrl || `/services/${slug}`);
   const ogTitle = service?.openGraphTitle || `${title} | ${SITE.name}`;
   const ogDescription = service?.openGraphDescription || description;
 
@@ -73,7 +80,7 @@ export async function generateMetadata({ params }) {
       type: "website",
       title: ogTitle,
       description: ogDescription,
-      url: `${SITE.url}/services/${slug}`,
+      url: canonical,
       siteName: SITE.name,
       images: [
         {
@@ -181,15 +188,18 @@ function parseSchemaJson(schemaMarkupJson) {
   }
 }
 
+function toAbsoluteUrl(value = "") {
+  if (!value) return SITE.url;
+  if (/^https?:\/\//i.test(value)) return value;
+  return `${SITE.url}${String(value).startsWith("/") ? "" : "/"}${value}`;
+}
+
 export default async function ServiceSlugPage({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
-  if (!service) {
-    notFound();
-  }
 
   const canonicalSlug = getCanonicalServiceSlug(service);
-  if (canonicalSlug && canonicalSlug !== slug) {
+  if (service?.slug !== slug && canonicalSlug && canonicalSlug !== slug) {
     redirect(`/services/${canonicalSlug}`);
   }
 
