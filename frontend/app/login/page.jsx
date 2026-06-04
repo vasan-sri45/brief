@@ -1,13 +1,13 @@
 "use client";
 import { useSelector } from "react-redux";
 // import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoginForm from "../components/forms/LoginForm";
 import RegisterForm from "../components/forms/RegisterForm";
 import LoginFormImage from "../components/forms/LoginFormImage";
 
-export default function LoginPage() {
+function LoginContent() {
   const { user, hydrated } = useSelector((s) => s.auth);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -34,5 +34,13 @@ export default function LoginPage() {
       )}
       <LoginFormImage />
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
   );
 }

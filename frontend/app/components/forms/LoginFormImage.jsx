@@ -1,22 +1,17 @@
 // components/auth/LoginFormImage.jsx
 "use client";
 import Image from "next/image";
-import BriefCasseBuilding from "../../../public/assets/blueDog.png";
-import Briefbuilding1 from "../../../public/assets/building1.jpg";
-import Briefbuilding2 from "../../../public/assets/building2.jpg";
-import { MdArrowOutward } from "react-icons/md";
-import { FiArrowDownLeft } from "react-icons/fi";
 
 const LoginFormImage = () => {
-  const images = [BriefCasseBuilding, Briefbuilding1, Briefbuilding2]; // for future use (slider etc.)
-
   return (
     <div className="hidden md:flex min-h-screen justify-start items-center md:w-6/12">
       <div className="relative w-full sm:w-11/12 lg:max-w-lg h-[645px] lg:h-[655px] xl:h-[685px] bg-white border-3 border-custom-blue rounded-3xl">
         <Image
-          src={BriefCasseBuilding}
-          alt="building"
-          className="h-[641px] lg:h-[641px] xl:h-[681px]"
+          src="/assets/blueDog-optimized.webp"
+          alt="Briefcasse login visual"
+          fill
+          sizes="(min-width: 1280px) 520px, (min-width: 768px) 50vw, 0px"
+          className="rounded-3xl object-cover"
         />
 
         {/* Top text */}

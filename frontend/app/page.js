@@ -17,20 +17,7 @@
 // app/page.js
 
 import Home from "./components/common/Home";
-
-async function getServices() {
-  try {
-    const res = await fetch(
-      "https://brief-ewyr.onrender.com/api/services",
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data?.items || [];
-  } catch {
-    return [];
-  }
-}
+import { SERVICES } from "./config/services";
 
 const categories = [
   { title: "Startup", subTitle: "We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease." },
@@ -44,7 +31,7 @@ const categories = [
 
 // ✅ async function — Server Component
 export default async function Page() {
-  const services = await getServices();
+  const services = SERVICES;
 
   return (
     <>
@@ -64,9 +51,10 @@ export default async function Page() {
         <h1>Trademark Registration & Legal Services India</h1>
         <p>Briefcasse offers easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses in India.</p>
         {categories.map((cat) => {
-          const filtered = services.filter(
-            (s) => s.title?.trim().toLowerCase() === cat.title.trim().toLowerCase()
-          );
+          const filtered = services.filter((s) => {
+            const category = (s.category || s.title || "").trim().toLowerCase();
+            return category === cat.title.trim().toLowerCase();
+          });
           if (filtered.length === 0) return null;
           return (
             <div key={cat.title}>
@@ -76,7 +64,7 @@ export default async function Page() {
                 {filtered.map((s) => (
                   <li key={s.slug}>
                     <a href={`/services/${s.slug}`}>
-                      {s.heading || s.name}
+                      {s.heading || s.name || s.title}
                     </a>
                   </li>
                 ))}

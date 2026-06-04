@@ -91,7 +91,7 @@ const ProcessAtBriefcasse = ({ brief }) => {
       {/* Heading */}
       <div className="mb-8 lg:w-10/12 mx-auto">
         <h2 className="font-anton font-medium text-[1.1rem] md:text-[1.3rem] lg:text-[1.6rem] tracking-wider text-custom-blue">
-          PROCESS AT BRIEFCASE
+          PROCESS AT BRIEFCASSE
         </h2>
 
         <div className="mt-1 h-1 w-16 bg-transparent relative overflow-hidden">

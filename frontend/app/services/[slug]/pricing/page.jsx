@@ -101,7 +101,7 @@ export default function ServicePricingPage() {
 
     try {
       const { data: orderData } = await api.post("/payment/create-order", {
-        slug,
+        slug: service?.slug || slug,
         price,
       });
 

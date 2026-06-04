@@ -1,5 +1,8 @@
 import ServiceSlugClient from "./ServiceSlugClient";
+import { notFound, redirect } from "next/navigation";
+import { Suspense } from "react";
 import { SERVICES } from "../../config/services";
+import { getCanonicalServiceSlug, serviceMatchesSlug } from "../../utils/serviceSlug";
 import {
   SERVICE_API_URL,
   SITE,
@@ -12,15 +15,29 @@ import {
 } from "../../config/site";
 
 async function getServiceBySlug(slug) {
+  const localService =
+    SERVICES.find((item) => item.slug === slug) ||
+    SERVICES.find((item) => serviceMatchesSlug(item, slug));
+
+  if (localService) {
+    return {
+      ...localService,
+      heading: localService.title,
+      description: localService.summary,
+    };
+  }
+
   try {
-    const res = await fetch(SERVICE_API_URL, { next: { revalidate: 3600 } });
+    const res = await fetch(SERVICE_API_URL, { cache: "no-store" });
 
     if (!res.ok) {
       throw new Error("Service request failed");
     }
 
     const data = await res.json();
-    const service = data?.items?.find((item) => item.slug === slug);
+    const service =
+      data?.items?.find((item) => item.slug === slug) ||
+      data?.items?.find((item) => serviceMatchesSlug(item, slug));
 
     if (service) {
       return service;
@@ -28,15 +45,7 @@ async function getServiceBySlug(slug) {
   } catch {
     // Fall through to the local service index so pages still render for crawlers.
   }
-
-  const localService = SERVICES.find((item) => item.slug === slug);
-  if (!localService) return null;
-
-  return {
-    ...localService,
-    heading: localService.title,
-    description: localService.summary,
-  };
+  return null;
 }
 
 export async function generateStaticParams() {
@@ -175,6 +184,15 @@ function parseSchemaJson(schemaMarkupJson) {
 export default async function ServiceSlugPage({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
+  if (!service) {
+    notFound();
+  }
+
+  const canonicalSlug = getCanonicalServiceSlug(service);
+  if (canonicalSlug && canonicalSlug !== slug) {
+    redirect(`/services/${canonicalSlug}`);
+  }
+
   const title = getServiceTitle(service, slug);
   const description = getServiceDescription(service, slug);
   const faqs = getServiceFaqs(service, slug);
@@ -186,15 +204,17 @@ export default async function ServiceSlugPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <ServiceSlugClient
-        initialService={service}
-        initialSeo={{
-          title,
-          description,
-          faqs,
-          readableSlug: getReadableSlug(slug),
-        }}
-      />
+      <Suspense fallback={null}>
+        <ServiceSlugClient
+          initialService={service}
+          initialSeo={{
+            title,
+            description,
+            faqs,
+            readableSlug: getReadableSlug(slug),
+          }}
+        />
+      </Suspense>
     </>
   );
 }

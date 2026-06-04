@@ -8,6 +8,7 @@ import { useLogout } from "../../hooks/useAuthMutations";
 import { useAllServices } from "../../hooks/userServiceList";
 import Image from "next/image";
 import StartUpCard from "./StartUpCard";
+import { getCanonicalServiceSlug } from "../../utils/serviceSlug";
 
 const CATEGORY_LABELS = [
   "Startup",
@@ -79,7 +80,7 @@ const MegaMenuNavbar = () => {
 
       map[key].sections[sub].push({
         label: s.heading || s.title,
-        slug: s.slug,
+        slug: getCanonicalServiceSlug(s),
       });
 
     });
@@ -361,6 +362,7 @@ const MegaMenuNavbar = () => {
             <button
               className="w-full text-left hover:bg-gray-100 text-sm font-lato font-bold"
               onClick={() => {
+                setMobileOpen(false);
                 router.push("/blogs");
                 
               }}
@@ -371,6 +373,7 @@ const MegaMenuNavbar = () => {
             <button
               className="w-full text-left hover:bg-gray-100 text-sm font-lato font-bold"
               onClick={() => {
+                setMobileOpen(false);
                 router.push("/user/about");
               }}
             >
@@ -380,6 +383,7 @@ const MegaMenuNavbar = () => {
             <button
               className="w-full text-left hover:bg-gray-100 text-sm font-lato font-bold"
               onClick={() => {
+                setMobileOpen(false);
                 router.push("/user/contact");
               }}
             >
@@ -389,6 +393,7 @@ const MegaMenuNavbar = () => {
             {user ? (
               <button
                 onClick={() => {
+                  setMobileOpen(false);
                   logout.mutate();
                   
                 }}
@@ -399,6 +404,7 @@ const MegaMenuNavbar = () => {
             ) : (
               <button
                 onClick={() => {
+                  setMobileOpen(false);
                   handleLogin();
                 
                 }}

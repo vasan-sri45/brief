@@ -8,6 +8,7 @@ import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
 import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 import { useSelector } from "react-redux";
 import ServiceMedia from "./ServiceMedia";
+import { getCanonicalServiceSlug } from "../../utils/serviceSlug";
 
 const ServiceHero = ({ service }) => {
   const [activeTab, setActiveTab] = useState("description");
@@ -31,9 +32,10 @@ const ServiceHero = ({ service }) => {
 
 
   const handleStartService = () => {
-  if (!service?.slug) return;
+  const canonicalSlug = getCanonicalServiceSlug(service);
+  if (!canonicalSlug) return;
 
-  const pricingUrl = `/services/${service.slug}/pricing`;
+  const pricingUrl = `/services/${canonicalSlug}/pricing`;
 
   if (user) {
     router.push(pricingUrl);
@@ -70,6 +72,7 @@ const ServiceHero = ({ service }) => {
 
             <ServiceMedia
               service={service}
+              priority
               className="h-full w-full object-cover object-center"
               fallback={
               <div className="flex h-full w-full items-center justify-center bg-blue-50 text-sm font-bold text-blue-600">

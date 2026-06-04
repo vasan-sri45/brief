@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useMemo, useCallback, useRef, useState } from "react";
-import { useParams, useSearchParams, useRouter } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGsapScrollReveal } from "../../hooks/useGsapScrollReveal";
@@ -30,7 +30,6 @@ const titleRef = useGsapHeroTitle();
 
 /* ================= ROUTE ================= */
 const { slug } = useParams();
-const router = useRouter();
 const searchParams = useSearchParams();
 const contentFilter = searchParams?.get("content")?.toLowerCase().trim();
 
@@ -39,12 +38,10 @@ const { service: fetchedService, isLoading, error } = useServiceBySlug(slug);
 const service = fetchedService || initialService;
 
 /* ================= SECTION REFS ================= */
-const sectionRefs = {
-description: useRef(null),
-documents: useRef(null),
-process: useRef(null),
-legal: useRef(null)
-};
+const descriptionRef = useRef(null);
+const documentsRef = useRef(null);
+const processRef = useRef(null);
+const legalSectionRef = useRef(null);
 
 const legalRef = useRef(null);
 const briefcaseRef = useRef(null);
@@ -72,6 +69,12 @@ return {
 /* ================= SCROLL TO SECTION ================= */
 const scrollToSection = (tab) => {
 setActiveTab(tab);
+const sectionRefs = {
+  description: descriptionRef,
+  documents: documentsRef,
+  process: processRef,
+  legal: legalSectionRef,
+};
 const el = sectionRefs[tab]?.current;
 if (!el) return;
 
@@ -87,6 +90,12 @@ el.scrollIntoView({
 /* ================= ACTIVE TAB ON SCROLL ================= */
 useEffect(() => {
 const observers = [];
+const sectionRefs = {
+  description: descriptionRef,
+  documents: documentsRef,
+  process: processRef,
+  legal: legalSectionRef,
+};
 
 Object.entries(sectionRefs).forEach(([key, ref]) => {
   if (!ref.current) return;
@@ -110,8 +119,8 @@ return () => observers.forEach((o) => o.disconnect());
 
 /* ================= SCROLL ANIMATIONS ================= */
 useGsapScrollReveal(legalRef, { y: 40, stagger: 0.15 });
-useGsapScrollReveal(sectionRefs.documents, { y: 50, stagger: 0.2 });
-useGsapScrollReveal(sectionRefs.process, { y: 60, stagger: 0.25 });
+useGsapScrollReveal(documentsRef, { y: 50, stagger: 0.2 });
+useGsapScrollReveal(processRef, { y: 60, stagger: 0.25 });
 useGsapScrollReveal(briefcaseRef, { y: 50, stagger: 0.2 });
 
 /* ================= STATES ================= */
@@ -128,7 +137,6 @@ return <div className="min-h-screen flex items-center justify-center">Service no
 }
 
 const seoTitle = initialSeo?.title || getServiceTitle(filteredData, slug);
-const seoDescription = initialSeo?.description || filteredData.description;
 const faqs = getServiceFaqs(filteredData, slug);
 
 /* ================= JSX ================= */
@@ -163,7 +171,7 @@ return ( <div className="overflow-hidden">
   </div>
 
   {/* DESCRIPTION */}
-  <section ref={sectionRefs.description}>
+  <section ref={descriptionRef}>
     <ServiceHero service={filteredData} />
   </section>
 
@@ -208,7 +216,7 @@ return ( <div className="overflow-hidden">
 
   {/* DOCUMENTS */}
   {filteredData.documents?.length > 0 && (
-    <section ref={sectionRefs.documents}>
+    <section ref={documentsRef}>
       <DocumentsRequired docs={filteredData.documents} variant="cards" />
     </section>
   )}
@@ -216,7 +224,7 @@ return ( <div className="overflow-hidden">
   {/* LEGALS REQUIRED */}
 
    {filteredData.legalRequireds?.length > 0 && (
-    <section ref={sectionRefs.legal}>
+    <section ref={legalSectionRef}>
       <LegalRequired docs={filteredData.legalRequireds} variant="cards"/>
     </section>
   )}
@@ -224,7 +232,7 @@ return ( <div className="overflow-hidden">
 
   {/* PROCESS */}
   {filteredData.process?.length > 0 && (
-    <section ref={sectionRefs.process}>
+    <section ref={processRef}>
       <IncorporationProcess process={filteredData.process} />
     </section>
   )}

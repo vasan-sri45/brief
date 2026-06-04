@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode, Pagination, Navigation, Autoplay } from "swiper/modules";
+import { FreeMode, Pagination, Autoplay } from "swiper/modules";
 import { RxArrowTopRight } from "react-icons/rx";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
@@ -14,8 +14,7 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 
 const CardSwipper = ({ servicesData = [] }) => {
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const swiperRef = useRef(null);
   const [loadedCards, setLoadedCards] = useState({});
 
   const shortText = (text, length = 120) => {
@@ -32,7 +31,7 @@ const CardSwipper = ({ servicesData = [] }) => {
 
       {/* LEFT ARROW */}
       <button
-        ref={prevRef}
+        onClick={() => swiperRef.current?.slidePrev()}
         className="
           absolute z-20
           top-1/2 -translate-y-1/2
@@ -49,7 +48,7 @@ const CardSwipper = ({ servicesData = [] }) => {
 
       {/* RIGHT ARROW */}
       <button
-        ref={nextRef}
+        onClick={() => swiperRef.current?.slideNext()}
         className="
           absolute z-20
           top-1/2 -translate-y-1/2
@@ -80,15 +79,10 @@ const CardSwipper = ({ servicesData = [] }) => {
           pauseOnMouseEnter: true,
         }}
         pagination={{ clickable: true }}
-        navigation={{
-          prevEl: prevRef.current,
-          nextEl: nextRef.current,
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
         }}
-        onBeforeInit={(swiper) => {
-          swiper.params.navigation.prevEl = prevRef.current;
-          swiper.params.navigation.nextEl = nextRef.current;
-        }}
-        modules={[FreeMode, Pagination, Navigation, Autoplay]}
+        modules={[FreeMode, Pagination, Autoplay]}
         className="px-3 sm:px-6 md:px-12 pb-14"
       >
         {servicesData.map((service) => (
@@ -110,6 +104,10 @@ const CardSwipper = ({ servicesData = [] }) => {
                     <img
                       src={getServiceCardImageUrl(service)}
                       alt={service?.heading || "Briefcasse service"}
+                      width="480"
+                      height="180"
+                      loading="lazy"
+                      decoding="async"
                       onLoad={() =>
                         setLoadedCards((current) => ({
                           ...current,
@@ -125,6 +123,10 @@ const CardSwipper = ({ servicesData = [] }) => {
                   <img
                     src="/assets/brief_man.png"
                     alt={service?.heading || "Briefcasse service"}
+                    width="480"
+                    height="180"
+                    loading="lazy"
+                    decoding="async"
                     className="max-h-full max-w-full object-contain"
                   />
                 )}

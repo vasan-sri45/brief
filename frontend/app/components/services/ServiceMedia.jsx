@@ -50,6 +50,7 @@ export default function ServiceMedia({
   imgClassName = "h-full w-full object-cover",
   fallback = null,
   youtubeMode = "embed",
+  priority = false,
 }) {
   const mediaUrl = getServiceMediaUrl(service);
   const isYouTubeUrl = Boolean(getYouTubeVideoId(mediaUrl));
@@ -62,6 +63,9 @@ export default function ServiceMedia({
       <video
         src={mediaUrl}
         controls
+        preload="metadata"
+        width="640"
+        height="360"
         className={className || imgClassName}
       />
     );
@@ -77,6 +81,10 @@ export default function ServiceMedia({
         <img
           src={thumbnailUrl || mediaUrl}
           alt={service?.heading || service?.title || "Briefcasse service video"}
+          width="480"
+          height="270"
+          loading="lazy"
+          decoding="async"
           className={className || imgClassName}
         />
       );
@@ -86,6 +94,9 @@ export default function ServiceMedia({
       <iframe
         src={toYouTubeEmbed(mediaUrl)}
         title={service?.heading || service?.title || "Briefcasse service video"}
+        loading="lazy"
+        width="640"
+        height="360"
         className={className || imgClassName}
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
         allowFullScreen
@@ -97,6 +108,11 @@ export default function ServiceMedia({
     <img
       src={mediaUrl}
       alt={service?.heading || service?.title || "Briefcasse service"}
+      width="640"
+      height="360"
+      loading={priority ? "eager" : "lazy"}
+      fetchPriority={priority ? "high" : "auto"}
+      decoding={priority ? "sync" : "async"}
       className={className || imgClassName}
     />
   );

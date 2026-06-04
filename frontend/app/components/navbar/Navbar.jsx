@@ -30,6 +30,7 @@ const Navbar = () => {
           alt="Briefcasse banner"
           fill
           priority
+          sizes="98vw"
           quality={75}
           className=""
         />
