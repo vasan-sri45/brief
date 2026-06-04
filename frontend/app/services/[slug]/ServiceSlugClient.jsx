@@ -1,45 +1,29 @@
 "use client";
 import React, { useEffect, useMemo, useCallback, useRef, useState } from "react";
-import dynamic from "next/dynamic";
 import { useParams, useSearchParams } from "next/navigation";
+import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useGsapScrollReveal } from "../../hooks/useGsapScrollReveal";
 import { useServiceBySlug } from "../../hooks/useServiceBySlug";
+import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import ServiceHero from "../../components/services/ServiceHero";
+import LegalCard from "../../components/services/LegalCard";
+import DocumentsRequired from "../../components/services/DocumentsRequired";
+import LegalRequired from "../../components/services/LegalRequired";
+import IncorporationProcess from "../../components/services/InCoporationProcess";
+import ProcessAtBriefcasse from "../../components/services/ProcessAtBriefCasse";
+import BoxClasses from "../../components/services/ClassGrid";
+import SocialMedia from "../../components/common/SocialMedia";
 import { getServiceFaqs, getServiceTitle } from "../../config/site";
 
-const LegalCard = dynamic(() => import("../../components/services/LegalCard"), {
-  ssr: false,
-  loading: () => <div className="min-h-[240px]" />,
-});
-const DocumentsRequired = dynamic(() => import("../../components/services/DocumentsRequired"), {
-  ssr: false,
-  loading: () => <div className="min-h-[220px]" />,
-});
-const LegalRequired = dynamic(() => import("../../components/services/LegalRequired"), {
-  ssr: false,
-  loading: () => <div className="min-h-[220px]" />,
-});
-const IncorporationProcess = dynamic(() => import("../../components/services/InCoporationProcess"), {
-  ssr: false,
-  loading: () => <div className="min-h-[220px]" />,
-});
-const ProcessAtBriefcasse = dynamic(() => import("../../components/services/ProcessAtBriefCasse"), {
-  ssr: false,
-  loading: () => <div className="min-h-[220px]" />,
-});
-const BoxClasses = dynamic(() => import("../../components/services/ClassGrid"), {
-  ssr: false,
-  loading: () => <div className="min-h-[220px]" />,
-});
-const SocialMedia = dynamic(() => import("../../components/common/SocialMedia"), {
-  ssr: false,
-});
+gsap.registerPlugin(ScrollTrigger);
 
 
 
 export default function ServiceSlugPage({ initialService = null, initialSeo = null }) {
 
 const [activeTab, setActiveTab] = useState("description");
-const titleRef = useRef(null);
+const titleRef = useGsapHeroTitle();
 
 /* ================= AUTH ================= */
 // const { loading: authLoading } = useAuthGuard(["user"]);
@@ -48,12 +32,9 @@ const titleRef = useRef(null);
 const { slug } = useParams();
 const searchParams = useSearchParams();
 const contentFilter = searchParams?.get("content")?.toLowerCase().trim();
-const [enableBackendService, setEnableBackendService] = useState(false);
 
 /* ================= DATA ================= */
-const { service: fetchedService, isLoading, error } = useServiceBySlug(slug, {
-  enabled: enableBackendService,
-});
+const { service: fetchedService, isLoading, error } = useServiceBySlug(slug);
 const service = fetchedService || initialService;
 
 /* ================= SECTION REFS ================= */
@@ -136,16 +117,11 @@ return () => observers.forEach((o) => o.disconnect());
 
 }, []);
 
-useEffect(() => {
-  const loadServices = () => setEnableBackendService(true);
-  if ("requestIdleCallback" in window) {
-    const idleId = window.requestIdleCallback(loadServices, { timeout: 2000 });
-    return () => window.cancelIdleCallback?.(idleId);
-  }
-
-  const timeoutId = window.setTimeout(loadServices, 1200);
-  return () => window.clearTimeout(timeoutId);
-}, []);
+/* ================= SCROLL ANIMATIONS ================= */
+useGsapScrollReveal(legalRef, { y: 40, stagger: 0.15 });
+useGsapScrollReveal(documentsRef, { y: 50, stagger: 0.2 });
+useGsapScrollReveal(processRef, { y: 60, stagger: 0.25 });
+useGsapScrollReveal(briefcaseRef, { y: 50, stagger: 0.2 });
 
 /* ================= STATES ================= */
 // if (authLoading || isLoading) {

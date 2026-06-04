@@ -9,14 +9,12 @@ const fetchServiceList = async () => {
   return res.data;                          // { items, page, ... }
 };
 
-export const useAllServices = (options = {}) =>
+export const useAllServices = () =>
   useQuery({
     queryKey: ["service-list"],
     queryFn: fetchServiceList,
-    staleTime: 5 * 60 * 1000,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    ...options,
+    staleTime: 30 * 1000,
+    refetchOnMount: "always",
   });
 
 export const useMyPurchasedServices = (enabled = true) =>

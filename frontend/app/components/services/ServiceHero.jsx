@@ -1,20 +1,35 @@
 "use client";
+import React, { useState } from "react";
+import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import HeroButton from "./HeroButton";
+import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
+import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
+import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 import { useSelector } from "react-redux";
 import ServiceMedia from "./ServiceMedia";
 import { getCanonicalServiceSlug } from "../../utils/serviceSlug";
 
 const ServiceHero = ({ service }) => {
+  const [activeTab, setActiveTab] = useState("description");
   const router = useRouter();
   const { user } = useSelector((state) => state.auth);
 
+  // 🎯 GSAP hooks
+  const titleRef = useGsapHeroTitle();
+  const tabsRef = useGsapHeroTabs();
+  useGsapSmoothScroll();
 
   const descriptionText =
     service?.shortDescription ||
     service?.description ||
     service?.fullDescription ||
     "Want to register your Private Limited Company? We've got you covered!";
+
+  const handleTabClick = (tab) => {
+    setActiveTab(tab);
+  };
+
 
   const handleStartService = () => {
   const canonicalSlug = getCanonicalServiceSlug(service);

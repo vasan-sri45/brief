@@ -1,11 +1,6 @@
 "use client";
-import dynamic from "next/dynamic";
+import CardSwipper from "../../components/services/CardSwipper";
 import { useAllServices } from "../../hooks/userServiceList";
-
-const CardSwipper = dynamic(() => import("../../components/services/CardSwipper"), {
-  ssr: false,
-  loading: () => <div className="min-h-[380px]" />,
-});
 
 export default function ServicePage() {
   const {
