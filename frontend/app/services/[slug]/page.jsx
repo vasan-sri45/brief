@@ -4,7 +4,6 @@ import { Suspense } from "react";
 import { SERVICES } from "../../config/services";
 import { getCanonicalServiceSlug, serviceMatchesSlug } from "../../utils/serviceSlug";
 import {
-  SERVICE_API_URL,
   SITE,
   getServiceImage,
   getServiceKeywords,
@@ -25,25 +24,6 @@ async function getServiceBySlug(slug) {
       heading: localService.title,
       description: localService.summary,
     };
-  }
-
-  try {
-    const res = await fetch(SERVICE_API_URL, { cache: "no-store" });
-
-    if (!res.ok) {
-      throw new Error("Service request failed");
-    }
-
-    const data = await res.json();
-    const service =
-      data?.items?.find((item) => item.slug === slug) ||
-      data?.items?.find((item) => serviceMatchesSlug(item, slug));
-
-    if (service) {
-      return service;
-    }
-  } catch {
-    // Fall through to the local service index so pages still render for crawlers.
   }
   const readableTitle = getReadableSlug(slug);
   return {
@@ -190,6 +170,7 @@ function parseSchemaJson(schemaMarkupJson) {
 
 function toAbsoluteUrl(value = "") {
   if (!value) return SITE.url;
+  if (/^data:/i.test(value) || /^blob:/i.test(value)) return `${SITE.url}${SITE.logo}`;
   if (/^https?:\/\//i.test(value)) return value;
   return `${SITE.url}${String(value).startsWith("/") ? "" : "/"}${value}`;
 }
