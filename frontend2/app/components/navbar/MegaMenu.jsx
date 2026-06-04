@@ -1,0 +1,439 @@
+"use client";
+import React, { useRef, useState, useEffect, useMemo } from "react";
+import { ChevronDown, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
+import { useLogout } from "../../hooks/useAuthMutations";
+import { useAllServices } from "../../hooks/userServiceList";
+import Image from "next/image";
+import StartUpCard from "./StartUpCard";
+import { getCanonicalServiceSlug } from "../../utils/serviceSlug";
+
+const CATEGORY_LABELS = [
+  "Startup",
+  "Intellectual Property",
+  "Tax Filing",
+  "MCA Compliance",
+  "Registration",
+  "Legal Advisory & Agreement",
+  "Other Services",
+];
+
+const MegaMenuNavbar = () => {
+
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileSub, setMobileSub] = useState(null);
+  const [activeMenu, setActiveMenu] = useState(null);
+  const timerRef = useRef(null);
+
+  const router = useRouter();
+  const logout = useLogout();
+  const user = useSelector((state) => state.auth.user);
+
+  const { data } = useAllServices();
+  const services = data?.items || [];
+
+   const handleLogin = () => {
+    router.push(user ? "/serviced" : "/login");
+  };
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
+    return () => (document.body.style.overflow = "");
+  }, [mobileOpen]);
+
+  const norm = (v) => v?.toLowerCase().trim().replace(/\s+/g, " ");
+
+  /* ================= MENU DATA ================= */
+
+  const menuData = useMemo(() => {
+
+    const map = {};
+
+    services.forEach((s) => {
+
+      const title = s.title?.trim() || "Other Services";
+      const sub = s.subTitle?.trim() || "General";
+      const key = norm(title);
+
+      /* hide Customized Agreement from list */
+      const clean = (v) => v?.toLowerCase().trim();
+
+      if (
+  (clean(s.title) === "legal advisory & agreement" &&
+    clean(sub) === "customized agreement") ||
+
+  (clean(s.title) === "intellectual property" &&
+    clean(sub) === "trademark search")
+) {
+  return;
+}
+
+      if (!map[key]) {
+        map[key] = { title, sections: {} };
+      }
+
+      if (!map[key].sections[sub]) {
+        map[key].sections[sub] = [];
+      }
+
+      map[key].sections[sub].push({
+        label: s.heading || s.title,
+        slug: getCanonicalServiceSlug(s),
+      });
+
+    });
+
+    return map;
+
+  }, [services]);
+
+  const openMenu = (item) => {
+    clearTimeout(timerRef.current);
+    setActiveMenu(item);
+  };
+
+  const closeMenu = () => {
+    timerRef.current = setTimeout(() => setActiveMenu(null), 150);
+  };
+
+  
+
+  const DesktopMegaMenu = ({ item }) => {
+  const entry = menuData[norm(item)] || { sections: {} };
+
+  return (
+    <div
+      className="fixed left-1/2 -translate-x-1/2 top-[150px] bg-white shadow-2xl rounded-xl z-[100]
+      border border-gray-200 w-[95vw] max-w-[1400px]"
+      onMouseEnter={() => openMenu(item)}
+      onMouseLeave={closeMenu}
+    >
+      <div className="flex">
+
+        {/* ================= LEFT MENU ================= */}
+        <div className="flex-1 p-10 flex items-start gap-10">
+
+          {Object.entries(entry.sections).map(([title, items]) => (
+
+            <div key={title} className="min-w-[220px]">
+
+              {/* TITLE */}
+              <h4 className="bg-custom-blue text-white rounded-full px-4 py-2 text-sm font-bold mb-4 uppercase text-center">
+                {title}
+              </h4>
+
+              {/* LINKS */}
+              <ul className="space-y-3">
+                {items.map((s, i) => (
+                  <li key={i}>
+                    <Link
+                      href={`/services/${s.slug}`}
+                      onClick={() => setActiveMenu(null)}
+                      className="text-[14px] text-custom-blue font-bold hover:text-starttext"
+                    >
+                      {s.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+
+            </div>
+
+          ))}
+
+        </div>
+
+        {/* ================= RIGHT CARD ================= */}
+
+        {item === "Startup" && (
+          <StartUpCard
+            title="Startup Packages"
+            description="Register your company quickly with expert legal support."
+            buttonText="Custom Startup Package"
+            navigatePath="/startup"
+            onClose={() => setActiveMenu(null)}
+          />
+        )}
+
+        {item === "Legal Advisory & Agreement" && (
+          <StartUpCard
+            title="Custom Agreement"
+            description="Create legally valid agreements with expert legal guidance."
+            buttonText="Custom Agreement"
+            navigatePath="/services/customized-agreement"
+            onClose={() => setActiveMenu(null)}
+          />
+        )}
+
+        {item === "Intellectual Property" && (
+          <StartUpCard
+            title="Trademark Search"
+            description="Search and protect your brand with expert legal support."
+            buttonText="Start Search"
+            navigatePath="/services/trademark-research"
+            onClose={() => setActiveMenu(null)}
+          />
+        )}
+
+      </div>
+    </div>
+  );
+};
+
+  /* ================= NAVBAR ================= */
+
+  return (
+    <nav className="relative w-full">
+
+      {/* MOBILE HEADER */}
+
+      <div className="lg:hidden flex justify-between items-center px-4 py-4 bg-custom-blue">
+
+        <Link href="/" className="flex items-center">
+
+          <Image
+            src="/assets/brief_white.png"
+            alt="logo"
+            width={32}
+            height={32}
+          />
+
+          <span className="text-white font-anton ml-1 text-2xl mt-1">
+            BRIEFCASSE
+          </span>
+
+        </Link>
+
+        <button onClick={() => setMobileOpen(true)}>
+          <Menu className="text-white" size={28} />
+        </button>
+
+      </div>
+
+      {/* DESKTOP NAV */}
+
+      <ul className="hidden lg:flex justify-center gap-12 py-4 bg-custom-blue text-white font-bold border-b-2 border-white">
+
+        {CATEGORY_LABELS.map((item) => (
+
+          <li
+            key={item}
+            onMouseEnter={() => openMenu(item)}
+            onMouseLeave={closeMenu}
+            className="relative"
+          >
+
+            <button className="flex items-center gap-1">
+
+              {item}
+
+              <ChevronDown
+                size={16}
+                className={activeMenu === item ? "rotate-180" : ""}
+              />
+
+            </button>
+
+            {activeMenu === item && (
+              <DesktopMegaMenu item={item} />
+            )}
+
+          </li>
+
+        ))}
+
+      </ul>
+
+      {/* MOBILE DRAWER */}
+
+      <div className={`fixed inset-0 z-[9999] lg:hidden ${mobileOpen ? "visible" : "invisible"}`}>
+
+        <div
+          className="absolute inset-0 bg-black/70"
+          onClick={() => setMobileOpen(false)}
+        />
+
+        <aside
+          className={`absolute left-0 top-0 h-full w-[85%] max-w-[320px] bg-custom-blue text-white transition-transform ${
+            mobileOpen ? "translate-x-0" : "-translate-x-full"
+          } flex flex-col`}
+        >
+
+          <div className="flex justify-between items-center px-5 py-5 border-b border-white/10">
+
+            <span className="font-bold">
+              {user?.name || "User"}
+            </span>
+
+            <button onClick={() => setMobileOpen(false)}>
+              <X size={28} />
+            </button>
+
+          </div>
+
+          <div className="flex-1 px-4 py-4 overflow-y-auto">
+
+            {CATEGORY_LABELS.map((item) => {
+
+              const entry = menuData[norm(item)] || { sections: {} };
+
+              return (
+
+                <div key={item} className="mb-2">
+
+                  <button
+                    className="w-full flex justify-between items-center py-3"
+                    onClick={() =>
+                      setMobileSub(mobileSub === item ? null : item)
+                    }
+                  >
+                    {item}
+                    <ChevronDown size={20} />
+                  </button>
+
+                  {mobileSub === item && (
+
+                    <div className="bg-white text-custom-blue rounded-xl p-4 space-y-3">
+
+                      {Object.values(entry.sections)
+                        .flat()
+                        .map((s, i) => (
+
+                          <Link
+                            key={i}
+                            href={`/services/${s.slug}`}
+                            onClick={() => setMobileOpen(false)}
+                            className="block font-bold"
+                          >
+                            {s.label}
+                          </Link>
+
+                        ))}
+
+                      {/* MOBILE STARTUP CARD */}
+
+                      {item === "Startup" && (
+                        <StartUpCard
+                          title="Startup Packages"
+                          description="Register your company quickly with expert legal support."
+                          buttonText="Custom Startup Package"
+                          navigatePath="/startup"
+                          onClose={() => setMobileOpen(false)}
+                        />
+                      )}
+
+                      {/* MOBILE LEGAL AGREEMENT CARD */}
+
+                      {item === "Legal Advisory & Agreement" && (
+                        <StartUpCard
+                          title="Custom Agreement"
+                          description="Create legally valid agreements with expert legal guidance."
+                          buttonText="Custom Agreement"
+                          navigatePath="/services/customized-agreement"
+                          onClose={() => setMobileOpen(false)}
+                        />
+                      )}
+
+                      {item === "Intellectual Property" && (
+                        <StartUpCard
+                          title="Trademark Search"
+                          description="Search and protect your brand with expert legal support."
+                          buttonText="Start Search"
+                          navigatePath="/services/trademark-research"
+                          onClose={() => setActiveMenu(null)}
+                        />
+                      )}
+
+                    </div>
+
+                  )}
+
+                </div>
+
+              );
+            })}
+
+          </div>
+
+          <div className="border-t border-white/10 p-4">
+
+            <button
+              className="w-full text-left hover:bg-gray-100 text-sm font-lato font-bold"
+              onClick={() => {
+                setMobileOpen(false);
+                router.push("/blogs");
+                
+              }}
+            >
+              Blogs
+            </button>
+
+            <button
+              className="w-full text-left hover:bg-gray-100 text-sm font-lato font-bold"
+              onClick={() => {
+                setMobileOpen(false);
+                router.push("/user/about");
+              }}
+            >
+              About
+            </button>
+
+            <button
+              className="w-full text-left hover:bg-gray-100 text-sm font-lato font-bold"
+              onClick={() => {
+                setMobileOpen(false);
+                router.push("/user/contact");
+              }}
+            >
+              Contact
+            </button>
+
+            {user ? (
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  logout.mutate();
+                  
+                }}
+                className="text-red-300 font-bold"
+              >
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileOpen(false);
+                  handleLogin();
+                
+                }}
+                className="text-red-300 font-bold"
+              >
+                Login
+              </button>
+            )}
+
+            {/* <button
+              onClick={() => {
+                logout.mutate();
+                setMobileOpen(false);
+              }}
+              className="text-red-300 font-bold"
+            >
+              Login
+            </button> */}
+
+            
+
+          </div>
+
+        </aside>
+
+      </div>
+
+    </nav>
+  );
+};
+
+export default MegaMenuNavbar;

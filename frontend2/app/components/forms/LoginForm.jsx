@@ -1,0 +1,56 @@
+"use client";
+import Image from "next/image";
+import UserOtpLoginForm from "./Form";
+import FormFooter from "./FormFooter";
+import BriefCasse from "../../../public/assets/brief_white.png";
+
+const LoginForm = ({ handleClick }) => {
+  return (
+    <div className="w-full md:w-6/12 min-h-screen flex flex-col justify-center items-center md:items-end gap-1">
+      
+      {/* ================= CARD ================= */}
+      <div className="bg-custom-blue w-11/12 lg:max-w-lg h-[520px] lg:h-[520px] xl:h-[550px] rounded-3xl">
+        <div className="w-5/6 mx-auto pt-2">
+
+          {/* ===== LOGO ===== */}
+          <div className="flex items-center gap-1 pt-4">
+            <div className="flex justify-center items-center">
+              <Image src={BriefCasse} alt="logo" className="w-8 rounded" />
+            </div>
+
+            {/* <div className="w-20 h-7"> */}
+              <p className="text-[1.1rem] lg:text-[1.3rem] font-anton text-normal text-white uppercase tracking-wide mt-1.5">
+                Briefcasse
+              </p>
+            {/* </div> */}
+          </div>
+
+          {/* ===== TEXT ===== */}
+          <div className="mt-3">
+            <p className="text-xl font-anton font-normal text-white tracking-wide uppercase">
+              Welcome to BriefCasse
+            </p>
+            <p className="text-sm text-white font-anton font-normal mt-1 pt-3 tracking-wide">
+              Login to continue
+            </p>
+          </div>
+
+          {/* ===== USER OTP FORM ONLY ===== */}
+          <div className="mt-6">
+            <UserOtpLoginForm handleClick={handleClick} />
+          </div>
+
+        </div>
+      </div>
+
+      {/* ================= FOOTER ================= */}
+      <div className="bg-custom-blue w-11/12 lg:max-w-lg h-[90px] md:h-[125px] lg:h-[135px] rounded-3xl">
+        <div className="h-full flex items-center justify-center">
+          <FormFooter />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default LoginForm;

@@ -1,0 +1,113 @@
+{
+  "selling": [
+    {
+      "name": "Srini",
+      "serviceNum": "BCA0002",
+      "serviceType": "Start Up",
+      "service": "LIMITED LIABILITY PARTNERSHIP REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.10500/-",
+      "status":"open",
+      "assign":"availed"
+    },
+    {
+      "name": "naveen",
+      "serviceNum": "BCA0003",
+      "serviceType": "Start Up",
+      "service": "ONE PERSON COMPANY REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"availed"
+    },
+    {
+      "name": "babu",
+      "serviceNum": "BCA0004",
+      "serviceType": "Start Up",
+      "service": "PARTNERSHIP FIRM REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.9999/-",
+      "status":"open",
+      "assign":"availed"
+    },
+    {
+      "name": "patha",
+      "serviceNum": "BCA0005",
+      "serviceType": "Start Up",
+      "service": "SOLE PROPRIETORSHIP FIRM REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"availed"
+    },
+    {
+      "name": "hari",
+      "serviceNum": "BCA0006",
+      "serviceType": "Special Business Entities",
+      "service": "Register on Indian Subsidiary",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"not availed"
+    },
+    {
+      "name": "seenivasan",
+      "serviceNum": "BCA0007",
+      "serviceType": "Special Business Entities",
+      "service": "PRIVATE LIMITED COMPANY REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"not availed"
+    },
+    {
+      "name": "mukesh",
+      "serviceNum": "BCA0008",
+      "serviceType": "Special Business Entities",
+      "service": "PRIVATE LIMITED COMPANY REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"not availed"
+    },
+    {
+      "name": "hari",
+      "serviceNum": "BCA0006",
+      "serviceType": "Special Business Entities",
+      "service": "Register on Indian Subsidiary",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"not availed"
+    },
+    {
+      "name": "seenivasan",
+      "serviceNum": "BCA0007",
+      "serviceType": "Special Business Entities",
+      "service": "PRIVATE LIMITED COMPANY REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"not availed"
+    },
+    {
+      "name": "mukesh",
+      "serviceNum": "BCA0008",
+      "serviceType": "Special Business Entities",
+      "service": "PRIVATE LIMITED COMPANY REGISTRATION",
+      "paymentMode": "Online",
+      "totalPayment": "Rs.5999/-",
+      "status":"open",
+      "assign":"not availed"
+    }
+  ],
+  "users":[
+    {
+      "empId":"286013",
+      "name":"srinivasan",
+      "emailId":"srinivasanaadhi123@gmail.com",
+      "password":"Perumal@45"
+    }
+  ]
+}
+
