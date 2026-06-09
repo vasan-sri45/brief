@@ -1,23 +1,24 @@
 "use client";
+
+import Image from "next/image";
 import { useRef } from "react";
-import { useUploadProfileImage } from "../../hooks/useEmployeeAuthMutations";
 import { useSelector } from "react-redux";
+import { useUploadProfileImage } from "../../hooks/useEmployeeAuthMutations";
+
+const FALLBACK_PROFILE_IMAGE =
+  "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png";
 
 const ProfileImage = () => {
   const fileRef = useRef(null);
   const uploadImage = useUploadProfileImage();
   const user = useSelector((state) => state.auth.user);
 
-  // 👉 click image → open file picker
   const handleImageClick = () => {
-    fileRef.current.click();
+    fileRef.current?.click();
   };
 
-  console.log(user)
-
-  // 👉 upload file
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileChange = (event) => {
+    const file = event.target.files?.[0];
     if (file) {
       uploadImage.mutate(file);
     }
@@ -25,17 +26,21 @@ const ProfileImage = () => {
 
   return (
     <div>
-      {/* 🔥 CLICKABLE IMAGE */}
-      <img
+      <button
+        type="button"
         onClick={handleImageClick}
-        src={
-          user?.profileImage?.url ||
-          "https://cdn.pixabay.com/photo/2020/07/01/12/58/icon-5359553_1280.png"
-        }
-        className="w-14 h-14 sm:w-16 sm:h-16 rounded-full object-cover cursor-pointer hover:opacity-80 transition"
-      />
+        className="relative h-14 w-14 overflow-hidden rounded-full transition hover:opacity-80 sm:h-16 sm:w-16"
+        aria-label="Upload profile image"
+      >
+        <Image
+          src={user?.profileImage?.url || FALLBACK_PROFILE_IMAGE}
+          alt={`${user?.name || "User"} profile`}
+          fill
+          sizes="64px"
+          className="object-cover"
+        />
+      </button>
 
-      {/* 🔒 HIDDEN INPUT */}
       <input
         type="file"
         ref={fileRef}

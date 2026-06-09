@@ -781,20 +781,20 @@ const TicketRaiseForm = () => {
                       Customer ID
                     </label>
 
-                    <div className="mt-2 flex flex-col gap-3 sm:flex-row">
+                    <div className="mt-2 flex flex-col gap-3 min-[900px]:flex-row">
                       <input
                         name="customerUserId"
                         value={formData.customerUserId}
                         onChange={handleChange}
                         placeholder="Example: CUS00001"
-                        className="h-12 flex-1 rounded-xl border border-slate-200 px-4 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                        className="h-12 min-w-0 flex-1 rounded-xl border border-slate-200 px-4 text-slate-800 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                       />
 
                       <button
                         type="button"
                         onClick={handleCustomerLookup}
                         disabled={lookupState.loading}
-                        className="h-12 rounded-xl bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-60"
+                        className="h-12 w-full shrink-0 rounded-xl bg-slate-900 px-5 text-sm font-bold text-white transition hover:bg-blue-700 disabled:opacity-60 min-[900px]:w-auto"
                       >
                         {lookupState.loading ? "Checking..." : "Find"}
                       </button>

@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
@@ -84,11 +85,16 @@ export default function BlogDetailPage() {
           </p>
         )}
 
-        <img
-          className="mb-5 h-[240px] w-full rounded-3xl object-cover shadow-[0_18px_55px_rgba(15,23,42,0.12)] md:h-[520px]"
-          src={cover}
-          alt={blog.title}
-        />
+        <div className="relative mb-5 h-[240px] w-full overflow-hidden rounded-3xl shadow-[0_18px_55px_rgba(15,23,42,0.12)] md:h-[520px]">
+          <Image
+            className="object-cover"
+            src={cover}
+            alt={blog.title || "Blog cover"}
+            fill
+            sizes="(max-width: 768px) 100vw, 1024px"
+            priority
+          />
+        </div>
 
         <p className="mb-6 text-sm font-bold text-slate-400">
           {date}

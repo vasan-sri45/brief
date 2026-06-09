@@ -4,8 +4,8 @@
 import { useAllServices } from "./userServiceList";
 import { serviceMatchesSlug } from "../utils/serviceSlug";
 
-export const useServiceBySlug = (slug) => {
-  const query = useAllServices();
+export const useServiceBySlug = (slug, options = {}) => {
+  const query = useAllServices(options);
 
   const service =
     slug && query.data?.items

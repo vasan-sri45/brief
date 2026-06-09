@@ -39,8 +39,10 @@ export const useCreatePaidService = () => {
 // };
 
 export const useGetPaidServices = (params = {}) => {
+  const paramsKey = JSON.stringify(params);
+
   return useQuery({
-    queryKey: ["paid-services", params],
+    queryKey: ["paid-services", paramsKey],
     queryFn: async () => {
       const res = await api.get("/paid", {
         params,
@@ -102,8 +104,10 @@ export const useUpdatePaidService = () => {
 
 
 export const useGetPaymentServices = (params = {}) => {
+  const paramsKey = JSON.stringify(params);
+
   return useQuery({
-    queryKey: ["payment-services", params],
+    queryKey: ["payment-services", paramsKey],
     queryFn: async () => {
       const res = await api.get("/payment/all-orders", {
         params,
@@ -160,9 +164,11 @@ export const useExportTransactions = () => {
   });
 };
 
-export const useGetServices = (params = {}) =>
-  useQuery({
-    queryKey: ["services", params],
+export const useGetServices = (params = {}) => {
+  const paramsKey = JSON.stringify(params);
+
+  return useQuery({
+    queryKey: ["services", paramsKey],
     queryFn: async () => {
       const res = await api.get("/services", { params });
       return res.data;
@@ -170,6 +176,7 @@ export const useGetServices = (params = {}) =>
     staleTime: 60_000,
     refetchOnWindowFocus: false,
   });
+};
 
 export const useCreateServiceConfig = () => {
   const queryClient = useQueryClient();

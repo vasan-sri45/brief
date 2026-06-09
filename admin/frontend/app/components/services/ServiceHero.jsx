@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
@@ -8,21 +9,16 @@ import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
 import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 
 const ServiceHero = ({ service }) => {
-  const [activeTab, setActiveTab] = useState("description");
   const router = useRouter();
 
   // 🎯 GSAP hooks
-  const titleRef = useGsapHeroTitle();
-  const tabsRef = useGsapHeroTabs();
+  useGsapHeroTitle();
+  useGsapHeroTabs();
   useGsapSmoothScroll();
 
   const descriptionText =
     service?.description ||
     "Want to register your Private Limited Company? We've got you covered!";
-
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
 
   /* ================= NAVIGATE TO PRICE PAGE ================= */
   const handleStartService = () => {
@@ -68,15 +64,13 @@ const ServiceHero = ({ service }) => {
       shadow-lg
     ">
 
-    <img
-      src={service?.images?.[0]?.url}
-      alt={service?.heading}
-      className="
-        w-full
-        h-full
-        
-        object-center
-      "
+    <Image
+      src={service?.images?.[0]?.url || "/placeholder.jpg"}
+      alt={service?.heading || "Service"}
+      fill
+      sizes="(max-width: 768px) 100vw, 40vw"
+      className="object-cover object-center"
+      priority
     />
 
   </div>

@@ -84,6 +84,7 @@
 
 "use client";
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useAuth } from "../../hooks/useAuth";
 import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
@@ -139,11 +140,16 @@ const LatestBlogCard = ({ blog }) => {
 
           {/* IMAGE */}
 
-          <img
-            src={blog.documents?.[0]?.url || "/placeholder.png"}
-            alt={blog.title}
-            className="mb-4 h-[220px] w-full shrink-0 rounded-2xl bg-slate-100 object-cover md:h-[320px] lg:h-[390px]"
-          />
+          <div className="relative mb-4 h-[220px] w-full shrink-0 overflow-hidden rounded-2xl bg-slate-100 md:h-[320px] lg:h-[390px]">
+            <Image
+              src={blog.documents?.[0]?.url || "/placeholder.png"}
+              alt={blog.title || "Latest blog"}
+              fill
+              sizes="(max-width: 768px) 100vw, 60vw"
+              className="object-cover"
+              priority
+            />
+          </div>
 
           <div className="flex flex-col flex-1">
 

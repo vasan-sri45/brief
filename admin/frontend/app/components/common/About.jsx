@@ -38,10 +38,12 @@ export default function AboutUs() {
         {/* ================= IMAGE ================= */}
         <div className="w-full mb-10">
           <div className="relative w-full h-[220px] sm:h-[300px] md:h-[450px] rounded overflow-hidden">
-            <img
+            <Image
               src="https://img.freepik.com/free-photo/corporate-businessman-giving-presentation-large-audience_53876-101865.jpg?semt=ais_user_personalization&w=740&q=80"
-              alt="Team"
-              className="w-full h-full"
+              alt="Briefcasse team presentation"
+              fill
+              sizes="(max-width: 768px) 100vw, 80vw"
+              className="object-cover"
             />
           </div>
         </div>

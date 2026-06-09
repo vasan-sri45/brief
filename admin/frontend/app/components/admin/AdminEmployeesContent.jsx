@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Pencil, Search, UsersRound, X } from "lucide-react";
 import {
   useGetEmployees,
@@ -38,7 +38,15 @@ const salaryFields = [
 
 const toInputDate = (value) => {
   if (!value) return "";
-  return new Date(value).toISOString().slice(0, 10);
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+};
+
+const formatDate = (value) => {
+  if (!value) return "--";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return "--";
+  return parsed.toLocaleDateString("en-GB").replace(/\//g, "-");
 };
 
 export default function AdminEmployeesContent() {
@@ -66,7 +74,7 @@ export default function AdminEmployeesContent() {
 
   const employees = data?.users || [];
 
-  const openEdit = (employee) => {
+  const openEdit = useCallback((employee) => {
     setEditingEmployee(employee);
     setEditError("");
     setUanChangeReason("");
@@ -75,17 +83,18 @@ export default function AdminEmployeesContent() {
       ...employee,
       dateOfJoining: toInputDate(employee.dateOfJoining),
     });
-  };
+  }, []);
 
-  const handleEditChange = (event) => {
+  const handleEditChange = useCallback((event) => {
     setEditForm((prev) => ({
       ...prev,
       [event.target.name]: event.target.value,
     }));
-  };
+  }, []);
 
-  const handleEditSave = () => {
+  const handleEditSave = useCallback(() => {
     setEditError("");
+
     const oldUan = editingEmployee?.uanNumber || "";
     const newUan = editForm.uanNumber || "";
     const uanChanged = oldUan !== newUan;
@@ -135,9 +144,15 @@ export default function AdminEmployeesContent() {
         },
       }
     );
-  };
+  }, [
+    editForm,
+    editingEmployee,
+    esiChangeReason,
+    uanChangeReason,
+    updateEmployee,
+  ]);
 
-  const renderField = (field) => (
+  const renderField = useCallback((field) => (
     <label key={field.name} className="block">
       <span className="mb-2 block text-sm font-bold text-gray-600">
         {field.label}
@@ -168,7 +183,7 @@ export default function AdminEmployeesContent() {
         />
       )}
     </label>
-  );
+  ), [editForm, handleEditChange]);
 
   return (
     <section className="p-4 md:p-5">
@@ -229,7 +244,7 @@ export default function AdminEmployeesContent() {
             {isFetching && <span>Refreshing...</span>}
           </div>
 
-          <table className="w-full min-w-[1180px]">
+          <table className="w-full min-w-[1280px]">
             <thead>
               <tr className="bg-blue-50 text-left text-sm text-gray-600">
                 <th className="rounded-l-xl p-4">Employee</th>
@@ -242,6 +257,7 @@ export default function AdminEmployeesContent() {
                 <th className="p-4">Salary</th>
                 <th className="p-4">Email</th>
                 <th className="p-4">Mobile</th>
+                <th className="p-4">DOB</th>
                 <th className="p-4">Joined</th>
                 <th className="p-4">Status</th>
                 <th className="rounded-r-xl p-4">Action</th>
@@ -296,11 +312,10 @@ export default function AdminEmployeesContent() {
                       {employee.mobile || "--"}
                     </td>
                     <td className="p-4 text-gray-600">
-                        {employee.createdAt
-                        ? new Date(
-                            employee.dateOfJoining || employee.createdAt
-                          ).toLocaleDateString()
-                        : "--"}
+                      {formatDate(employee.dateOfBirth)}
+                    </td>
+                    <td className="p-4 text-gray-600">
+                      {formatDate(employee.dateOfJoining || employee.createdAt)}
                     </td>
                     <td className="p-4">
                       <span
@@ -327,7 +342,7 @@ export default function AdminEmployeesContent() {
               ) : (
                 <tr>
                   <td
-                    colSpan="12"
+                    colSpan="14"
                     className="p-8 text-center font-semibold text-gray-500"
                   >
                     No employees match the current filters.

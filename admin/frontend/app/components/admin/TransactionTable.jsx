@@ -1,12 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { Download, Printer } from "lucide-react";
 import {
   flexRender,
   getCoreRowModel,
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import {
+  downloadServiceInvoice,
+  printServiceInvoice,
+} from "../../config/generateServiceInvoice";
 
 const serviceName = (row) =>
   typeof row.service === "object"
@@ -36,6 +41,9 @@ const StatusPill = ({ value }) => (
     {value || "-"}
   </span>
 );
+
+const isPaidRow = (row) =>
+  String(row.paymentStatus || "").toLowerCase() === "paid";
 
 export default function TransactionTable({ data = [], onView }) {
   const [pageIndex, setPageIndex] = useState(0);
@@ -86,14 +94,38 @@ export default function TransactionTable({ data = [], onView }) {
       },
       {
         id: "view",
-        header: "View",
+        header: "Actions",
         cell: (info) => (
-          <button
-            onClick={() => onView?.(info.row.original)}
-            className="h-9 rounded-xl bg-blue-600 px-4 text-xs font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-700"
-          >
-            View
-          </button>
+          <div className="flex items-center justify-center gap-2">
+            <button
+              onClick={() => onView?.(info.row.original)}
+              className="h-9 rounded-xl bg-blue-600 px-4 text-xs font-bold text-white shadow-lg shadow-blue-100 transition hover:bg-blue-700"
+            >
+              View
+            </button>
+
+            {isPaidRow(info.row.original) && (
+              <>
+                <button
+                  type="button"
+                  onClick={() => downloadServiceInvoice(info.row.original)}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100 transition hover:bg-emerald-100"
+                  aria-label="Download invoice"
+                >
+                  <Download size={15} />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => printServiceInvoice(info.row.original)}
+                  className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-slate-50 text-slate-700 ring-1 ring-slate-200 transition hover:bg-slate-100"
+                  aria-label="Print invoice"
+                >
+                  <Printer size={15} />
+                </button>
+              </>
+            )}
+          </div>
         ),
       },
     ],
@@ -120,8 +152,8 @@ export default function TransactionTable({ data = [], onView }) {
   return (
     <div className="overflow-hidden rounded-3xl border border-blue-100 bg-white shadow-[0_18px_55px_rgba(15,23,42,0.08)]">
       <div className="grid gap-3 p-4 md:hidden">
-        {data.length > 0 ? (
-          data.map((row) => (
+        {table.getRowModel().rows.length > 0 ? (
+          table.getRowModel().rows.map(({ original: row }) => (
             <article
               key={row._id}
               className="rounded-2xl border border-blue-100 bg-white p-4 shadow-sm"
@@ -153,6 +185,28 @@ export default function TransactionTable({ data = [], onView }) {
                 <Info label="Payment" value={<StatusPill value={row.paymentStatus} />} />
                 <Info label="Assigned" value={assignedName(row)} />
               </div>
+
+              {isPaidRow(row) && (
+                <div className="mt-4 flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => downloadServiceInvoice(row)}
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-700 ring-1 ring-emerald-100"
+                  >
+                    <Download size={15} />
+                    Invoice
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => printServiceInvoice(row)}
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-50 px-3 py-2 text-sm font-bold text-slate-700 ring-1 ring-slate-200"
+                  >
+                    <Printer size={15} />
+                    Print
+                  </button>
+                </div>
+              )}
             </article>
           ))
         ) : (

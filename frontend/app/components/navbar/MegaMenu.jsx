@@ -31,8 +31,9 @@ const MegaMenuNavbar = () => {
   const logout = useLogout();
   const user = useSelector((state) => state.auth.user);
 
-  const { data } = useAllServices();
-  const services = data?.items || [];
+  const shouldLoadServices = Boolean(activeMenu || mobileSub);
+  const { data } = useAllServices({ enabled: shouldLoadServices });
+  const services = useMemo(() => data?.items || [], [data?.items]);
 
    const handleLogin = () => {
     router.push(user ? "/serviced" : "/login");

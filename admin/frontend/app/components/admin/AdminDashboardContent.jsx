@@ -16,6 +16,8 @@ const CATEGORY_LABELS = [
   "Other Services",
 ];
 
+const DASHBOARD_QUERY_PARAMS = Object.freeze({ limit: 100 });
+
 const getCategory = (service = {}) =>
   service.category || service.serviceCategory || service.title || "Other Services";
 
@@ -32,15 +34,30 @@ const getPaymentServiceName = (item = {}) =>
 
 export default function AdminDashboardContent() {
   const { data, isLoading } = useAllServices();
-  const { data: onlineData } = useGetPaymentServices({ limit: 100 });
-  const { data: officeData } = useGetPaidServices({ limit: 100 });
+  const { data: onlineData } = useGetPaymentServices(DASHBOARD_QUERY_PARAMS);
+  const { data: officeData } = useGetPaidServices(DASHBOARD_QUERY_PARAMS);
   const [selectedCategory, setSelectedCategory] = useState("Startup");
   const [selectedRevenueCategory, setSelectedRevenueCategory] = useState("Startup");
 
-  const services = Array.isArray(data?.items) ? data.items : [];
-  const onlineServices = onlineData?.orders || onlineData?.data || [];
-  const officeServices = officeData?.orders || officeData?.data || [];
-  const allPayments = [...onlineServices, ...officeServices];
+  const services = useMemo(
+    () => (Array.isArray(data?.items) ? data.items : []),
+    [data]
+  );
+
+  const onlineServices = useMemo(
+    () => onlineData?.orders || onlineData?.data || [],
+    [onlineData]
+  );
+
+  const officeServices = useMemo(
+    () => officeData?.orders || officeData?.data || [],
+    [officeData]
+  );
+
+  const allPayments = useMemo(
+    () => [...onlineServices, ...officeServices],
+    [onlineServices, officeServices]
+  );
 
   const filteredServices = useMemo(
     () => services.filter((service) => getCategory(service) === selectedCategory),

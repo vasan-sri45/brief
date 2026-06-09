@@ -1,46 +1,62 @@
 "use client";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useRegisterEmployee } from "../../hooks/useEmployeeAuthMutations";
 
+const initialFormData = {
+  name: "",
+  email: "",
+  mobile: "",
+  password: "",
+  role: "",
+  department: "",
+  designation: "",
+  dateOfJoining: "",
+  panNumber: "",
+  hasExistingUan: "false",
+  uanNumber: "",
+  hasExistingEsi: "false",
+  esiNumber: "",
+  bankAccountNumber: "",
+  ifscCode: "",
+  salaryPerMonth: "",
+  basicSalary: "",
+  hra: "",
+  conveyanceAllowance: "",
+  medicalAllowance: "",
+  specialAllowance: "",
+  annualCtc: "",
+  employmentType: "off-role",
+};
+
 const CreateEmployee = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-    password: "",
-    role: "",
-    department: "",
-    designation: "",
-    dateOfJoining: "",
-    panNumber: "",
-    hasExistingUan: "false",
-    uanNumber: "",
-    hasExistingEsi: "false",
-    esiNumber: "",
-    bankAccountNumber: "",
-    ifscCode: "",
-    salaryPerMonth: "",
-    basicSalary: "",
-    hra: "",
-    conveyanceAllowance: "",
-    medicalAllowance: "",
-    specialAllowance: "",
-    annualCtc: "",
-    employmentType: "off-role",
-  });
+  const [formData, setFormData] = useState(initialFormData);
 
   const [errorMsg, setErrorMsg] = useState("");
 
   const register = useRegisterEmployee();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
 
-  const handleSubmit = (e) => {
+  const canSubmit = useMemo(
+    () =>
+      formData.name &&
+      formData.email &&
+      formData.mobile &&
+      formData.password &&
+      formData.role &&
+      (formData.hasExistingUan !== "true" ||
+        /^\d{12}$/.test(formData.uanNumber)) &&
+      (formData.hasExistingEsi !== "true" || /^\d+$/.test(formData.esiNumber)),
+    [formData]
+  );
+
+  const handleSubmit = useCallback((e) => {
     e.preventDefault();
 
     setErrorMsg("");
@@ -48,33 +64,7 @@ const CreateEmployee = () => {
     register.mutate(formData, {
       onSuccess: () => {
         alert("Employee created successfully");
-
-        // reset form
-        setFormData({
-          name: "",
-          email: "",
-          mobile: "",
-          password: "",
-          role: "",
-          department: "",
-          designation: "",
-          dateOfJoining: "",
-          panNumber: "",
-          hasExistingUan: "false",
-          uanNumber: "",
-          hasExistingEsi: "false",
-          esiNumber: "",
-          bankAccountNumber: "",
-          ifscCode: "",
-          salaryPerMonth: "",
-          basicSalary: "",
-          hra: "",
-          conveyanceAllowance: "",
-          medicalAllowance: "",
-          specialAllowance: "",
-          annualCtc: "",
-          employmentType: "off-role",
-        });
+        setFormData(initialFormData);
       },
       onError: (err) => {
         setErrorMsg(
@@ -82,16 +72,7 @@ const CreateEmployee = () => {
         );
       },
     });
-  };
-
-  const canSubmit =
-    formData.name &&
-    formData.email &&
-    formData.mobile &&
-    formData.password &&
-    formData.role &&
-    (formData.hasExistingUan !== "true" || /^\d{12}$/.test(formData.uanNumber)) &&
-    (formData.hasExistingEsi !== "true" || /^\d+$/.test(formData.esiNumber));
+  }, [formData, register]);
 
   return (
     <div className="flex items-center justify-center py-6">

@@ -144,29 +144,25 @@ const PayrollDashboard = () => {
     }));
   }, [data, selectedMonthName, year]);
 
-  const totalSalary = payrollData.reduce(
-    (sum, item) =>
-      sum + Number(item.monthlySalary || 0),
-    0
-  );
-
-  const totalDeduction = payrollData.reduce(
-    (sum, item) =>
-      sum +
-      Number(item.lopDeduction || 0) +
-      Number(item.statutoryDeduction || 0),
-    0
-  );
-
-  const totalPayable = payrollData.reduce(
-    (sum, item) =>
-      sum + Number(item.payableSalary || 0),
-    0
-  );
-
-  const pendingSalary = payrollData.filter(
-    (item) => item.status !== "Paid"
-  ).length;
+  const payrollTotals = useMemo(() => {
+    return payrollData.reduce(
+      (totals, item) => {
+        totals.totalSalary += Number(item.monthlySalary || 0);
+        totals.totalDeduction +=
+          Number(item.lopDeduction || 0) +
+          Number(item.statutoryDeduction || 0);
+        totals.totalPayable += Number(item.payableSalary || 0);
+        if (item.status !== "Paid") totals.pendingSalary += 1;
+        return totals;
+      },
+      {
+        totalSalary: 0,
+        totalDeduction: 0,
+        totalPayable: 0,
+        pendingSalary: 0,
+      }
+    );
+  }, [payrollData]);
 
   if (isLoading) {
     return (
@@ -233,10 +229,10 @@ const PayrollDashboard = () => {
       </div>
 
       <PayrollStatsCards
-        totalSalary={totalSalary}
-        totalDeduction={totalDeduction}
-        totalPayable={totalPayable}
-        pendingSalary={pendingSalary}
+        totalSalary={payrollTotals.totalSalary}
+        totalDeduction={payrollTotals.totalDeduction}
+        totalPayable={payrollTotals.totalPayable}
+        pendingSalary={payrollTotals.pendingSalary}
       />
 
       <PayrollTable payrollData={payrollData} />

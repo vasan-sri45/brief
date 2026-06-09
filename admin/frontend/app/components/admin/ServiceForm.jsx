@@ -1,8 +1,59 @@
 "use client";
+/* eslint-disable @next/next/no-img-element */
 
 import { useEffect, useState } from "react";
 import { useForm, useFieldArray } from "react-hook-form";
 import { useCreateServiceConfig, useUpdateServiceConfig } from "../../hooks/useService";
+
+const SERVICE_TITLE_OPTIONS = [
+  "Startup",
+  "Intellectual Property",
+  "Tax Filing",
+  "MCA Compliance",
+  "Registration",
+  "Legal Advisory & Agreement",
+  "Other Services",
+];
+
+const SERVICE_SUBTITLE_OPTIONS = {
+  Startup: [
+    "Company Registration",
+    "Special Business Entities",
+    "General Registration",
+  ],
+  "Intellectual Property": [
+    "Trademark Services",
+    "Copyright & Patents",
+    "IP Protection",
+  ],
+  "Tax Filing": [
+    "Tax Registration",
+    "Tax Filing",
+    "Compliance Services",
+  ],
+  "MCA Compliance": [
+    "MCA Compliance",
+    "ROC Compliance",
+    "Director Compliance",
+  ],
+  Registration: [
+    "Tax Registration",
+    "Business Registration",
+    "License Registration",
+  ],
+  "Legal Advisory & Agreement": [
+    "Business Agreements",
+    "Corporate Documents",
+    "Legal Notices",
+  ],
+  "Other Services": [
+    "Financial Services",
+    "Business Consulting",
+    "Digital Services",
+  ],
+};
+
+const getSubtitleOptions = (title) => SERVICE_SUBTITLE_OPTIONS[title] || [];
 
 const getYouTubeVideoId = (url = "") => {
   const value = String(url || "").trim();
@@ -111,6 +162,11 @@ export default function CreateServicePage({ initialService = null, onDone }) {
 
   // Watch entire form state for the live preview side panel
   const formData = watch();
+  const subtitleOptions = getSubtitleOptions(formData.title);
+  const visibleSubtitleOptions =
+    formData.subTitle && !subtitleOptions.includes(formData.subTitle)
+      ? [formData.subTitle, ...subtitleOptions]
+      : subtitleOptions;
   const mediaPreviewUrl =
     formData.mediaFile ||
     formData.mediaUrl ||
@@ -124,10 +180,10 @@ export default function CreateServicePage({ initialService = null, onDone }) {
     formData.featuredImage ||
     "";
 
-  // Handle Slug generation automatically from title
+  // Handle Slug generation automatically from the service heading.
   useEffect(() => {
-    if (formData.title) {
-      const generatedSlug = formData.title
+    if (formData.heading) {
+      const generatedSlug = formData.heading
         .toLowerCase()
         .trim()
         .replace(/[^a-z0-9\s-]/g, "")
@@ -138,7 +194,7 @@ export default function CreateServicePage({ initialService = null, onDone }) {
     } else {
       setValue("slug", "");
     }
-  }, [formData.title, setValue]);
+  }, [formData.heading, setValue]);
 
   useEffect(() => {
     setCardPreviewLoaded(false);
@@ -188,14 +244,12 @@ export default function CreateServicePage({ initialService = null, onDone }) {
   // ================= SUBMIT =================
   const onSubmit = async (data) => {
     try {
-      const {
-        canonicalUrl,
-        openGraphTitle,
-        openGraphDescription,
-        openGraphImage,
-        schemaMarkupJson,
-        ...payload
-      } = data;
+      const payload = { ...data };
+      delete payload.canonicalUrl;
+      delete payload.openGraphTitle;
+      delete payload.openGraphDescription;
+      delete payload.openGraphImage;
+      delete payload.schemaMarkupJson;
 
       if (isEditMode) {
         await updateService.mutateAsync({
@@ -210,7 +264,6 @@ export default function CreateServicePage({ initialService = null, onDone }) {
       reset();
       onDone?.();
     } catch (error) {
-      console.log(error);
       alert(error.response?.data?.error || "Something went wrong");
     }
   };
@@ -242,11 +295,40 @@ export default function CreateServicePage({ initialService = null, onDone }) {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-medium text-gray-600">Title</label>
-                  <input {...register("title")} placeholder="Enter title" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
+                  <select
+                    {...register("title", {
+                      onChange: (event) => {
+                        const options = getSubtitleOptions(event.target.value);
+                        setValue("subTitle", options[0] || "", {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        });
+                      },
+                    })}
+                    className="rounded-2xl border border-blue-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100"
+                  >
+                    <option value="">Select service title</option>
+                    {SERVICE_TITLE_OPTIONS.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-medium text-gray-600">Subtitle</label>
-                  <input {...register("subTitle")} placeholder="Enter subtitle" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
+                  <select
+                    {...register("subTitle")}
+                    disabled={!formData.title}
+                    className="rounded-2xl border border-blue-200 bg-white px-4 py-3 text-sm font-semibold text-slate-800 shadow-sm outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400"
+                  >
+                    <option value="">Select subtitle</option>
+                    {visibleSubtitleOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-xs font-medium text-gray-600">Slug (Auto-Generated)</label>
@@ -263,17 +345,12 @@ export default function CreateServicePage({ initialService = null, onDone }) {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input {...register("shortDescription")} placeholder="Short Description" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-                <input {...register("serviceCategory")} placeholder="Service Category" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
                 <input type="number" {...register("displayOrder")} placeholder="Display Order" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
                 <select {...register("status")} className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100">
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
                 </select>
-                <input {...register("serviceIcon")} placeholder="Service Icon URL / Name" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-                <input {...register("featuredImage")} placeholder="Featured Image URL" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
-                <input {...register("serviceBannerImage")} placeholder="Service Banner Image URL" className="rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 md:col-span-2" />
               </div>
-              <textarea {...register("fullDescription")} placeholder="Full service description..." rows={5} className="w-full rounded-xl border border-slate-200 bg-white p-3 text-sm outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100" />
             </div>
 
             <div className="rounded-2xl border border-blue-100 bg-white p-4 space-y-4">

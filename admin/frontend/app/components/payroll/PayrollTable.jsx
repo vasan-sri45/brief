@@ -111,11 +111,6 @@ const PayrollTable = ({
   // SAVE
 
   const handleSave = () => {
-    console.log(
-      "Updated Payroll:",
-      editData
-    );
-
     // API CALL HERE
 
     setSelectedPayroll(null);

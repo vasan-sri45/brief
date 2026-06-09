@@ -1,6 +1,5 @@
 "use client";
 import { QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import { useEffect } from "react";
@@ -16,7 +15,6 @@ export default function Providers({ children }) {
     <Provider store={store}>
     <QueryClientProvider client={queryClient}>
       {children}
-       {/* <ReactQueryDevtools /> */}
        <ScrollToTop/>
     </QueryClientProvider>
     </Provider>

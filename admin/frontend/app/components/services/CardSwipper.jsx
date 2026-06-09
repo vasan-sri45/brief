@@ -4,7 +4,6 @@ import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode, Pagination, Autoplay } from "swiper/modules";
 import { RxArrowTopRight } from "react-icons/rx";
-import Link from "next/link";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
@@ -67,11 +66,13 @@ const CardSwipper = ({ servicesData = [] }) => {
   </h3>
 
   {/* IMAGE (FIXED AREA) */}
-  <div className="h-32 w-full flex items-center justify-center mb-3">
-    <img
+  <div className="relative mb-3 flex h-32 w-full items-center justify-center overflow-hidden">
+    <Image
       src={service?.images?.[0]?.url || "/placeholder.jpg"}
-      alt={service?.heading}
-      className="max-h-full max-w-full object-contain"
+      alt={service?.heading || "Service"}
+      fill
+      sizes="(max-width: 768px) 80vw, 320px"
+      className="object-contain"
     />
   </div>
 

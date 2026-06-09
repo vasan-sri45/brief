@@ -1,6 +1,7 @@
 "use client";
 
 import React, {
+  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -10,11 +11,26 @@ import {
   useUpdatePersonalDetails,
 } from "../../hooks/usePersonalMutations";
 
+const todayInput = new Date().toISOString().slice(0, 10);
+
+const toInputDate = (value) => {
+  if (!value) return "";
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? "" : parsed.toISOString().slice(0, 10);
+};
+
+const isValidPastDate = (value) => {
+  if (!value) return false;
+  const parsed = new Date(value);
+  return !Number.isNaN(parsed.getTime()) && value <= todayInput;
+};
+
 const EmployeeDetailsForm = () => {
   const [formData, setFormData] =
     useState({
       fatherName: "",
       motherName: "",
+      dateOfBirth: "",
       address: "",
       location: "",
       panNo: "",
@@ -23,6 +39,7 @@ const EmployeeDetailsForm = () => {
       bankName: "",
       branchName: "",
     });
+  const [errorMsg, setErrorMsg] = useState("");
 
   // =========================
   // QUERIES & MUTATIONS
@@ -63,6 +80,11 @@ const EmployeeDetailsForm = () => {
           data.personalDetails
             .motherName || "",
 
+        dateOfBirth: toInputDate(
+          data.personalDetails
+            .dateOfBirth
+        ),
+
         address:
           data.personalDetails
             .address || "",
@@ -98,14 +120,14 @@ const EmployeeDetailsForm = () => {
   // HANDLE CHANGE
   // =========================
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
+  const handleChange = useCallback((e) => {
+    const { name, value } = e.target;
 
-      [e.target.name]:
-        e.target.value,
-    });
-  };
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }, []);
 
   // =========================
   // HANDLE SUBMIT
@@ -113,6 +135,12 @@ const EmployeeDetailsForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setErrorMsg("");
+
+    if (!isValidPastDate(formData.dateOfBirth)) {
+      setErrorMsg("Please select a valid date of birth.");
+      return;
+    }
 
     updatePersonalDetails(
       formData,
@@ -121,9 +149,9 @@ const EmployeeDetailsForm = () => {
           alert(data.message);
         },
 
-        onError: () => {
-          alert(
-            "Something went wrong"
+        onError: (error) => {
+          setErrorMsg(
+            error?.response?.data?.message || "Something went wrong"
           );
         },
       }
@@ -286,6 +314,25 @@ const EmployeeDetailsForm = () => {
 
           {/* ADDRESS */}
 
+          <div>
+            <label className={labelClass}>
+              Date of Birth
+            </label>
+
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={
+                formData.dateOfBirth
+              }
+              max={todayInput}
+              onChange={
+                handleChange
+              }
+              className={inputClass}
+            />
+          </div>
+
           <div className="md:col-span-2">
             <label className={labelClass}>
               Address
@@ -432,6 +479,12 @@ const EmployeeDetailsForm = () => {
           </div>
 
           {/* MOBILE BUTTON */}
+
+          {errorMsg && (
+            <p className="md:col-span-2 rounded-xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-600">
+              {errorMsg}
+            </p>
+          )}
 
           <div className="lg:hidden">
 

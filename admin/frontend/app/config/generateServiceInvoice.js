@@ -5,6 +5,31 @@ import jsPDF from "jspdf";
 const formatCurrency = (value) =>
   `Rs. ${Number(value || 0).toLocaleString("en-IN")}`;
 
+const loadImageAsDataUrl = async (src) => {
+  const response = await fetch(src);
+  if (!response.ok) throw new Error("Could not load invoice logo");
+  const blob = await response.blob();
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onloadend = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(blob);
+  });
+};
+
+const drawFallbackLogo = (doc) => {
+  doc.setTextColor(55, 66, 150);
+  doc.setFillColor(55, 66, 150);
+  doc.roundedRect(20, 14, 20, 16, 1, 1, "F");
+  doc.setDrawColor(255, 255, 255);
+  doc.setLineWidth(0.9);
+  doc.line(24, 26, 37, 20);
+  doc.line(24, 26, 24, 29);
+  doc.line(30, 23, 30, 29);
+  doc.line(37, 20, 37, 29);
+};
+
 const getAmountBreakdown = (service = {}) => {
   const totalAmount = Number(service.totalPayment || service.amount || 0);
   const baseAmount = Number(service.baseAmount || totalAmount);
@@ -44,23 +69,35 @@ export const getInvoiceData = (service = {}) => ({
   date: service.paymentDate || service.createdAt || new Date(),
 });
 
-export const downloadServiceInvoice = (service) => {
+export const downloadServiceInvoice = async (service) => {
   const invoice = getInvoiceData(service);
   const doc = new jsPDF();
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(22);
-  doc.text("BRIEFCASSE", 20, 22);
-  doc.setFontSize(15);
-  doc.text("Tax Invoice", 20, 34);
+  try {
+    const logo = await loadImageAsDataUrl("/assets/brief_blue.png");
+    doc.addImage(logo, "PNG", 18, 12, 32, 28);
+  } catch {
+    drawFallbackLogo(doc);
+  }
 
+  doc.setTextColor(55, 66, 150);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(18);
+  doc.text("Briefcasse", 52, 23);
+  doc.setFontSize(11);
+  doc.text("Legal | Compliance | IP Services", 52, 31);
+
+  doc.setTextColor(0, 0, 0);
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(16);
+  doc.text("Tax Invoice", 130, 20);
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
-  doc.text("Legal | Compliance | IP Services", 20, 42);
-  doc.text(`Invoice No: ${invoice.invoiceNo}`, 130, 24);
-  doc.text(`Date: ${new Date(invoice.date).toLocaleDateString("en-IN")}`, 130, 32);
+  doc.text(`Invoice No: ${invoice.invoiceNo}`, 130, 30);
+  doc.text(`Date: ${new Date(invoice.date).toLocaleDateString("en-IN")}`, 130, 38);
 
-  doc.setDrawColor(37, 99, 235);
+  doc.setDrawColor(55, 66, 150);
+  doc.setLineWidth(0.8);
   doc.line(20, 50, 190, 50);
 
   doc.setFont("helvetica", "bold");
@@ -116,8 +153,10 @@ export const printServiceInvoice = (service) => {
         <title>Invoice ${invoice.invoiceNo}</title>
         <style>
           body { font-family: Arial, sans-serif; color: #111827; padding: 32px; }
-          .top { display: flex; justify-content: space-between; border-bottom: 3px solid #2563eb; padding-bottom: 18px; }
-          h1 { margin: 0; color: #2563eb; letter-spacing: 1px; }
+          .top { display: flex; justify-content: space-between; border-bottom: 3px solid #374296; padding-bottom: 18px; }
+          .brand { display: flex; align-items: center; gap: 14px; }
+          .brand img { width: 72px; height: auto; }
+          h1 { margin: 0; color: #374296; letter-spacing: .3px; }
           h2 { margin: 8px 0 0; }
           .box { margin-top: 26px; border: 1px solid #dbeafe; border-radius: 14px; padding: 18px; }
           .row { display: flex; justify-content: space-between; border-bottom: 1px solid #e5e7eb; padding: 12px 0; }
@@ -128,9 +167,12 @@ export const printServiceInvoice = (service) => {
       </head>
       <body>
         <div class="top">
-          <div>
-            <h1>BRIEFCASSE</h1>
-            <p>Legal | Compliance | IP Services</p>
+          <div class="brand">
+            <img src="/assets/brief_blue.png" alt="Briefcasse" />
+            <div>
+              <h1>Briefcasse</h1>
+              <p>Legal | Compliance | IP Services</p>
+            </div>
           </div>
           <div>
             <h2>Tax Invoice</h2>

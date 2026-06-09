@@ -102,6 +102,7 @@ export const useGetMe = () => {
       const res = await api.get("/employee");
       return res.data; // { user }
     },
+    staleTime: 60_000,
     retry: false,
     refetchOnWindowFocus: false,
   });

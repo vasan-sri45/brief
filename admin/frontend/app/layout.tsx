@@ -48,7 +48,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} ${anton.variable} ${poppins.variable}antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} ${anton.variable} ${poppins.variable} antialiased`}>
         <Providers>
           
           {children}
@@ -58,5 +58,4 @@ export default function RootLayout({
     </html>
   );
 }
-
 

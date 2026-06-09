@@ -57,6 +57,14 @@ const TicketHeader = ({ name, role, code }) => {
             </Link>
           );
         })}
+        <button
+          type="button"
+          onClick={() => logout.mutate()}
+          className="flex min-w-[82px] flex-col items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50 md:hidden"
+        >
+          <LogOut size={18} />
+          <span>Logout</span>
+        </button>
       </nav>
 
       <div className="hidden p-4 md:absolute md:bottom-0 md:left-0 md:right-0 md:block">

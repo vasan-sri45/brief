@@ -72,6 +72,14 @@ export default function AdminNavbar() {
             </Link>
           );
         })}
+        <button
+          type="button"
+          onClick={() => logout.mutate()}
+          className="flex min-w-[84px] flex-col items-center gap-1 rounded-xl px-3 py-2 text-xs font-bold text-red-100 transition hover:bg-white/10 hover:text-white md:hidden"
+        >
+          <LogOut size={18} />
+          <span className="whitespace-nowrap">Logout</span>
+        </button>
       </nav>
 
       <div className="hidden p-4 md:absolute md:bottom-0 md:left-0 md:right-0 md:block">

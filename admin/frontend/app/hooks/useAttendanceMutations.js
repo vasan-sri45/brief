@@ -2,6 +2,9 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { api } from "../api/api";
 
+const SHORT_CACHE = 30_000;
+const MEDIUM_CACHE = 2 * 60_000;
+
 export const usePunchIn = () =>
   useMutation({
     mutationFn: () => api.post("/attendance/punch-in"),
@@ -19,6 +22,7 @@ export const useTodayAttendance = () =>
       const res = await api.get("/attendance/today");
       return res.data;
     },
+    staleTime: SHORT_CACHE,
   });
 
 export const useAttendanceHistory = (view = "monthly") =>
@@ -30,18 +34,13 @@ export const useAttendanceHistory = (view = "monthly") =>
       });
       return res.data;
     },
+    staleTime: MEDIUM_CACHE,
   });
 
 
 export const useRequestLeave = () =>
   useMutation({
     mutationFn: async (data) => {
-
-      console.log(
-        "Leave Request Data:",
-        data
-      );
-
       const res = await api.post(
         "/attendance/request-leave",
         {
@@ -53,11 +52,6 @@ export const useRequestLeave = () =>
 
           remarks: data.remarks,
         }
-      );
-
-      console.log(
-        "Leave Response:",
-        res.data
       );
 
       return res.data;
@@ -75,6 +69,7 @@ export const useAdminTodayAttendance = () => {
 
       return res.data;
     },
+    staleTime: SHORT_CACHE,
   });
 };
 
@@ -87,6 +82,7 @@ export const useAdminMonthlyAttendance = (month, year) =>
       });
       return res.data;
     },
+    staleTime: MEDIUM_CACHE,
   });
 
 export const useAdminAlterAttendance =
@@ -125,6 +121,7 @@ export const useAdminAlterAttendance =
 
       return res.data;
     },
+    staleTime: MEDIUM_CACHE,
   });
 
   export const useAdminPendingLeaves = () =>
@@ -134,6 +131,7 @@ export const useAdminAlterAttendance =
       const res = await api.get("/admin/leave/pending");
       return res.data;
     },
+    staleTime: SHORT_CACHE,
   });
 
 export const useAdminLeaveAction = () =>
@@ -170,6 +168,7 @@ export const useAdminLeaveAction = () =>
 
       return res.data;
     },
+    staleTime: MEDIUM_CACHE,
   });
 
   export const useMonthlyPayroll = (
@@ -197,6 +196,7 @@ export const useAdminLeaveAction = () =>
 
         return res.data;
       },
+      staleTime: MEDIUM_CACHE,
     });
 
 export const useMyPayroll = (month, year) =>
@@ -208,6 +208,7 @@ export const useMyPayroll = (month, year) =>
       });
       return res.data;
     },
+    staleTime: MEDIUM_CACHE,
   });
 
 export const useRequestLopRecovery = () =>
@@ -225,6 +226,7 @@ export const usePendingLopRecoveries = () =>
       const res = await api.get("/payroll/lop-recovery/pending");
       return res.data;
     },
+    staleTime: SHORT_CACHE,
   });
 
 export const useLopRecoveryAction = () =>

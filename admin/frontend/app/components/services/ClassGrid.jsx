@@ -6,7 +6,6 @@ import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop
 const ClassGrid = ({trade}) => {
 
   const underlineRef = useGsapUnderlineLoop();
-  console.log(trade)
   return (
     <section className="w-full bg-white py-10 mt-0 md:mt-16">
       <div className="w-11/12 mx-auto lg:w-10/12">
