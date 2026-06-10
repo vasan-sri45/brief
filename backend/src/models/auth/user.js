@@ -3,6 +3,13 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 
 const userSchema = new mongoose.Schema({
+  customerId: {
+    type: String,
+    unique: true,
+    sparse: true,
+    trim: true,
+    index: true
+  },
   name: {
     type: String,
     required: [true, 'Name is required.'],
@@ -48,8 +55,7 @@ const userSchema = new mongoose.Schema({
   businessType: {
     type: String,
     trim: true,
-    required: function () { return this.accountType === 'business'; },
-    enum: ['Retail', 'Service', 'Manufacturing', 'Other']
+    required: function () { return this.accountType === 'business'; }
   },
   otp: {
     type: String,
@@ -58,6 +64,11 @@ const userSchema = new mongoose.Schema({
   otpExpires: {
     type: Date,
     select: false
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+    index: true
   }
 }, {
   timestamps: true,

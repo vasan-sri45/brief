@@ -116,7 +116,7 @@ export const punchOut = async (req, res) => {
     const attendance = await Attendance.findOne({
       employee_id,
       dayKey,
-    }).lean();
+    });
 
     if (!attendance) {
       return res.status(404).json({

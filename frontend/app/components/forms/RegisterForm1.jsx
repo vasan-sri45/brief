@@ -24,8 +24,11 @@ const RegisterForm1 = ({ handleClick }) => {
   const sendOtp = useSendOtp();
   const verifyOtp = useVerifyOtp();
 
-  const handleRadioChange = (event) =>
+  const handleRadioChange = (event) => {
     setIsBusiness(event.target.value === "business");
+    setOtp("");
+    setStage("REGISTER");
+  };
 
   // 🔁 Auto fade after 4 secs (optional)
   useEffect(() => {
@@ -61,31 +64,45 @@ const RegisterForm1 = ({ handleClick }) => {
     e.preventDefault();
 
     if (stage === "REGISTER") {
-      if (!fullName || !emailId || mobile.length !== 10) return;
-      if (isBusiness && (!businessName || !businessType)) {
+      const name = fullName.trim();
+      const email = emailId.trim().toLowerCase();
+      const companyName = businessName.trim();
+      const companyType = businessType.trim();
+
+      if (!name || !email || mobile.length !== 10) {
+        setInfo({
+          message: "Enter name, valid email, and 10 digit mobile number.",
+          isError: true,
+        });
+        return;
+      }
+      if (isBusiness && (!companyName || !companyType)) {
         setInfo({ message: "Business name & type required.", isError: true });
         return;
       }
 
       const registerPayload = {
-        name: fullName,
-        email: emailId,
+        name,
+        email,
         mobile,
         accountType: isBusiness ? "business" : "individual",
-        businessName: isBusiness ? businessName : undefined,
-        businessType: isBusiness ? businessType : undefined,
+        businessName: isBusiness ? companyName : undefined,
+        businessType: isBusiness ? companyType : undefined,
       };
 
       registerUser.mutate(registerPayload, {
         onSuccess: (data) => {
+          const customerIdText = data?.customerId ? ` User ID: ${data.customerId}` : "";
           setInfo({
-            message: data?.message || "OTP sent to your email.",
+            message: `${data?.message || "OTP sent to your email."}${customerIdText}`,
             isError: false,
           });
+          setEmailId(email);
           setStage("VERIFY");
         },
         onError: (err) => {
-          const msg = err?.response?.data?.message || "Registration failed.";
+          const msg =
+            err?.response?.data?.message || "Could not send OTP. Please try again.";
           setInfo({ message: msg, isError: true });
         },
       });
@@ -221,7 +238,7 @@ const RegisterForm1 = ({ handleClick }) => {
 
         {/* Business details */}
         <div className="min-h-[81px]">
-          {isBusiness && (
+          {isBusiness && stage === "REGISTER" && (
             <>
               <div className="w-full mb-3">
                 <label htmlFor="businessName" className="sr-only text-md font-lato font-bold text-letter1">
@@ -263,8 +280,8 @@ const RegisterForm1 = ({ handleClick }) => {
         >
           {stage === "REGISTER"
             ? registerUser.isPending
-              ? "Submitting..."
-              : "Submit"
+              ? "Sending OTP..."
+              : "Send OTP"
             : verifyOtp.isPending
             ? "Verifying..."
             : "Verify OTP"}

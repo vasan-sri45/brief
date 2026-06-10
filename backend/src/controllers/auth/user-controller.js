@@ -2,10 +2,49 @@ import asyncHandler from "express-async-handler";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import User from "../../models/auth/user.js";
+import Counter from "../../models/auth/counter.js";
 import sendEmail from "../../utils/email.js";
 import { generateOtp, hashOtp } from "../../utils/otpGenerator.js";
-import {generateToken} from "../../utils/generateToken.js";
+import { generateToken } from "../../utils/generateToken.js";
 import { getAuthCookieName, getAuthCookieOptions } from "../../utils/auth/cookies.js";
+
+const getNextCustomerId = async () => {
+  const counter = await Counter.findOneAndUpdate(
+    { _id: "customer_id" },
+    { $setOnInsert: { name: "customer_id" }, $inc: { seq: 1 } },
+    { new: true, upsert: true }
+  );
+
+  return `CUS${String(counter.seq).padStart(5, "0")}`;
+};
+
+const sendRegistrationOtp = async (user) => {
+  const otp = generateOtp();
+  const hashedOtp = await hashOtp(otp);
+  const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || "10", 10);
+
+  user.otp = hashedOtp;
+  user.otpExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
+  await user.save({ validateBeforeSave: false });
+
+  const message = `Your One-Time Password (OTP) for verification is: ${otp}. This OTP is valid for ${expiryMinutes} minutes. Please do not share it with anyone.`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Your OTP for Registration",
+      text: message,
+      html: `<p>Your One-Time Password (OTP) for verification is: <strong>${otp}</strong>.</p>
+             <p>This OTP is valid for ${expiryMinutes} minutes.</p>
+             <p>Please do not share it with anyone.</p>`,
+    });
+  } catch (error) {
+    user.otp = undefined;
+    user.otpExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+    throw error;
+  }
+};
 
 export const register = asyncHandler(async (req, res) => {
   let {
@@ -13,13 +52,16 @@ export const register = asyncHandler(async (req, res) => {
     email,
     mobile,
     accountType,
-    businessName = req.body.businessName ?? req.body.bussinessName,
-    businessType = req.body.businessType ?? req.body.bussinessType,
+    businessName = req.body?.businessName ?? req.body?.bussinessName,
+    businessType = req.body?.businessType ?? req.body?.bussinessType,
   } = req.body || {};
 
   name = typeof name === "string" ? name.trim() : "";
   email = typeof email === "string" ? email.trim().toLowerCase() : "";
   mobile = typeof mobile === "string" ? mobile.trim() : "";
+  accountType = accountType === "business" ? "business" : "individual";
+  businessName = typeof businessName === "string" ? businessName.trim() : "";
+  businessType = typeof businessType === "string" ? businessType.trim() : "";
 
   if (!name || !email || !mobile) {
     res.status(400);
@@ -36,71 +78,82 @@ export const register = asyncHandler(async (req, res) => {
     throw new Error("Please provide a valid mobile number");
   }
 
-  if (accountType === "business") {
-    if (!businessName || !businessType) {
-      res.status(400);
-      throw new Error("Business name and type are required for business accounts");
-    }
+  if (accountType === "business" && (!businessName || !businessType)) {
+    res.status(400);
+    throw new Error("Business name and type are required for business accounts");
   }
 
   const [existingByEmail, existingByMobile] = await Promise.all([
-    User.findOne({ email }).lean(),
-    User.findOne({ mobile }).lean(),
+    User.findOne({ email }).select("+otp +otpExpires"),
+    User.findOne({ mobile }).select("+otp +otpExpires"),
   ]);
 
-  if (existingByEmail || existingByMobile) {
+  if (
+    existingByEmail &&
+    existingByMobile &&
+    String(existingByEmail._id) !== String(existingByMobile._id)
+  ) {
     res.status(409);
-    throw new Error("User already exists");
+    throw new Error("Email and mobile number already belong to different accounts");
+  }
+
+  const existingUser = existingByEmail || existingByMobile;
+
+  if (existingUser?.isVerified) {
+    res.status(409);
+    throw new Error("User already exists. Please sign in.");
+  }
+
+  if (existingUser) {
+    existingUser.name = name;
+    existingUser.email = email;
+    existingUser.mobile = mobile;
+    existingUser.accountType = accountType;
+    existingUser.businessName = accountType === "business" ? businessName : undefined;
+    existingUser.businessType = accountType === "business" ? businessType : undefined;
+    existingUser.customerId = existingUser.customerId || await getNextCustomerId();
+    existingUser.isVerified = false;
+
+    await sendRegistrationOtp(existingUser);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP sent to your email.",
+      email: existingUser.email,
+      customerId: existingUser.customerId,
+    });
   }
 
   try {
     const user = await User.create({
+      customerId: await getNextCustomerId(),
       name,
       email,
       mobile,
       accountType,
-      businessName,
-      businessType,
+      businessName: accountType === "business" ? businessName : undefined,
+      businessType: accountType === "business" ? businessType : undefined,
+      isVerified: false,
     });
 
-    // ---- OTP generate + save ----
-    const otp = generateOtp();
-    const hashedOtp = await hashOtp(otp);
-    const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || "10", 10);
-    const otpExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
-
-    user.otp = hashedOtp;
-    user.otpExpires = otpExpires;
-    await user.save({ validateBeforeSave: false });
-
-    const message = `Your One-Time Password (OTP) for verification is: ${otp}. This OTP is valid for ${expiryMinutes} minutes. Please do not share it with anyone.`;
-
-    await sendEmail({
-      email: user.email,
-      subject: "Your OTP for Registration",
-      // ✅ use text OR message (both supported)
-      text: message,
-      html: `<p>Your One-Time Password (OTP) for verification is: <strong>${otp}</strong>.</p>
-             <p>This OTP is valid for ${expiryMinutes} minutes.</p>
-             <p>Please do not share it with anyone.</p>`,
-    });
+    await sendRegistrationOtp(user);
 
     return res.status(201).json({
       success: true,
       message: "User registered. OTP sent to your email.",
       email: user.email,
+      customerId: user.customerId,
     });
   } catch (err) {
-    if (err && err.code === 11000) {
+    if (err?.code === 11000) {
       res.status(409);
-      throw new Error("User already exists");
+      throw new Error("User already exists. Please sign in.");
     }
     throw err;
   }
 });
 
 export const sendOtp = asyncHandler(async (req, res) => {
-  // ✅ normalize email
   const email = (req.body.email || "").trim().toLowerCase();
 
   if (!email || !validator.isEmail(email)) {
@@ -110,7 +163,6 @@ export const sendOtp = asyncHandler(async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  // enumeration avoid – generic success
   if (!user) {
     return res.status(200).json({
       status: "success",
@@ -121,10 +173,9 @@ export const sendOtp = asyncHandler(async (req, res) => {
   const otp = generateOtp();
   const hashedOtp = await hashOtp(otp);
   const expiryMinutes = parseInt(process.env.OTP_EXPIRY_MINUTES || "10", 10);
-  const otpExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
 
   user.otp = hashedOtp;
-  user.otpExpires = otpExpires;
+  user.otpExpires = new Date(Date.now() + expiryMinutes * 60 * 1000);
   await user.save({ validateBeforeSave: false });
 
   const message = `Your One-Time Password (OTP) for verification is: ${otp}. This OTP is valid for ${expiryMinutes} minutes. Please do not share it with anyone.`;
@@ -144,7 +195,6 @@ export const sendOtp = asyncHandler(async (req, res) => {
       message: "OTP sent to your email successfully!",
     });
   } catch (error) {
-    // clear otp if email sending fails
     user.otp = undefined;
     user.otpExpires = undefined;
     await user.save({ validateBeforeSave: false });
@@ -176,7 +226,6 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     throw new Error("OTP has expired. Please request a new one.");
   }
 
-  // compare plain otp with hashed otp
   const isMatch = await bcrypt.compare(otp, user.otp);
 
   if (!isMatch) {
@@ -184,9 +233,10 @@ export const verifyOtp = asyncHandler(async (req, res) => {
     throw new Error("Invalid otp.");
   }
 
-  // clear otp
   user.otp = undefined;
   user.otpExpires = undefined;
+  user.customerId = user.customerId || await getNextCustomerId();
+  user.isVerified = true;
   await user.save({ validateBeforeSave: false });
 
   const token = generateToken(user._id, res);
@@ -201,17 +251,19 @@ export const verifyOtp = asyncHandler(async (req, res) => {
       email: user.email,
       mobile: user.mobile,
       accountType: user.accountType,
+      businessName: user.businessName,
+      businessType: user.businessType,
+      customerId: user.customerId,
       role: user.role,
     },
   });
 });
 
 export const getMe = asyncHandler(async (req, res) => {
-  // const user = req.user;
   res.status(200).json({
     success: true,
     message: "Authenticated user!",
-    user:req.user,
+    user: req.user,
   });
 });
 
