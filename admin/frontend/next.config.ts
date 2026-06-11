@@ -3,7 +3,7 @@
 import type { NextConfig } from "next";
 
 const apiBaseUrl =
-  process.env.NEXT_API_BASE_URL || "https://brief-ewyr.onrender.coms";
+  process.env.NEXT_API_BASE_URL || "https://brief-ewyr.onrender.com";
 
 const nextConfig: NextConfig = {
   images: {
