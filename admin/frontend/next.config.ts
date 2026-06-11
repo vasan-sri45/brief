@@ -25,7 +25,7 @@
 import type { NextConfig } from "next";
 
 const apiBaseUrl =
-  process.env.NEXT_API_BASE_URL || "http://localhost:4500";
+  process.env.NEXT_API_BASE_URL || "https://brief-ewyr.onrender.coms";
 
 const nextConfig: NextConfig = {
   images: {
