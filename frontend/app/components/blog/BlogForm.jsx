@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useMemo, useState, useEffect } from "react";
 
 export default function BlogForm({
   initialData = null,
@@ -19,25 +19,28 @@ export default function BlogForm({
   /* ================= PREFILL (EDIT MODE) ================= */
   useEffect(() => {
     if (initialData) {
-      setTitle(initialData.title || "");
-      setSlug(initialData.slug || "");
-      setContent(initialData.content || "");
-      setPreview(initialData.image || null);
+      const prefill = () => {
+        setTitle(initialData.title || "");
+        setSlug(initialData.slug || "");
+        setContent(initialData.content || "");
+        setPreview(initialData.image || null);
+      };
+
+      queueMicrotask(prefill);
     }
   }, [initialData]);
 
-  /* ================= SLUG AUTO (CREATE ONLY) ================= */
-  useEffect(() => {
-    if (isEditMode) return;
-
-    const generatedSlug = title
+  const generatedSlug = useMemo(
+    () =>
+      title
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-");
+      .replace(/\s+/g, "-"),
+    [title]
+  );
 
-    setSlug(generatedSlug);
-  }, [title, isEditMode]);
+  const displaySlug = isEditMode ? slug : generatedSlug;
 
   /* ================= IMAGE HANDLER ================= */
   const handleImageChange = (e) => {
@@ -54,7 +57,7 @@ export default function BlogForm({
 
     onSubmit({
       title,
-      slug,
+      slug: displaySlug,
       content,
       image,
     });
@@ -92,7 +95,7 @@ export default function BlogForm({
           </label>
           <input
             className="w-full mt-1 border border-slate-300 rounded px-4 py-2 bg-slate-100 text-slate-600"
-            value={slug}
+            value={displaySlug}
             readOnly
           />
         </div>
@@ -217,7 +220,7 @@ export default function BlogForm({
         </h2>
 
         <p className="text-sm text-slate-500 mt-1">
-          /{slug || "blog-slug"}
+          /{displaySlug || "blog-slug"}
         </p>
 
         <p className="mt-4 text-sm text-slate-700 whitespace-pre-line leading-relaxed">

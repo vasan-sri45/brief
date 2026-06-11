@@ -2,7 +2,7 @@
 "use client";
 
 import { useRouter, usePathname } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useMe } from "./employee.hooks";
 
@@ -52,8 +52,6 @@ export function useAuthGuard(requiredRoles, redirectPath = "/") {
     ? acceptedRoles.has(String(currentRole).toLowerCase())
     : false;
 
-  const [redirecting, setRedirecting] = useState(false);
-
   useEffect(() => {
     // Still loading, don't decide yet
     if (isLoading) return;
@@ -63,7 +61,6 @@ export function useAuthGuard(requiredRoles, redirectPath = "/") {
       // Avoid using guard on "/" itself to prevent loops
       if (pathname === "/") return;
 
-      setRedirecting(true);
       const next = encodeURIComponent(pathname || "/");
       router.replace(`/?next=${next}`);
       return;
@@ -74,12 +71,11 @@ export function useAuthGuard(requiredRoles, redirectPath = "/") {
       // Prevent infinite redirect loops if already on redirectPath
       if (pathname === redirectPath) return;
 
-      setRedirecting(true);
       router.replace(redirectPath);
     }
   }, [currentRole, isLoading, isError, isAuthorized, router, redirectPath, pathname]);
 
-  const loading = (isLoading && !currentRole) || redirecting;
+  const loading = isLoading && !currentRole;
   const isAuthed = !!currentRole && isAuthorized;
 
   return { loading, role: currentRole, isAuthorized, isAuthed };

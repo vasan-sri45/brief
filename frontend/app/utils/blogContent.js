@@ -41,5 +41,5 @@ export function getBlogExcerpt(blog, maxLength = 170) {
 }
 
 export function getBlogCover(blog) {
-  return blog?.documents?.[0]?.url || blog?.image || "/placeholder.png";
+  return blog?.documents?.[0]?.url || blog?.image || "/assets/brief_banner1.png";
 }

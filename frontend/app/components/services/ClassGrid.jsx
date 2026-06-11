@@ -5,15 +5,11 @@ import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop
 import { useRouter } from "next/navigation";
 
 const ClassGrid = ({trade}) => {
-
-  console.log(trade)
-
   const router = useRouter();
 
   const blogNavigate = (slug) => router.push(slug ? `/blogs/${slug}` : "/blogs");
 
   const underlineRef = useGsapUnderlineLoop();
-  console.log(trade)
   return (
     <section className="w-full bg-white py-10 mt-0 md:mt-16">
       <div className="w-11/12 mx-auto lg:w-10/12">

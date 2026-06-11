@@ -63,7 +63,7 @@ export default function BlogDetailPage() {
       name: "Briefcasse",
       logo: {
         "@type": "ImageObject",
-        url: `${SITE.url}/assets/brief_blue.png`,
+        url: `${SITE.url}/assets/brief_blue.webp`,
       },
     },
     mainEntityOfPage: `${SITE.url}/blogs/${blog.slug}`,

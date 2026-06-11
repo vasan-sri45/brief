@@ -36,7 +36,7 @@ const TopBar = () => {
         <Link href="/" className="flex items-center mb-4">
                     {/* <Image  alt="logo" src="/assets/brief_white.png" className="w-8 h-8 bg-white rounded mr-3" /> */}
                      <Image
-                      src="/assets/brief_white.png"
+                      src="/assets/brief_white.webp"
                       alt="logo"
                       width={44}
                       height={44}

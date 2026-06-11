@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {ArrowRight} from "lucide-react";
 import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
@@ -22,10 +23,13 @@ const BlogCard = ({ blog }) => {
         flex flex-col
       "
     >
-      <img
+      <Image
         className="w-full h-[162px] rounded-md mb-2 object-cover"
         src={img}
         alt={blog.title}
+        width={300}
+        height={162}
+        sizes="300px"
       />
 
       <p className="text-[11px] text-gray-400 mb-1 font-bold tracking-wide">

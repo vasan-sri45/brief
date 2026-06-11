@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 export const getYouTubeVideoId = (url = "") => {
   const value = String(url || "").trim();
   if (!value) return "";
@@ -78,13 +80,12 @@ export default function ServiceMedia({
       if (!thumbnailUrl) return fallback;
 
       return (
-        <img
+        <Image
           src={thumbnailUrl || mediaUrl}
           alt={service?.heading || service?.title || "Briefcasse service video"}
-          width="480"
-          height="270"
-          loading="lazy"
-          decoding="async"
+          width={480}
+          height={270}
+          sizes="(min-width: 1024px) 42vw, 90vw"
           className={className || imgClassName}
         />
       );
@@ -105,14 +106,15 @@ export default function ServiceMedia({
   }
 
   return (
-    <img
+    <Image
       src={mediaUrl}
       alt={service?.heading || service?.title || "Briefcasse service"}
-      width="640"
-      height="360"
+      width={640}
+      height={360}
+      priority={priority}
       loading={priority ? "eager" : "lazy"}
       fetchPriority={priority ? "high" : "auto"}
-      decoding={priority ? "sync" : "async"}
+      sizes="(min-width: 1024px) 42vw, 90vw"
       className={className || imgClassName}
     />
   );

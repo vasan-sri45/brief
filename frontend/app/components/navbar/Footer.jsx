@@ -216,7 +216,7 @@ const Footer = () => {
           <div>
             <div className="flex items-center mb-4">
               <Image
-                src="/assets/brief_white.png"
+                src="/assets/brief_white.webp"
                 alt="Briefcasse logo"
                 width={36}
                 height={36}

@@ -132,7 +132,7 @@ export const metadata = {
     siteName: SITE.name,
     images: [
       {
-        url: "/assets/brief_blue.png",
+        url: "/assets/brief_blue.webp",
         width: 1200,
         height: 630,
         alt: "Briefcasse Legal Services",
@@ -145,7 +145,7 @@ export const metadata = {
     title: "Our Legal Services | Briefcasse",
     description:
       "Startup, Trademark, Tax Filing, MCA Compliance and more — expert legal services by Briefcasse.",
-    images: ["/assets/brief_blue.png"],
+    images: ["/assets/brief_blue.webp"],
   },
   robots: {
     index: true,

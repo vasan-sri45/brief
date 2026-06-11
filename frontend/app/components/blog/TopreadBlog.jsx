@@ -22,7 +22,7 @@ const TopReadBlogs = ({ blogs = [] }) => {
       <div className="w-full rounded-md">
         <div className="flex h-[350px] flex-col gap-4 overflow-y-auto pr-1 md:h-[450px] lg:h-[540px]">
           {blogs.map((blog) => {
-            const thumb = blog.documents?.[0]?.url || "/placeholder.png";
+            const thumb = blog.documents?.[0]?.url || "/assets/brief_banner1.png";
             const date = blog.createdAt
               ? new Date(blog.createdAt).toLocaleDateString("en-IN")
               : "";

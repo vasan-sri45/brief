@@ -2,7 +2,7 @@
 "use client";
 import Image from "next/image";
 import RegisterForm1 from "./RegisterForm1";
-import BriefCasse from "../../../public/assets/brief_white.png";
+import BriefCasse from "../../../public/assets/brief_white.webp";
 import FormFooter from "./FormFooter";
 
 const RegisterForm = ({ handleClick }) => {

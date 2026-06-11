@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -11,7 +11,7 @@ const TicketsStatus = ({ activeKey, onSelect, stats }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   // 👉 Slide card to CENTER of viewport
-  const slideTo = (index) => {
+  const slideTo = useCallback((index) => {
     const slider = sliderRef.current;
     const card = cardRefs.current[index];
 
@@ -32,22 +32,30 @@ const TicketsStatus = ({ activeKey, onSelect, stats }) => {
 
     setCurrentIndex(index);
     onSelect(stats[index].key);
-  };
+  }, [onSelect, stats]);
 
   // Initial centering on mount (mobile only)
   useEffect(() => {
-    if (window.innerWidth < 768) {
-      slideTo(currentIndex);
-    }
-  }, []);
+    const frame = window.requestAnimationFrame(() => {
+      if (window.innerWidth < 768) {
+        slideTo(currentIndex);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [currentIndex, slideTo]);
 
   // Sync when activeKey changes externally
   useEffect(() => {
-    const idx = stats.findIndex((s) => s.key === activeKey);
-    if (idx !== -1 && idx !== currentIndex && window.innerWidth < 768) {
-      slideTo(idx);
-    }
-  }, [activeKey]);
+    const frame = window.requestAnimationFrame(() => {
+      const idx = stats.findIndex((s) => s.key === activeKey);
+      if (idx !== -1 && idx !== currentIndex && window.innerWidth < 768) {
+        slideTo(idx);
+      }
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeKey, currentIndex, slideTo, stats]);
 
   const next = () => {
     if (currentIndex < stats.length - 1) {

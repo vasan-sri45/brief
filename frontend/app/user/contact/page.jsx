@@ -24,7 +24,7 @@ export const metadata = {
     siteName: SITE.name,
     images: [
       {
-        url: "/assets/brief_blue.png",
+        url: "/assets/brief_blue.webp",
         width: 1200,
         height: 630,
         alt: "Contact Briefcasse",
@@ -37,7 +37,7 @@ export const metadata = {
     title: "Contact Us | Briefcasse",
     description:
       "Reach out to Briefcasse for trademark registration and legal services.",
-    images: ["/assets/brief_blue.png"],
+    images: ["/assets/brief_blue.webp"],
   },
   robots: {
     index: true,

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { Mail, Phone, User, Building, MessageSquare } from "lucide-react";
 import { api } from "../../api/api";
@@ -10,8 +10,8 @@ import { api } from "../../api/api";
 export default function InquiryForm() {
 
   const searchParams = useSearchParams();
-
-  const [form, setForm] = useState({
+  const buildInitialForm = () => {
+    const baseForm = {
     inquiryPurpose: "",
     description: "",
     fullName: "",
@@ -19,18 +19,12 @@ export default function InquiryForm() {
     organization: "",
     phone: "",
     message: "",
-  });
+    };
 
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState("");
-
-  /* ================= AUTO FILL PACKAGE MESSAGE ================= */
-
-  useEffect(() => {
     const incorp = searchParams.get("incorp");
     const extras = searchParams.get("extras");
 
-    if (!incorp && !extras) return;
+    if (!incorp && !extras) return baseForm;
 
     const incorpList = incorp ? decodeURIComponent(incorp).split("|") : [];
     const extrasList = extras ? decodeURIComponent(extras).split("|") : [];
@@ -40,14 +34,17 @@ export default function InquiryForm() {
       `Incorporation:\n${incorpList.join(", ") || "None"}\n\n` +
       `Additional Services:\n${extrasList.join(", ") || "None"}\n`;
 
-    setForm((prev) => ({
-      ...prev,
+    return {
+      ...baseForm,
       inquiryPurpose: "Business",
       description: "Startup",
       message: autoMessage,
-    }));
+    };
+  };
 
-  }, [searchParams]);
+  const [form, setForm] = useState(buildInitialForm);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
 
   /* ================= HANDLE CHANGE ================= */
 

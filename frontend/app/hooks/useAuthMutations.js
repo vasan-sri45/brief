@@ -115,7 +115,6 @@ export const useMe = () => {
     // Do NOT clear user on error
     // backend may be sleeping or cookie refreshing
     onError: () => {
-      console.log("Session check failed — keeping local session");
     },
   });
 };

@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { X } from "lucide-react";
 
 export default function TicketDetailsModal({
@@ -14,12 +14,6 @@ export default function TicketDetailsModal({
 }) {
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({});
-
-  useEffect(() => {
-    if (service) {
-      setForm(service);
-    }
-  }, [service]);
 
   if (!open || !service) return null;
 
@@ -49,7 +43,10 @@ export default function TicketDetailsModal({
           <div className="flex gap-3">
             {!editMode && (
               <button
-                onClick={() => setEditMode(true)}
+                onClick={() => {
+                  setForm(service);
+                  setEditMode(true);
+                }}
                 className="px-4 py-1 border rounded"
               >
                 Edit

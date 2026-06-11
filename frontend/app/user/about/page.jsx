@@ -26,7 +26,7 @@ export const metadata = {
     siteName: SITE.name,
     images: [
       {
-        url: "/assets/brief_blue.png",
+        url: "/assets/brief_blue.webp",
         width: 1200,
         height: 630,
         alt: "About Briefcasse",
@@ -39,7 +39,7 @@ export const metadata = {
     title: "About Us | Briefcasse",
     description:
       "Register your startup easily with Briefcasse. Expert legal support for new businesses.",
-    images: ["/assets/brief_blue.png"],
+    images: ["/assets/brief_blue.webp"],
   },
   robots: {
     index: true,

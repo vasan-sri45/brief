@@ -2,7 +2,7 @@ export const SITE = {
   name: "Briefcasse",
   legalName: "Briefcasse Legal Services",
   url: "https://briefcasse.com",
-  logo: "/assets/brief_blue.png",
+  logo: "/assets/brief_blue.webp",
   email: "admin@briefcasse.com",
   phone: "+91 9600606897",
   telephone: "+919600606897",

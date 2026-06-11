@@ -38,8 +38,6 @@ api.interceptors.response.use(
     if (shouldRetry) {
       config.__retry = true;
 
-      console.log("Server cold start... retrying");
-
       await new Promise(r => setTimeout(r, 4000));
       return api(config);
     }

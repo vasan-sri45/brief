@@ -2,7 +2,7 @@
 import Image from "next/image";
 import UserOtpLoginForm from "./Form";
 import FormFooter from "./FormFooter";
-import BriefCasse from "../../../public/assets/brief_white.png";
+import BriefCasse from "../../../public/assets/brief_white.webp";
 
 const LoginForm = ({ handleClick }) => {
   return (

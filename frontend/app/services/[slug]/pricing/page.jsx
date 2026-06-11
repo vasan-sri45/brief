@@ -2,6 +2,7 @@
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { useSelector } from "react-redux";
 import {
   ArrowLeft,
@@ -197,11 +198,13 @@ export default function ServicePricingPage() {
             </div>
 
             {heroImage && (
-              <div className="h-52 bg-slate-100">
-                <img
+              <div className="relative h-52 bg-slate-100">
+                <Image
                   src={heroImage}
                   alt={service.heading || title}
-                  className="h-full w-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(min-width: 1024px) 36vw, 100vw"
                 />
               </div>
             )}

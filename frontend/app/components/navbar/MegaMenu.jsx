@@ -195,7 +195,7 @@ const MegaMenuNavbar = () => {
         <Link href="/" className="flex items-center">
 
           <Image
-            src="/assets/brief_white.png"
+            src="/assets/brief_white.webp"
             alt="logo"
             width={32}
             height={32}

@@ -4,7 +4,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
   Facebook,
   Instagram,
@@ -18,12 +17,7 @@ export default function ScrollToTopSocialFAB() {
 
   const mainBtnRef = useRef(null);
   const iconsRef = useRef([]);
-  const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   /* GSAP animation */
   useEffect(() => {
@@ -52,8 +46,6 @@ export default function ScrollToTopSocialFAB() {
 
   }, [open]);
 
-  if (!mounted) return null;
-
   const socialLinks = [
     {
       Icon: MessageCircle,
@@ -81,7 +73,7 @@ export default function ScrollToTopSocialFAB() {
     },
   ];
 
-  return createPortal(
+  return (
     <div className="fixed bottom-28 right-5 z-[9999] flex flex-col items-center gap-3">
 
       {socialLinks.map(({ Icon, href, bg, label }, i) => (
@@ -115,7 +107,6 @@ export default function ScrollToTopSocialFAB() {
         <ChevronUp size={32} />
       </button>
 
-    </div>,
-    document.body
+    </div>
   );
 }

@@ -69,7 +69,7 @@ function fallbackMetadata() {
       "Read the latest legal insights and articles from Briefcasse on trademark, startup, tax filing and more.",
     openGraph: {
       title: `Legal Blog | ${SITE.name}`,
-      images: [{ url: "/assets/brief_blue.png" }],
+      images: [{ url: "/assets/brief_blue.webp" }],
     },
   };
 }

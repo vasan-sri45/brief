@@ -6,6 +6,7 @@ import { FreeMode, Pagination, Autoplay } from "swiper/modules";
 import { RxArrowTopRight } from "react-icons/rx";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { getServiceCardImageUrl } from "./ServiceMedia";
 
 import "swiper/css";
@@ -101,32 +102,29 @@ const CardSwipper = ({ servicesData = [] }) => {
                     {!loadedCards[service._id] && (
                       <div className="absolute inset-0 animate-pulse bg-blue-100" />
                     )}
-                    <img
+                    <Image
                       src={getServiceCardImageUrl(service)}
                       alt={service?.heading || "Briefcasse service"}
-                      width="480"
-                      height="180"
-                      loading="lazy"
-                      decoding="async"
+                      fill
+                      sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                       onLoad={() =>
                         setLoadedCards((current) => ({
                           ...current,
                           [service._id]: true,
                         }))
                       }
-                      className={`h-full w-full object-contain transition-opacity duration-500 ${
+                      className={`object-contain transition-opacity duration-500 ${
                         loadedCards[service._id] ? "opacity-100" : "opacity-0"
                       }`}
                     />
                   </div>
                 ) : (
-                  <img
+                  <Image
                     src="/assets/brief_man.png"
                     alt={service?.heading || "Briefcasse service"}
-                    width="480"
-                    height="180"
-                    loading="lazy"
-                    decoding="async"
+                    width={480}
+                    height={180}
+                    sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                     className="max-h-full max-w-full object-contain"
                   />
                 )}

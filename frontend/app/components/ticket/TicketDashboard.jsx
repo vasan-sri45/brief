@@ -9,15 +9,12 @@ import { useAuth } from "../../hooks/useAuth";
 
 export default function Dashboard() {
   const { data, isLoading, isError } = useGetPaidServices();
-  console.log(data);
 
   const { user } = useAuth();
 
-  const services = data?.data || [];
+  const services = useMemo(() => data?.data || [], [data?.data]);
 
   const [filter, setFilter] = useState("ALL");
-
-  console.log(services)
 
   /* =========================
      STATS (SOURCE OF TRUTH)
@@ -64,7 +61,7 @@ export default function Dashboard() {
         bg: "bg-[#C7D0F0]",
       },
     ];
-  }, [services]);
+  }, [services, user?.id]);
 
   /* =========================
      FILTER TABLE DATA
@@ -92,7 +89,7 @@ export default function Dashboard() {
     }
 
     return services;
-  }, [filter, services]);
+  }, [filter, services, user?.id]);
 
   return (
     <section className="mt-2 mb-6">

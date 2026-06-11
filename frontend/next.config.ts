@@ -69,10 +69,15 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.freepik.com",
       },
+      { protocol: "https", hostname: "img.youtube.com" },
+      { protocol: "https", hostname: "i.ytimg.com" },
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "brief-ewyr.onrender.com" },
     ],
-    formats: ["image/avif", "image/webp"], // Performance boost
+    formats: ["image/avif", "image/webp"],
+    deviceSizes: [360, 425, 640, 768, 1024, 1280, 1536],
+    imageSizes: [32, 48, 64, 96, 128, 256, 384],
+    minimumCacheTTL: 31_536_000,
   },
 
   async rewrites() {
