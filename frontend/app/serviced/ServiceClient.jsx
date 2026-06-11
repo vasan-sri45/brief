@@ -15,6 +15,7 @@ import {
 } from "../utils/serviceInvoice";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import ServiceBanner from "../components/services/ServiceBanner";
 
 export default function ServicePage() {
   const user = useSelector((state) => state.auth.user);
@@ -45,9 +46,9 @@ export default function ServicePage() {
 
   return (
     <section className="bg-white">
+      
       <div className="max-w-7xl mx-auto p-5">
-        <PurchasedServices orders={purchases} />
-
+        <ServiceBanner />
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease.</p> */}
           <Section title="Startup"
@@ -90,6 +91,7 @@ export default function ServicePage() {
           subTitle="We offer a wide range of other professional services tailored to meet diverse legal, compliance, and business support needs."
           services={services} />
        </div>
+       <PurchasedServices orders={purchases} />
       </div>
     </section>
   );
