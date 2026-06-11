@@ -46,7 +46,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));                 // handle CORS for all routes [web:219]
-// app.options("/api/{*splat}", cors(corsOptions)); 
+
 
 app.use(cookieParser());
 app.use(express.json({ limit: "50mb" }));
