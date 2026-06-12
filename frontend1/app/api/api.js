@@ -1,9 +1,16 @@
 import axios from "axios";
 
+const apiBaseUrl =
+  process.env.NODE_ENV === "production"
+    ? `${(
+        process.env.NEXT_PUBLIC_API_BASE_URL || "https://brief-ewyr.onrender.com"
+      ).replace(/\/$/, "")}/api`
+    : "/api";
+
 export const api = axios.create({
-  baseURL: "/api",
+  baseURL: apiBaseUrl,
   withCredentials: true, // cookie auth only
-  timeout: 60000,
+  timeout: 15000,
 });
 
 /* ------------------------------
@@ -38,7 +45,7 @@ api.interceptors.response.use(
     if (shouldRetry) {
       config.__retry = true;
 
-      await new Promise(r => setTimeout(r, 4000));
+      await new Promise(r => setTimeout(r, 1500));
       return api(config);
     }
 

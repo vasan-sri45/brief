@@ -190,13 +190,13 @@ const Footer = () => {
 
   // ✅ Main Menu - சரியான Routes சேர்க்கவும்
   const mainMenuLinks = [
-    { name: "Start Ups", href: "/services/startup" },
-    { name: "Intellectual Properties", href: "/services/intellectual-property" },
-    { name: "Tax Filing", href: "/services/tax-filing" },
-    { name: "MCA Compliance", href: "/services/mca-compliance" },
-    { name: "Registration", href: "/services/registration" },
-    { name: "Legal Advisory & Agreement", href: "/services/legal-advisory" },
-    { name: "Other Services", href: "/services/other-services" },
+    { name: "Start Ups", href: "/" },
+    { name: "Intellectual Properties", href: "/" },
+    { name: "Tax Filing", href: "/" },
+    { name: "MCA Compliance", href: "/" },
+    { name: "Registration", href: "/" },
+    { name: "Legal Advisory & Agreement", href: "/" },
+    { name: "Other Services", href: "/" },
   ];
 
   const quickLinks = [

@@ -4,6 +4,7 @@ import { getCanonicalServiceSlug } from "./utils/serviceSlug";
 
 const SITE_URL = SITE.url;
 const API_URL = `${API_BASE_URL}/api`;
+const FETCH_TIMEOUT_MS = 4000;
 
 const staticRoutes = [
   { path: "", priority: 1, changeFrequency: "weekly" },
@@ -14,15 +15,21 @@ const staticRoutes = [
 ];
 
 async function fetchJson(path) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+
   try {
     const res = await fetch(`${API_URL}${path}`, {
       cache: "no-store",
+      signal: controller.signal,
     });
 
     if (!res.ok) return null;
     return res.json();
   } catch {
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

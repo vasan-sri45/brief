@@ -2,12 +2,17 @@ import BlogDetailClient from "./BlogDetailClient";
 import { API_BASE_URL, SITE } from "../../config/site";
 import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
+const METADATA_FETCH_TIMEOUT_MS = 4000;
+
 export async function generateMetadata({ params }) {
   const { slug } = await params;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), METADATA_FETCH_TIMEOUT_MS);
 
   try {
     const res = await fetch(`${API_BASE_URL}/api/blogs/${slug}`, {
       next: { revalidate: 3600 },
+      signal: controller.signal,
     });
 
     if (!res.ok) return fallbackMetadata();
@@ -59,6 +64,8 @@ export async function generateMetadata({ params }) {
     };
   } catch {
     return fallbackMetadata();
+  } finally {
+    clearTimeout(timeout);
   }
 }
 

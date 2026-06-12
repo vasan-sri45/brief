@@ -1,0 +1,57 @@
+import React from 'react'
+import Contact from "../../components/common/Contact";
+import { SITE } from "../../config/site";
+
+export const metadata = {
+  title: "Contact Us",
+  description:
+    "Get in touch with Briefcasse for trademark registration, legal services, and business support. Our experts are ready to help your startup succeed.",
+  keywords: [
+    "contact Briefcasse",
+    "trademark help",
+    "legal support India",
+    "business registration enquiry",
+  ],
+  alternates: {
+    canonical: "/user/contact",
+  },
+  openGraph: {
+    type: "website",
+    title: "Contact Us | Briefcasse",
+    description:
+      "Reach out to Briefcasse for trademark registration and legal services. Expert support for startups and businesses in India.",
+    url: `${SITE.url}/user/contact`,
+    siteName: SITE.name,
+    images: [
+      {
+        url: "/assets/brief_blue.webp",
+        width: 1200,
+        height: 630,
+        alt: "Contact Briefcasse",
+      },
+    ],
+    locale: "en_IN",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact Us | Briefcasse",
+    description:
+      "Reach out to Briefcasse for trademark registration and legal services.",
+    images: ["/assets/brief_blue.webp"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+
+const page = () => {
+  return (
+    <div>
+      <Contact />
+    </div>
+  )
+}
+
+export default page

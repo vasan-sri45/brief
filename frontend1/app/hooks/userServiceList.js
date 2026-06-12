@@ -3,10 +3,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/api";
+import { SERVICES } from "../config/services";
 
 const fetchServiceList = async () => {
-  const res = await api.get("/services");   // backend already sees auth via cookie/header
-  return res.data;                          // { items, page, ... }
+  try {
+    const res = await api.get("/services");   // backend already sees auth via cookie/header
+    return res.data;                          // { items, page, ... }
+  } catch {
+    return { items: SERVICES };
+  }
 };
 
 export const useAllServices = (options = {}) =>
@@ -16,6 +21,7 @@ export const useAllServices = (options = {}) =>
     staleTime: 5 * 60 * 1000,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    retry: 1,
     ...options,
   });
 
