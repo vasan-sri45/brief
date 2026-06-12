@@ -1,0 +1,26 @@
+@media(min-width:321px){
+        .custom-class{
+                gap: 30px;
+        }
+        .get-connected{
+                font-size: 14px;
+        }
+}
+
+@media(min-width:376px){
+        .custom-class{
+                gap: 50px;
+        }
+        .get-connected{
+                font-size: 16px;
+        }
+}
+@media(min-width:1025px){
+        .custom-class{
+                gap: 70px;
+        }
+        .get-connected{
+                font-size: 18px;
+        }
+}
+
