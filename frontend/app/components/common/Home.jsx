@@ -1,7 +1,7 @@
 "use client";
 import dynamic from "next/dynamic";
 import { useAllServices } from "../../hooks/userServiceList";
-
+import ServiceBanner from "../services/ServiceBanner";
 const CardSwipper = dynamic(() => import("../../components/services/CardSwipper"), {
   ssr: false,
   loading: () => <div className="min-h-[380px]" />,
@@ -31,6 +31,7 @@ export default function ServicePage() {
   return (
     <section className="bg-white">
       <div className="max-w-7xl mx-auto p-5">
+        <ServiceBanner />
         <div>
           {/* <p className="text-letter1 text-bold text-lato text-lg">We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease.</p> */}
           <Section title="Startup"
