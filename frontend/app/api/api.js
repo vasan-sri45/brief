@@ -1,14 +1,7 @@
 import axios from "axios";
 
-const apiBaseUrl =
-  process.env.NODE_ENV === "production"
-    ? `${(
-        process.env.NEXT_PUBLIC_API_BASE_URL || "https://brief-ewyr.onrender.com"
-      ).replace(/\/$/, "")}/api`
-    : "/api";
-
 export const api = axios.create({
-  baseURL: apiBaseUrl,
+  baseURL: "/api",
   withCredentials: true, // cookie auth only
   timeout: 5000,
 });

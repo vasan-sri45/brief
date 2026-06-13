@@ -14,15 +14,32 @@ const serviceFallback = { items: SERVICES };
 const STALE_TIME = 10 * 60 * 1000;
 const GC_TIME = 60 * 60 * 1000;
 
+const normalizeService = (service) => ({
+  ...service,
+  _id: service._id || service.id || service.slug,
+  heading: service.heading || service.title,
+  subTitle: service.subTitle || service.category,
+  shortDescription:
+    service.shortDescription || service.summary || service.description || "",
+  description: service.description || service.summary || "",
+});
+
+const normalizeServiceList = (data) => ({
+  ...data,
+  items: Array.isArray(data?.items)
+    ? data.items.map(normalizeService)
+    : SERVICES.map(normalizeService),
+});
+
 const fetchServiceList = async () => {
   const res = await api.get("/services");
-  return res.data;
+  return normalizeServiceList(res.data);
 };
 
 export const useAllServices = (options = {}) => {
   const dispatch = useDispatch();
   const cachedServices = useSelector((state) => state.cache.services);
-  const initialData = cachedServices || serviceFallback;
+  const initialData = cachedServices || normalizeServiceList(serviceFallback);
 
   const query = useQuery({
     queryKey: ["service-list"],

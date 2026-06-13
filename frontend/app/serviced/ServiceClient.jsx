@@ -99,10 +99,26 @@ export default function ServicePage() {
 
 
 function Section({ title ,subTitle, services }) {
+  const sectionAliases = {
+    Startup: ["Startup", "Registration"],
+    "Intellectual Property": [
+      "Intellectual Property",
+      "Trademark Services",
+      "Copyright & Patents",
+      "IP Protection",
+    ],
+  };
 
-  // ⭐ MAIN FIX
+  const acceptedCategories = sectionAliases[title] || [title];
   const filtered = services.filter(
-    (s) => s.title?.trim().toLowerCase() === title.trim().toLowerCase()
+    (service) =>
+      acceptedCategories.some((category) => {
+        const normalized = category.toLowerCase();
+        return (
+          service.title?.trim().toLowerCase() === normalized ||
+          service.category?.trim().toLowerCase() === normalized
+        );
+      })
   );
 
   return (

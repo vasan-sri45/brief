@@ -86,42 +86,46 @@ const CardSwipper = ({ servicesData = [] }) => {
         modules={[FreeMode, Pagination, Autoplay]}
         className="px-3 sm:px-6 md:px-12 pb-14"
       >
-        {servicesData.map((service) => (
-          <SwiperSlide key={service._id}>
+        {servicesData.map((service) => {
+          const serviceId = service._id || service.id || service.slug;
+          const serviceTitle = service.heading || service.title || "Briefcasse Service";
+
+          return (
+          <SwiperSlide key={serviceId}>
             <div className="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 border-2 border-custom-blue hover:border-startbtn min-h-[380px] p-6 flex flex-col">
 
               {/* TITLE */}
               <h3 className="text-lg font-anton text-custom-blue text-center mb-3 line-clamp-2 min-h-[48px]">
-                {service.heading}
+                {serviceTitle}
               </h3>
 
               {/* IMAGE */}
               <div className="h-32 w-full flex items-center justify-center mb-3 overflow-hidden rounded-xl">
                 {getServiceCardImageUrl(service) ? (
                   <div className="relative h-full w-full">
-                    {!loadedCards[service._id] && (
+                    {!loadedCards[serviceId] && (
                       <div className="absolute inset-0 animate-pulse bg-blue-100" />
                     )}
                     <Image
                       src={getServiceCardImageUrl(service)}
-                      alt={service?.heading || "Briefcasse service"}
+                      alt={serviceTitle}
                       fill
                       sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
                       onLoad={() =>
                         setLoadedCards((current) => ({
                           ...current,
-                          [service._id]: true,
+                          [serviceId]: true,
                         }))
                       }
                       className={`object-contain transition-opacity duration-500 ${
-                        loadedCards[service._id] ? "opacity-100" : "opacity-0"
+                        loadedCards[serviceId] ? "opacity-100" : "opacity-0"
                       }`}
                     />
                   </div>
                 ) : (
                   <Image
                     src="/assets/brief_man.png"
-                    alt={service?.heading || "Briefcasse service"}
+                    alt={serviceTitle}
                     width={480}
                     height={180}
                     sizes="(min-width: 1024px) 30vw, (min-width: 768px) 45vw, 90vw"
@@ -135,7 +139,8 @@ const CardSwipper = ({ servicesData = [] }) => {
                 {shortText(
                   service.shortDescription ||
                     service.description ||
-                    service.fullDescription
+                    service.fullDescription ||
+                    service.summary
                 )}
               </p>
 
@@ -153,7 +158,8 @@ const CardSwipper = ({ servicesData = [] }) => {
 
             </div>
           </SwiperSlide>
-        ))}
+        );
+        })}
       </Swiper>
     </div>
   );
