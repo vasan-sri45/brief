@@ -356,8 +356,8 @@ export const getAllOrders = async (req, res) => {
       });
     }
 
-    const page = Number(req.query.page) || 1;
-    const limit = Number(req.query.limit) || 10;
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
     const assignedTo = req.query.assignedTo;
 
     const skip = (page - 1) * limit;
@@ -375,13 +375,17 @@ export const getAllOrders = async (req, res) => {
     }
 
     const orders = await Payment.find(query)
+      .select(
+        "serviceNo serviceId userId customer amount baseAmount gstAmount gstRate status serviceStatus paymentMode paymentDate assignedTo progressMessages createdAt updatedAt"
+      )
       .populate("serviceId", "title price heading")
       .populate("userId", "name email mobile")
       .populate("assignedTo", "name")
       .populate("progressMessages.createdBy", "name employee_id")
       .sort({ createdAt: -1 })
       .skip(skip)
-      .limit(limit);
+      .limit(limit)
+      .lean();
 
     const total = await Payment.countDocuments(query);
 
@@ -505,14 +509,29 @@ export const updatePaymentService = async (req, res) => {
 ===================================================== */
 export const getMyOrders = async (req, res) => {
   try {
+    const page = Math.max(1, Number(req.query.page) || 1);
+    const limit = Math.min(30, Math.max(1, Number(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
+
     const orders = await Payment.find({ userId: req.user._id })
+      .select(
+        "serviceNo serviceId amount baseAmount gstAmount gstRate status serviceStatus paymentMode paymentDate assignedTo progressMessages createdAt updatedAt"
+      )
       .populate("serviceId", "title price heading slug")
       .populate("assignedTo", "name employee_id")
       .populate("progressMessages.createdBy", "name employee_id")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .lean();
+
+    const total = await Payment.countDocuments({ userId: req.user._id });
 
     res.json({
       success: true,
+      total,
+      page,
+      pages: Math.ceil(total / limit),
       orders,
     });
   } catch (err) {

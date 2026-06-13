@@ -1,38 +1,88 @@
-// // src/hooks/useServiceList.js
 "use client";
 
+import { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../api/api";
 import { SERVICES } from "../config/services";
+import {
+  setPurchasedServicesCache,
+  setServicesCache,
+} from "../store/features/cache.slice";
+
+const serviceFallback = { items: SERVICES };
+const STALE_TIME = 10 * 60 * 1000;
+const GC_TIME = 60 * 60 * 1000;
 
 const fetchServiceList = async () => {
-  try {
-    const res = await api.get("/services");   // backend already sees auth via cookie/header
-    return res.data;                          // { items, page, ... }
-  } catch {
-    return { items: SERVICES };
-  }
+  const res = await api.get("/services");
+  return res.data;
 };
 
-export const useAllServices = (options = {}) =>
-  useQuery({
+export const useAllServices = (options = {}) => {
+  const dispatch = useDispatch();
+  const cachedServices = useSelector((state) => state.cache.services);
+  const initialData = cachedServices || serviceFallback;
+
+  const query = useQuery({
     queryKey: ["service-list"],
     queryFn: fetchServiceList,
-    staleTime: 5 * 60 * 1000,
+    initialData,
+    placeholderData: initialData,
+    staleTime: STALE_TIME,
+    gcTime: GC_TIME,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
     retry: 1,
     ...options,
   });
 
-export const useMyPurchasedServices = (enabled = true) =>
-  useQuery({
+  useEffect(() => {
+    if (query.data && query.data !== cachedServices) {
+      dispatch(setServicesCache(query.data));
+    }
+  }, [cachedServices, dispatch, query.data]);
+
+  return {
+    ...query,
+    data: query.data || cachedServices || serviceFallback,
+    isError: false,
+  };
+};
+
+export const useMyPurchasedServices = (enabled = true) => {
+  const dispatch = useDispatch();
+  const cachedPurchased = useSelector((state) => state.cache.purchasedServices);
+  const initialData = useMemo(
+    () => cachedPurchased || { success: true, orders: [] },
+    [cachedPurchased]
+  );
+
+  const query = useQuery({
     queryKey: ["my-purchased-services"],
     queryFn: async () => {
       const res = await api.get("/payment/my-orders");
       return res.data;
     },
     enabled,
-    retry: false,
-    staleTime: 60_000,
+    initialData,
+    placeholderData: initialData,
+    retry: 1,
+    staleTime: 2 * 60 * 1000,
+    gcTime: GC_TIME,
+    refetchOnWindowFocus: false,
   });
+
+  useEffect(() => {
+    if (query.data && query.data !== cachedPurchased) {
+      dispatch(setPurchasedServicesCache(query.data));
+    }
+  }, [cachedPurchased, dispatch, query.data]);
+
+  return {
+    ...query,
+    data: query.data || cachedPurchased || initialData,
+    isError: false,
+  };
+};

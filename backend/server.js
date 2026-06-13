@@ -66,6 +66,10 @@ app.set("trust proxy", 1);
 
 
 // Mount under /api
+app.get("/health", (req, res) => {
+  res.status(200).json({ success: true });
+});
+
 app.use("/api", healthRoutes);
 app.use("/api", userAuthRouter);
 app.use("/api", employeeAuthRouter);

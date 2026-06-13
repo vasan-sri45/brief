@@ -1,7 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { api } from "../api/api";
+import { setDashboardServicesCache } from "../store/features/cache.slice";
 
 /* ===============================
    CREATE PAID SERVICE (MANUAL)
@@ -20,7 +23,10 @@ export const useCreatePaidService = () => {
    GET ALL PAID SERVICES (ADMIN)
 ================================ */
 export const useGetPaidServices = (params = {}) => {
-  return useQuery({
+  const dispatch = useDispatch();
+  const cachedDashboard = useSelector((state) => state.cache.dashboardServices);
+
+  const query = useQuery({
     queryKey: ["paid-services", params],
     queryFn: async () => {
       const res = await api.get("/paid", {
@@ -28,9 +34,25 @@ export const useGetPaidServices = (params = {}) => {
       });
       return res.data;
     },
-    staleTime: 60_000,
+    initialData: cachedDashboard || { success: true, data: [] },
+    placeholderData: cachedDashboard || { success: true, data: [] },
+    staleTime: 2 * 60_000,
+    gcTime: 30 * 60_000,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
+
+  useEffect(() => {
+    if (query.data && query.data !== cachedDashboard) {
+      dispatch(setDashboardServicesCache(query.data));
+    }
+  }, [cachedDashboard, dispatch, query.data]);
+
+  return {
+    ...query,
+    data: query.data || cachedDashboard || { success: true, data: [] },
+    isError: false,
+  };
 };
 
 /* ===============================
@@ -91,8 +113,10 @@ export const useGetPaymentServices = (params = {}) => {
       });
       return res.data;
     },
-    staleTime: 60_000,
+    staleTime: 2 * 60_000,
+    gcTime: 30 * 60_000,
     refetchOnWindowFocus: false,
+    retry: 1,
   });
 };
 

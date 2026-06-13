@@ -90,18 +90,22 @@ export const createBlog = async (req, res, next) => {
 // GET /api/admin/blogs
 export const getAllBlogs = async (req, res, next) => {
   try {
-    const { page = 1, limit = 10, search = '' } = req.query;
+    const pageNumber = Math.max(1, Number(req.query.page) || 1);
+    const limitNumber = Math.min(30, Math.max(1, Number(req.query.limit) || 10));
+    const search = String(req.query.search || "").trim();
 
     const query = {
       isDeleted: false,
       status: 'published',
-      title: { $regex: search, $options: 'i' },
+      ...(search ? { title: { $regex: search, $options: 'i' } } : {}),
     };
 
     const blogs = await Blog.find(query)
+      .select("title slug content excerpt documents status views createdAt updatedAt")
       .sort({ createdAt: -1 })
-      .skip((page - 1) * limit)
-      .limit(Number(limit));
+      .skip((pageNumber - 1) * limitNumber)
+      .limit(limitNumber)
+      .lean();
 
     const total = await Blog.countDocuments(query);
 
@@ -109,17 +113,17 @@ export const getAllBlogs = async (req, res, next) => {
       success: true,
       data: blogs,
       meta: {
-        page: Number(page),
-        limit: Number(limit),
+        page: pageNumber,
+        limit: limitNumber,
         total,
-        totalPages: Math.ceil(total / limit),
+        totalPages: Math.ceil(total / limitNumber),
       },
       pagination: {
-        page: Number(page),
-        limit: Number(limit),
+        page: pageNumber,
+        limit: limitNumber,
         total,
-        pages: Math.ceil(total / limit),
-        totalPages: Math.ceil(total / limit),
+        pages: Math.ceil(total / limitNumber),
+        totalPages: Math.ceil(total / limitNumber),
       },
     });
   } catch (error) {

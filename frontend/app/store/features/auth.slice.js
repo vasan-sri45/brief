@@ -64,6 +64,19 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 
+const STORAGE_KEY = "bc_user";
+
+export const getStoredUser = () => {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : null;
+  } catch {
+    return null;
+  }
+};
+
 const initialState = {
   user: null,
   isLoading: true,
@@ -78,10 +91,24 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.hydrated = true;
       state.isLoading = false;
+
+      if (typeof window !== "undefined") {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(action.payload));
+      }
     },
 
     clearUser(state) {
       state.user = null;
+      state.hydrated = true;
+      state.isLoading = false;
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    },
+
+    hydrateUser(state, action) {
+      state.user = action.payload;
       state.hydrated = true;
       state.isLoading = false;
     },
@@ -92,5 +119,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, clearUser, setLoading } = authSlice.actions;
+export const { setUser, clearUser, hydrateUser, setLoading } = authSlice.actions;
 export default authSlice.reducer;

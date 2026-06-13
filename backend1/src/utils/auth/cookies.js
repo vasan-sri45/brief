@@ -6,6 +6,6 @@ export const getAuthCookieName = () => (isProd ? '__Host-jwt' : 'jwt');
 export const getAuthCookieOptions = () => ({
   httpOnly: true,
   secure: isProd,     // must be true for __Host- prefix
-  sameSite: 'Lax',    // switch to 'None' if cross-site; then secure must be true
+  sameSite: isProd ? 'None' : 'Lax',
   path: '/',          // required for __Host- prefix
 });
