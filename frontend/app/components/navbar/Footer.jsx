@@ -51,9 +51,9 @@ const Footer = () => {
                 width={36}
                 height={36}
                 unoptimized
-                className="h-auto mr-0.5"
+                className="h-auto mr-1"
               />
-              <h2 className="text-3xl font-anton font-normal tracking-wider mt-0.5">
+              <h2 className="text-2xl font-anton font-normal tracking-wider mt-1.5">
                 BRIEFCASSE
               </h2>
             </div>

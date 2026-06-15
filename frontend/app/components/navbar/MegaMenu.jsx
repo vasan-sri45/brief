@@ -223,7 +223,7 @@ export default function MegaMenuNavbar() {
 
   return (
     <nav className="relative w-full">
-      <div className="lg:hidden flex justify-between items-center px-4 py-4 bg-custom-blue">
+      <div className="lg:hidden flex justify-between items-center px-2 py-4 bg-custom-blue">
         <Link href="/" className="flex items-center">
           <Image
             src="/assets/brief_white.webp"
@@ -233,7 +233,7 @@ export default function MegaMenuNavbar() {
             unoptimized
             className="h-auto"
           />
-          <span className="text-white font-anton ml-1 text-2xl mt-1">
+          <span className="text-white font-anton ml-1 text-2xl mt-1.5">
             BRIEFCASSE
           </span>
         </Link>

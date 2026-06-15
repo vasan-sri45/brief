@@ -40,12 +40,6 @@ export default async function sitemap() {
       priority: 1,
     },
     {
-      url: "https://briefcasse.com/serviced",
-      lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
-    },
-    {
       url: "https://briefcasse.com/blogs",
       lastModified: new Date(),
       changeFrequency: "weekly",

@@ -52,14 +52,14 @@ export default function ReviewCarousel() {
   };
 
   return (
-    <section className="my-16 overflow-hidden bg-[#F7FAFF] px-4 py-12 md:px-8">
+    <section className="my-10 overflow-hidden px-4 py-10 md:my-16 md:py-12">
       <div className="mx-auto max-w-7xl">
-        <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div className="mb-7 flex flex-col gap-4 md:mb-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="font-anton text-2xl font-semibold tracking-wider text-custom-blue md:text-3xl">
+            <p className="font-anton text-[1.75rem] font-semibold leading-tight tracking-wider text-custom-blue md:text-3xl">
               Client Reviews
             </p>
-            <p className="mt-2 max-w-2xl font-lato text-base font-bold leading-7 text-letter1">
+            <p className="mt-2 max-w-2xl font-lato text-sm font-bold leading-7 text-letter1 md:text-base">
               Lightweight local feedback from founders and business owners who
               trust Briefcasse for legal, tax, and compliance support.
             </p>
@@ -89,7 +89,9 @@ export default function ReviewCarousel() {
           {visibleReviews.map((review, index) => (
             <article
               key={`${review.name}-${active}-${index}`}
-              className="min-h-[260px] border border-custom-blue/15 bg-white p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg"
+              className={`min-h-[240px] border border-custom-blue/15 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-lg md:min-h-[260px] md:p-6 ${
+                index > 0 ? "hidden md:block" : ""
+              }`}
             >
               <div className="mb-5 flex gap-1 text-[#FFD94E]">
                 {Array.from({ length: 5 }).map((_, starIndex) => (

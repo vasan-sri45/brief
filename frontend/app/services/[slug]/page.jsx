@@ -136,7 +136,7 @@ function buildServiceSchema(service, slug) {
           "@type": "ListItem",
           position: 2,
           name: "Services",
-          item: `${SITE.url}/serviced`,
+          item: SITE.url,
         },
         {
           "@type": "ListItem",

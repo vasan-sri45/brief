@@ -186,16 +186,16 @@ const faqs = normalizeFaqs(
 
 /* ================= JSX ================= */
 return ( <div className="overflow-hidden">
-  <div className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0 mt-4">
+  <div className="w-full mx-auto px-4 py-2 md:p-4 lg:w-10/12 lg:p-0 mt-4">
      <h1
           ref={titleRef}
-          className="hero-title font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-3 uppercase tracking-[0.08em]"
+          className="hero-title font-anton font-medium text-[1.35rem] leading-tight md:text-[1.8rem] text-custom-blue mb-3 uppercase tracking-[0.08em]"
         >
           {seoTitle}
         </h1>
   </div>
   {/* TABS NAVBAR */}
-  <div className="w-full mx-auto px-2 lg:w-10/12 lg:p-0 hero-tabs flex gap-6 text-sm md:text-lg text-custom-blue font-lato font-bold sticky  bg-white z-40">
+  <div className="w-full mx-auto px-3 md:px-4 lg:w-10/12 lg:p-0 hero-tabs flex gap-5 overflow-x-auto whitespace-nowrap text-sm md:text-lg text-custom-blue font-lato font-bold sticky bg-white z-40">
     {["description", "documents", "process"].map((tab) => (
       <button
         key={tab}
@@ -220,23 +220,23 @@ return ( <div className="overflow-hidden">
     <ServiceHero service={filteredData} />
   </section>
 
-  <section className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0">
+  <section className="w-full mx-auto px-4 py-2 md:p-4 lg:w-10/12 lg:p-0">
     <div className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-      <div className="border border-custom-blue/20 bg-white p-5 shadow-sm">
+      <div className="border border-custom-blue/20 bg-white p-5 shadow-sm rounded-2xl">
         <h2 className="font-lato text-lg font-bold text-custom-blue">Who This Helps</h2>
         <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">
           Individuals, founders, startups, and business owners who need clear legal,
           tax, compliance, or registration support in India.
         </p>
       </div>
-      <div className="border border-custom-blue/20 bg-white p-5 shadow-sm">
+      <div className="border border-custom-blue/20 bg-white p-5 shadow-sm rounded-2xl">
         <h2 className="font-lato text-lg font-bold text-custom-blue">How Briefcasse Works</h2>
         <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">
           We review your requirement, confirm the document checklist, prepare the
           filing or advisory path, and guide you through submission and follow-up.
         </p>
       </div>
-      <div className="border border-custom-blue/20 bg-white p-5 shadow-sm">
+      <div className="border border-custom-blue/20 bg-white p-5 shadow-sm rounded-2xl">
         <h2 className="font-lato text-lg font-bold text-custom-blue">Local Trust</h2>
         <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">
           Briefcasse is a Chennai-based legal services platform serving clients
@@ -245,11 +245,11 @@ return ( <div className="overflow-hidden">
       </div>
     </div>
 
-    {seoDescription && (
+    {/* {seoDescription && (
       <p className="mt-6 max-w-4xl text-sm font-lato font-semibold leading-8 text-letter1">
         {seoDescription}
       </p>
-    )}
+    )} */}
   </section>
 
   {/* LEGAL CONTENT */}
@@ -298,12 +298,12 @@ return ( <div className="overflow-hidden">
 
   {faqs.length > 0 && (
     <section className="w-full mx-auto p-2 md:p-4 lg:w-10/12 lg:p-0">
-      <h2 className="font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-5 uppercase tracking-[0.08em]">
-        Frequently Asked Questions
+      <h2 className="font-anton font-medium text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-5 uppercase tracking-[0.07em]">
+        Frequently Asked Question
       </h2>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {faqs.map((faq, index) => (
-          <article key={index} className="border border-custom-blue/20 bg-white p-5 shadow-sm">
+          <article key={index} className="border border-custom-blue/20 bg-white p-5 shadow-sm rounded-2xl">
             <h3 className="font-lato text-base font-bold text-custom-blue">{faq.question}</h3>
             <p className="mt-2 text-sm font-lato font-semibold leading-7 text-letter1">{faq.answer}</p>
           </article>

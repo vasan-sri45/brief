@@ -56,7 +56,7 @@ export default function ServicePricingPage() {
           );
 
           if (verifyData.success) {
-            router.push("/serviced");
+            router.push("/");
           } else {
             alert("Payment verification failed");
           }

@@ -517,7 +517,7 @@ export const getMyOrders = async (req, res) => {
 
     const orders = await Payment.find({ userId: req.user._id })
       .select(
-        "serviceNo serviceId amount baseAmount gstAmount gstRate status serviceStatus paymentMode paymentDate assignedTo progressMessages createdAt updatedAt"
+        "serviceNo serviceId amount baseAmount gstAmount gstRate status serviceStatus paymentMode paymentDate razorpayPaymentId assignedTo progressMessages createdAt updatedAt"
       )
       .populate("serviceId", "title price heading slug")
       .populate("assignedTo", "name employee_id")

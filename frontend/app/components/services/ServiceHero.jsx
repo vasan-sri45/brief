@@ -1,32 +1,22 @@
 "use client";
-import React, { useState } from "react";
-import { ArrowRight } from "lucide-react";
+import React from "react";
+import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import HeroButton from "./HeroButton";
-import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
-import { useGsapHeroTabs } from "../../hooks/animation/useGsapHeroTabs";
 import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 import { useSelector } from "react-redux";
 
 const ServiceHero = ({ service }) => {
-  const [activeTab, setActiveTab] = useState("description");
   const router = useRouter();
   const pathname = usePathname();
   const { user } = useSelector((state) => state.auth);
 
   // 🎯 GSAP hooks
-  const titleRef = useGsapHeroTitle();
-  const tabsRef = useGsapHeroTabs();
   useGsapSmoothScroll();
 
   const descriptionText =
     service?.description ||
     "Want to register your Private Limited Company? We've got you covered!";
-
-  const handleTabClick = (tab) => {
-    setActiveTab(tab);
-  };
-
 
   const handleStartService = () => {
   if (!service?.slug) return;
@@ -43,13 +33,13 @@ const ServiceHero = ({ service }) => {
 
 
   return (
-    <section className="w-full pt-1 md:pt-3">
-      <div className="w-full mx-auto px-2 pt-0 pb-2 md:p-4 lg:w-10/12 lg:p-0">
+    <section className="w-full pt-1 ">
+      <div className="w-full mx-auto px-4 pt-0 pb-2  lg:w-10/12 lg:p-0">
 
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1.2fr] gap-6">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[2fr_1.2fr] lg:gap-6">
           <div>
 
-            <p className="mt-4 max-w-xl text-justify leading-8 font-lato font-semibold text-letter1">
+            <p className="mt-3 max-w-3xl leading-7 font-lato font-normal text-[0.9rem] md:text-[1rem] text-justify text-letter1 md:mt-4 md:leading-8 lg:max-w-xl">
               {descriptionText}
             </p>
             <HeroButton handleStartService={handleStartService}/>
@@ -67,16 +57,15 @@ const ServiceHero = ({ service }) => {
             shadow-lg
           ">
 
-            <img
-              src={service?.images?.[0]?.url}
-              alt={service?.heading}
-              className="
-                w-full
-                h-full
-                
-                object-center
-              "
-            />
+            {service?.images?.[0]?.url && (
+              <Image
+                src={service.images[0].url}
+                alt={service?.heading || "Briefcasse service"}
+                fill
+                sizes="(min-width: 1024px) 34vw, 100vw"
+                className="object-cover object-center"
+              />
+            )}
 
           </div>
         </div>
