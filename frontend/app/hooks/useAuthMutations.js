@@ -48,15 +48,11 @@ export const useVerifyOtp = () => {
     onSuccess: (data) => {
       if (!data?.user) return;
 
+      // Save user in Redux + localStorage
       dispatch(setUser(data.user));
 
-      const params =
-        typeof window !== "undefined"
-          ? new URLSearchParams(window.location.search)
-          : null;
-      const redirect = params?.get("redirect") || "/serviced";
-
-      router.replace(redirect.startsWith("/login") ? "/serviced" : redirect);
+      // Redirect to app
+      router.replace("/serviced");
     },
   });
 };
@@ -115,6 +111,7 @@ export const useMe = () => {
     // Do NOT clear user on error
     // backend may be sleeping or cookie refreshing
     onError: () => {
+      console.log("Session check failed — keeping local session");
     },
   });
 };

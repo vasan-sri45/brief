@@ -178,6 +178,19 @@ export const useGetServices = (params = {}) => {
   });
 };
 
+export const useGetServiceConfigById = (id) => {
+  return useQuery({
+    queryKey: ["service", id],
+    enabled: Boolean(id),
+    queryFn: async () => {
+      const res = await api.get(`/services/${id}`);
+      return res.data;
+    },
+    staleTime: 60_000,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useCreateServiceConfig = () => {
   const queryClient = useQueryClient();
 
@@ -188,6 +201,7 @@ export const useCreateServiceConfig = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
+      queryClient.invalidateQueries({ queryKey: ["service"] });
     },
   });
 };
@@ -228,8 +242,11 @@ export const useUpdateServiceConfig = () => {
       const res = await api.patch(`/services/${id}`, payload);
       return res.data;
     },
-    onSuccess: () => {
+    onSuccess: (_data, variables) => {
       queryClient.invalidateQueries({ queryKey: ["services"] });
+      if (variables?.id) {
+        queryClient.invalidateQueries({ queryKey: ["service", variables.id] });
+      }
     },
   });
 };

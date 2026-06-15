@@ -1,82 +1,87 @@
 "use client";
-
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
+import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
 import { ArrowRight } from "lucide-react";
-import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
 const LatestBlogCard = ({ blog }) => {
-  const excerpt = getBlogExcerpt(blog);
+  const headingRef = useGsapSectionHeading(0.2);
+  const underlineRef = useGsapUnderlineLoop();
+
+  // ✅ Safe content slice
+  const excerpt = blog.content
+    ? blog.content.slice(0, 120) + "..."
+    : "Read this blog to learn more...";
 
   return (
     <section>
+      {/* Heading */}
       <div className="text-start">
-        <h2 className="font-anton text-[1rem] font-normal tracking-wide text-custom-blue md:text-[1.1rem] lg:text-[1.3rem]">
+        <h2
+          ref={headingRef}
+          className="section-heading font-anton font-normal text-[1rem] md:text-[1.1rem] lg:text-[1.3rem] text-custom-blue tracking-wide"
+        >
           Latest Blog
         </h2>
 
-        <div className="mb-3 flex justify-start overflow-hidden">
+        <div className="flex justify-start mb-3 overflow-hidden">
           <span className="relative h-[3px] w-16 rounded-full bg-custom-blue">
-            <span className="absolute inset-0 rounded-full bg-white/70" />
+            <span
+              ref={underlineRef}
+              className="underline-glow absolute inset-0 rounded-full bg-white/70"
+            />
           </span>
         </div>
       </div>
 
-      <article className="w-full overflow-hidden rounded-3xl border border-blue-500 bg-white p-4 shadow-[0_18px_50px_rgba(15,23,42,0.08)]">
-        <div className="flex h-full flex-col p-1">
-          <Link
-            href={`/blogs/${blog.slug}`}
-            className="relative mb-4 block h-[220px] shrink-0 overflow-hidden rounded-2xl border-2 border-blue-500 bg-slate-100 md:h-[320px] lg:h-[390px]"
-          >
-            <Image
-              src={getBlogCover(blog)}
-              alt={blog.title || "Briefcasse blog image"}
-              fill
-              className="object-cover transition duration-500 hover:scale-[1.03]"
-              sizes="(max-width: 768px) 100vw, 60vw"
-              priority
-            />
-          </Link>
+      {/* Card */}
+      <div className="w-full h-[380px] md:h-[450px] lg:h-[560px] p-4 rounded-md border-2 border-custom-blue">
+        <div className="p-1 flex flex-col h-full">
 
-          <div className="flex flex-1 flex-col">
-            <h3 className="mb-2 text-xl font-extrabold leading-snug text-custom-blue md:text-2xl">
+          {/* ✅ Image Fixed */}
+          <div className="relative w-full h-[220px] md:h-[280px] lg:h-[360px] shrink-0 mb-2 rounded-md overflow-hidden border-2 border-custom-blue bg-[#E0B15F]">
+            <Image
+              src={blog.documents?.[0]?.url || "/assets/brief_blue.webp"}
+              alt={blog.title || "Blog image"}
+              fill
+              unoptimized
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </div>
+
+          {/* Content */}
+          <div className="flex flex-col flex-1">
+            <h3 className="text-custom-blue font-anton font-normal text-[0.9rem] lg:text-[1.1rem] leading-snug mb-1 tracking-wide uppercase">
               {blog.title}
             </h3>
 
-            {blog.tags?.length > 0 && (
-              <div className="mb-3 flex flex-wrap gap-2">
-                {blog.tags.slice(0, 3).map((tag) => (
-                  <span
-                    key={tag}
-                    className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
-            <p className="mb-4 line-clamp-3 text-sm font-bold leading-relaxed text-letter1 md:text-base">
+            {/* ✅ Safe excerpt */}
+            <p className="text-[0.7rem] md:text-[1rem] text-letter1 mb-2 line-clamp-3 font-lato font-bold">
               {excerpt}
-              {excerpt?.length >= 170 ? "..." : ""}
             </p>
 
-            <div className="mt-auto flex items-center justify-between">
-              <p className="text-sm font-bold text-slate-400">
-                {new Date(blog.createdAt).toLocaleDateString("en-IN")}
+            {/* Date + Read More */}
+            <div className="flex items-center justify-between mt-auto">
+              <p className="text-[0.7rem] md:text-[0.8rem] text-gray-400 font-normal">
+                {new Date(blog.createdAt).toLocaleDateString()}
               </p>
 
+              {/* ✅ Link மட்டும் — button நீக்கியது */}
               <Link
                 href={`/blogs/${blog.slug}`}
-                className="inline-flex items-center text-sm font-bold text-starttext hover:text-blue-700"
+                className="inline-flex items-center text-startbtn text-[0.8rem] font-anton font-normal tracking-wide hover:underline"
               >
                 Read More
-                <ArrowRight className="ml-2 h-5 w-5" />
+                <ArrowRight className="ml-2 w-5 h-5" />
               </Link>
             </div>
           </div>
+
         </div>
-      </article>
+      </div>
     </section>
   );
 };

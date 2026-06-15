@@ -13,11 +13,7 @@ export const SITE = {
   country: "IN",
 };
 
-export const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://brief-ewyr.onrender.com"
-).replace(/\/$/, "");
-
-export const SERVICE_API_URL = `${API_BASE_URL}/api/services`;
+export const SERVICE_API_URL = "https://brief-ewyr.onrender.com/api/services";
 
 export function getReadableSlug(slug = "") {
   return String(slug)
@@ -35,56 +31,14 @@ export function getServiceDescription(service, slug = "") {
   const title = getServiceTitle(service, slug);
   return (
     service?.metaDescription ||
-    service?.shortDescription ||
-    service?.fullDescription ||
     service?.description ||
     `${title} support in India from Briefcasse, Chennai. Get help with documents, process, filing timelines, compliance steps, and expert guidance for individuals, startups, and businesses.`
   );
 }
 
-export function getServiceImage(service) {
-  return (
-    service?.openGraphImage ||
-    service?.featuredImage ||
-    service?.serviceBannerImage ||
-    service?.image ||
-    service?.images?.[0]?.url ||
-    SITE.logo
-  );
-}
-
-export function getServiceKeywords(service, title = "") {
-  const backendKeywords = Array.isArray(service?.metaKeywords)
-    ? service.metaKeywords
-    : String(service?.metaKeywords || "")
-        .split(",")
-        .map((keyword) => keyword.trim())
-        .filter(Boolean);
-
-  const generatedKeywords = title
-    ? [
-        `${title.toLowerCase()} India`,
-        `${title.toLowerCase()} Chennai`,
-        `${title.toLowerCase()} online`,
-        `${title.toLowerCase()} documents`,
-        `${title.toLowerCase()} process`,
-      ]
-    : [];
-
-  return [
-    ...backendKeywords,
-    ...generatedKeywords,
-    "legal services Chennai",
-    "legal services India",
-    SITE.name,
-  ].filter((keyword, index, list) => keyword && list.indexOf(keyword) === index);
-}
-
 export function getServiceFaqs(service, slug = "") {
   if (Array.isArray(service?.faqs) && service.faqs.length > 0) {
-    return [...service.faqs]
-      .filter((faq) => faq?.question && faq?.answer)
-      .sort((a, b) => Number(a.displayOrder || 0) - Number(b.displayOrder || 0));
+    return service.faqs;
   }
 
   const title = getServiceTitle(service, slug);

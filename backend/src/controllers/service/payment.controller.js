@@ -197,6 +197,8 @@ export const createOrder = async (req, res) => {
       serviceId: service._id,
       userId,
       customer: {
+        userCode: user?.customerId || "",
+        customerId: user?.customerId || "",
         name: user?.name || "",
         mobile: user?.mobile || "",
         email: user?.email || "",

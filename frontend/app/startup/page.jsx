@@ -1,6 +1,5 @@
 import React from 'react';
 import StartUpPackage from "../components/services/StartUpPackage";
-import { SITE } from "../config/site";
 
 export const metadata = {
   title: "Startup Registration",
@@ -14,8 +13,8 @@ export const metadata = {
     title: "Startup Registration | Briefcasse",
     description:
       "Register your startup easily with Briefcasse. Expert legal support for incorporation and trademark services.",
-    url: `${SITE.url}/startup`,
-    siteName: SITE.name,
+    url: "https://www.briefcasse.com/startup",
+    siteName: "Briefcasse",
     images: [
       {
         url: "/assets/brief_blue.webp",

@@ -98,6 +98,20 @@ const paymentSchema = new mongoose.Schema(
     /* ================= CUSTOMER DETAILS ================= */
 
     customer: {
+      userCode: {
+        type: String,
+        default: "",
+        trim: true,
+        uppercase: true,
+      },
+
+      customerId: {
+        type: String,
+        default: "",
+        trim: true,
+        uppercase: true,
+      },
+
       name: {
         type: String,
         default: "",
@@ -264,6 +278,16 @@ paymentSchema.index({
 
 paymentSchema.index({
   "customer.mobile": 1,
+  createdAt: -1,
+});
+
+paymentSchema.index({
+  "customer.customerId": 1,
+  createdAt: -1,
+});
+
+paymentSchema.index({
+  "customer.userCode": 1,
   createdAt: -1,
 });
 

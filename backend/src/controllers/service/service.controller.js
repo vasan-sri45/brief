@@ -172,6 +172,67 @@ const serviceStringFields = [
   "schemaMarkupJson",
 ];
 
+const listServiceFields = [
+  "title",
+  "subTitle",
+  "slug",
+  "heading",
+  "description",
+  "shortDescription",
+  "fullDescription",
+  "serviceIcon",
+  "serviceBannerImage",
+  "featuredImage",
+  "cardImageUrl",
+  "mediaType",
+  "mediaUrl",
+  "serviceCategory",
+  "status",
+  "displayOrder",
+  "seoTitle",
+  "metaDescription",
+  "canonicalUrl",
+  "openGraphTitle",
+  "openGraphDescription",
+  "openGraphImage",
+  "faqs",
+  "documents",
+  "process",
+  "processAtBriefcase",
+  "content",
+  "custom",
+  "trademark",
+  "price",
+  "prices",
+  "images",
+  "createdAt",
+  "updatedAt",
+];
+
+const menuServiceFields = [
+  "title",
+  "subTitle",
+  "heading",
+  "slug",
+  "displayOrder",
+];
+
+const sortServicesByDisplayOrder = (items) => {
+  items.sort((a, b) => {
+    const aName = String(a.heading || a.title || "");
+    const bName = String(b.heading || b.title || "");
+    const aIndex = serviceOrder.indexOf(aName);
+    const bIndex = serviceOrder.indexOf(bName);
+
+    if (aIndex === -1 && bIndex === -1) return aName.localeCompare(bName);
+    if (aIndex === -1) return 1;
+    if (bIndex === -1) return -1;
+    return aIndex - bIndex;
+  });
+
+  return items;
+};
+
 const pickServiceFields = (body) =>
   serviceStringFields.reduce((acc, field) => {
     if (body[field] !== undefined) {
@@ -258,21 +319,10 @@ export const listServices = asyncHandler(async (req, res) => {
       : { status: { $ne: "Inactive" } };
 
   let items = await Service.find({ ...search, ...visibility })
-    .select("-__v")
+    .select(listServiceFields.join(" "))
     .lean();
 
-  // Custom document order sorting
-  items.sort((a, b) => {
-    const aName = a.heading || a.title || "";
-    const bName = b.heading || b.title || "";
-    const aIndex = serviceOrder.indexOf(aName);
-    const bIndex = serviceOrder.indexOf(bName);
-
-    if (aIndex === -1 && bIndex === -1) return aName.localeCompare(bName);
-    if (aIndex === -1) return 1;
-    if (bIndex === -1) return -1;
-    return aIndex - bIndex;
-  });
+  sortServicesByDisplayOrder(items);
 
   const total = items.length;
 
@@ -288,6 +338,42 @@ export const listServices = asyncHandler(async (req, res) => {
       pages: Math.ceil(total / limit),
     },
   });
+});
+
+export const listServiceMenu = asyncHandler(async (req, res) => {
+  const items = await Service.find({ status: { $ne: "Inactive" } })
+    .select(menuServiceFields.join(" "))
+    .lean();
+
+  const sortedItems = sortServicesByDisplayOrder(
+    items.filter((service) => service?.title && service?.heading && service?.slug)
+  );
+
+  res.json(
+    sortedItems.map((service) => ({
+      title: String(service.title).trim(),
+      subTitle: String(service.subTitle || "").trim(),
+      heading: String(service.heading).trim(),
+      slug: String(service.slug).trim(),
+    }))
+  );
+});
+
+export const getServiceBySlug = asyncHandler(async (req, res) => {
+  const slug = String(req.params.slug || "").trim().toLowerCase();
+
+  if (!slug) {
+    return res.status(400).json({ error: "slug is required" });
+  }
+
+  const item = await Service.findOne({
+    slug,
+    status: { $ne: "Inactive" },
+  }).lean();
+
+  if (!item) return res.status(404).json({ error: "Service not found" });
+
+  res.json(item);
 });
 
 // GET BY ID

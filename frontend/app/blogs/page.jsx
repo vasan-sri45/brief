@@ -1,6 +1,5 @@
 
 import BlogClient from "./BlogClient";
-import { SITE } from "../config/site";
 
 export const metadata = {
   title: "Legal Blogs & Articles",
@@ -23,8 +22,8 @@ export const metadata = {
     title: "Legal Blogs & Articles | Briefcasse",
     description:
       "Latest legal insights on trademark, startup, tax filing, and MCA compliance. Stay informed with Briefcasse expert articles.",
-    url: `${SITE.url}/blogs`,
-    siteName: SITE.name,
+    url: "https://www.briefcasse.com/blogs",
+    siteName: "Briefcasse",
     images: [
       {
         url: "/assets/brief_blue.webp",

@@ -1,6 +1,5 @@
 import React from 'react'
 import Contact from "../../components/common/Contact";
-import { SITE } from "../../config/site";
 
 export const metadata = {
   title: "Contact Us",
@@ -13,15 +12,15 @@ export const metadata = {
     "business registration enquiry",
   ],
   alternates: {
-    canonical: "/user/contact",
+    canonical: "/contact",
   },
   openGraph: {
     type: "website",
     title: "Contact Us | Briefcasse",
     description:
       "Reach out to Briefcasse for trademark registration and legal services. Expert support for startups and businesses in India.",
-    url: `${SITE.url}/user/contact`,
-    siteName: SITE.name,
+    url: "https://briefcasse.com/user/contact",
+    siteName: "Briefcasse",
     images: [
       {
         url: "/assets/brief_blue.webp",

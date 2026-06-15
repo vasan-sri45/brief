@@ -1,38 +1,67 @@
-
-
-// import React from 'react';
-// import Home from "./components/common/Home";
-
-// const page = () => {
-//   return (
-//     <>
-//       <Home />
-//     </>
-//   )
-// }
-
-// export default page
-
-
-// app/page.js
-
 import Home from "./components/common/Home";
-import { SERVICES } from "./config/services";
 
 const categories = [
-  { title: "Startup", subTitle: "We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease." },
-  { title: "Intellectual Property", subTitle: "We offer comprehensive intellectual property services to protect, manage, and enforce your ideas, innovations, and brand assets effectively." },
-  { title: "Tax Filing", subTitle: "We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free." },
-  { title: "MCA Compliance", subTitle: "We assist in filing and managing MCA complaints efficiently to help individuals and businesses resolve corporate compliance issues smoothly." },
-  { title: "Registration", subTitle: "We offer quick and reliable registration services to help individuals and businesses complete legal formalities with ease and confidence." },
-  { title: "Legal Advisory & Agreement", subTitle: "We provide expert legal advisory and agreement drafting services to protect your interests and ensure clear, enforceable business relationships." },
-  { title: "Other Services", subTitle: "We offer a wide range of other professional services tailored to meet diverse legal, compliance, and business support needs." },
+  {
+    title: "Startup",
+    subTitle:
+      "We provide fast, reliable, and hassle-free registration services to help individuals and businesses stay legally compliant with ease.",
+    links: [
+      { label: "Company Incorporation", slug: "company-incorporation" },
+      { label: "LLP Incorporation", slug: "llp-incorporation" },
+    ],
+  },
+  {
+    title: "Intellectual Property",
+    subTitle:
+      "We offer comprehensive intellectual property services to protect, manage, and enforce your ideas, innovations, and brand assets effectively.",
+    links: [
+      { label: "Trademark Registration", slug: "trademark-registration" },
+      { label: "Copyright Registration", slug: "copyright-registration" },
+      { label: "Patent Filing", slug: "patent-filing" },
+    ],
+  },
+  {
+    title: "Tax Filing",
+    subTitle:
+      "We provide accurate and hassle-free tax filing services to help individuals and businesses stay compliant and stress-free.",
+    links: [
+      { label: "GST Registration", slug: "gst-registration" },
+      { label: "Income Tax Filing", slug: "income-tax-filing" },
+    ],
+  },
+  {
+    title: "MCA Compliance",
+    subTitle:
+      "We assist in filing and managing MCA compliance requirements smoothly.",
+    links: [{ label: "ROC Annual Filing", slug: "roc-annual-filing" }],
+  },
+  {
+    title: "Registration",
+    subTitle:
+      "We offer quick and reliable registration services to help individuals and businesses complete legal formalities with ease and confidence.",
+    links: [
+      { label: "FSSAI Registration", slug: "fssai-registration" },
+      { label: "Import Export Code", slug: "import-export-code" },
+    ],
+  },
+  {
+    title: "Legal Advisory & Agreement",
+    subTitle:
+      "We provide expert legal advisory and agreement drafting services to protect your interests and ensure clear business relationships.",
+    links: [
+      { label: "Service Agreement", slug: "service-agreement" },
+      { label: "Mutual NDA", slug: "mutual-nda" },
+    ],
+  },
+  {
+    title: "Other Services",
+    subTitle:
+      "We offer a wide range of professional services tailored to diverse legal, compliance, and business support needs.",
+    links: [{ label: "Legal Consultation", slug: "legal-consultation" }],
+  },
 ];
 
-// ✅ async function — Server Component
-export default async function Page() {
-  const services = SERVICES;
-
+export default function Page() {
   return (
     <>
       <div
@@ -49,32 +78,26 @@ export default async function Page() {
         }}
       >
         <h1>Trademark Registration & Legal Services India</h1>
-        <p>Briefcasse offers easy and reliable trademark registration and legal services for startups, entrepreneurs, and businesses in India.</p>
-        {categories.map((cat) => {
-          const filtered = services.filter((s) => {
-            const category = (s.category || s.title || "").trim().toLowerCase();
-            return category === cat.title.trim().toLowerCase();
-          });
-          if (filtered.length === 0) return null;
-          return (
-            <div key={cat.title}>
-              <h2>{cat.title}</h2>
-              <p>{cat.subTitle}</p>
-              <ul>
-                {filtered.map((s) => (
-                  <li key={s.slug}>
-                    <a href={`/services/${s.slug}`}>
-                      {s.heading || s.name || s.title}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          );
-        })}
+        <p>
+          Briefcasse offers easy and reliable trademark registration and legal
+          services for startups, entrepreneurs, and businesses in India.
+        </p>
+
+        {categories.map((cat) => (
+          <div key={cat.title}>
+            <h2>{cat.title}</h2>
+            <p>{cat.subTitle}</p>
+            <ul>
+              {cat.links.map((service) => (
+                <li key={service.slug}>
+                  <a href={`/services/${service.slug}`}>{service.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
       </div>
 
-      {/* ✅ உங்கள் existing Home — எந்த மாற்றமும் இல்லை */}
       <Home />
     </>
   );

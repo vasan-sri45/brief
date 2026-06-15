@@ -1,12 +1,12 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {ArrowRight} from "lucide-react";
-import { getBlogCover, getBlogExcerpt } from "../../utils/blogContent";
 
 const BlogCard = ({ blog }) => {
-  const img = getBlogCover(blog);
+  const img =
+    blog.documents?.[0]?.url ||
+    "https://placehold.co/300x200?text=Blog";
 
   return (
     <div
@@ -23,13 +23,10 @@ const BlogCard = ({ blog }) => {
         flex flex-col
       "
     >
-      <Image
+      <img
         className="w-full h-[162px] rounded-md mb-2 object-cover"
         src={img}
         alt={blog.title}
-        width={300}
-        height={162}
-        sizes="300px"
       />
 
       <p className="text-[11px] text-gray-400 mb-1 font-bold tracking-wide">
@@ -41,7 +38,8 @@ const BlogCard = ({ blog }) => {
       </h3>
 
       <p className="text-[11px] text-letter1 line-clamp-2 mb-2 font-bold tracking-wide">
-        {getBlogExcerpt(blog, 80)}
+        {blog.content?.[0]?.body?.slice(0, 80) ||
+          blog.content?.slice(0, 80)}
       </p>
 
       <div className="mt-auto">

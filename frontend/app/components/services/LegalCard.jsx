@@ -2,18 +2,8 @@
 import React, { useMemo } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useAllServices } from "../../hooks/userServiceList"; // optional fallback
-import { useGsapSectionHeading } from "../../hooks/animation/useGsapSectionHeading";
-import { useGsapUnderlineLoop } from "../../hooks/animation/useGsapUnderlineLoop";
 
 export default function TalkToLawyer({ content = [], service = null }) {
-  // fallback: try fetching if no content prop passed (optional)
-  const { data: fallbackData } = useAllServices?.() || { data: null };
-  const fallbackService = fallbackData?.items?.[0] || null;
-
-  const headingRef = useGsapSectionHeading(0.2);
-     const underlineRef = useGsapUnderlineLoop();
-
   const getTitle = (c, idx) =>
     c?.name || c?.title || c?.heading || `Consultation ${idx + 1}`;
 
@@ -27,17 +17,13 @@ export default function TalkToLawyer({ content = [], service = null }) {
       : // else try service.content if service passed
       (service && Array.isArray(service.content) && service.content.length > 0)
       ? service.content
-      : // else fallback to first service from useAllServices (if available)
-      (fallbackService && Array.isArray(fallbackService.content) && fallbackService.content.length > 0)
-      ? fallbackService.content
       : [];
 
     if (source.length > 0) {
       return source.slice(0, 4).map((c, idx) => {
         const title = getTitle(c, idx);
         const desc = getDesc(c) || "Service details not available.";
-        // pick slug from passed service if available, else fallbackService, else '#'
-        const slug = service?.slug || fallbackService?.slug || null;
+        const slug = service?.slug || null;
         const href = slug ? `/services/${slug}?content=${encodeURIComponent(title)}` : "#";
         return { title, desc, href };
       });
@@ -66,7 +52,7 @@ export default function TalkToLawyer({ content = [], service = null }) {
         href: "#",
       },
     ];
-  }, [content, service, fallbackService]);
+  }, [content, service]);
 
   return (
     <section className="w-full pt-4 pb-3 lg:pt-12">

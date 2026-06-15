@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, Pencil, Plus, Search } from "lucide-react";
 import ServiceForm from "../../components/admin/ServiceForm";
-import { useGetServices } from "../../hooks/useService";
+import { useGetServiceConfigById, useGetServices } from "../../hooks/useService";
 
 export default function ServiceManagerPage() {
   const [editing, setEditing] = useState(null);
@@ -16,6 +16,12 @@ export default function ServiceManagerPage() {
     limit,
     search,
   });
+  const editingId = editing?._id || "";
+  const {
+    data: editingService,
+    isLoading: isEditingServiceLoading,
+    isError: isEditingServiceError,
+  } = useGetServiceConfigById(showForm && editingId ? editingId : "");
   const services = data?.items || [];
   const pagination = data?.pagination || data?.meta || {};
   const totalPages = pagination.pages || pagination.totalPages || 1;
@@ -27,9 +33,40 @@ export default function ServiceManagerPage() {
   };
 
   if (showForm) {
+    if (editingId && isEditingServiceLoading) {
+      return (
+        <section className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+          <div className="rounded-3xl border border-blue-100 bg-white p-8 text-center shadow-sm">
+            <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-blue-100 border-t-blue-600" />
+            <p className="text-sm font-bold text-blue-700">Loading service details...</p>
+          </div>
+        </section>
+      );
+    }
+
+    if (editingId && isEditingServiceError) {
+      return (
+        <section className="flex min-h-screen items-center justify-center bg-slate-50 p-6">
+          <div className="max-w-md rounded-3xl border border-red-100 bg-white p-8 text-center shadow-sm">
+            <p className="text-lg font-bold text-red-600">Could not load service details.</p>
+            <button
+              type="button"
+              onClick={() => {
+                setEditing(null);
+                setShowForm(false);
+              }}
+              className="mt-5 rounded-xl bg-blue-600 px-5 py-3 text-sm font-bold text-white"
+            >
+              Back to services
+            </button>
+          </div>
+        </section>
+      );
+    }
+
     return (
       <ServiceForm
-        initialService={editing}
+        initialService={editingId ? editingService || editing : null}
         onDone={() => {
           setEditing(null);
           setShowForm(false);

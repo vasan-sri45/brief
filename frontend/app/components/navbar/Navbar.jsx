@@ -1,45 +1,33 @@
 "use client";
+
 import Image from "next/image";
 import TopBar from "./TopBar";
 import MegaMenu from "./MegaMenu";
 import HeroStrip from "./HeroStrip";
 
 const Navbar = () => {
-  
   return (
-    <header
-      className="
-        relative
-        w-full
-        lg:max-w-[98vw]
-        mx-auto
-        mt-0 lg:mt-5
-        rounded-none lg:rounded-2xl
-        z-50
-        bg-white
-        min-h-fit lg:h-[340px] xl:h-[321px]
-        overflow-hidden
-      "
-    >
+    <header className="relative w-full lg:max-w-[98vw] mx-auto mt-0 lg:mt-5 rounded-none lg:rounded-2xl z-50 bg-white min-h-fit lg:h-[340px] xl:h-[321px] overflow-hidden">
       
+      {/* Mobile Background */}
       <div className="absolute inset-0 bg-custom-blue lg:hidden -z-10" />
 
+      {/* Desktop Background Image */}
       <div className="absolute inset-0 hidden lg:block -z-10">
         <Image
-          src="/assets/navbar_banner.png" 
+          src="/assets/navbar_banner.webp"
           alt="Briefcasse banner"
           fill
           priority
+          unoptimized
           sizes="98vw"
-          quality={75}
-          className=""
+          className="object-center"
         />
       </div>
 
+      {/* Content */}
       <div className="relative h-full max-w-[1800px] mx-auto px-3 lg:px-6 flex flex-col justify-start">
-        
         <TopBar />
-
         <MegaMenu />
 
         <div className="mt-auto pb-2">

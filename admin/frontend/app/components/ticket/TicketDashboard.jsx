@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import TicketsStatus from "./TicketStatus";
 import WelcomeCard from "./WelcomeCard";
-import TicketHeader from "./TicketHeader";
 import TicketTable from "./TicketTable";
 
 import {
@@ -177,7 +176,9 @@ export default function Dashboard() {
       (s) => String(s.paymentStatus || "").toLowerCase() !== "paid"
     ).length;
 
-    const checklist = employeeServices.length;
+    const completed = employeeServices.filter(
+      (s) => String(s.serviceStatus || "").toLowerCase() === "completed"
+    ).length;
 
     return [
       {
@@ -199,9 +200,9 @@ export default function Dashboard() {
         bg: "bg-[#FFDCD8]",
       },
       {
-        key: "CHECKLIST",
-        title: "Checklist",
-        value: checklist,
+        key: "COMPLETED",
+        title: "Completed",
+        value: completed,
         bg: "bg-[#C7D0F0]",
       },
     ];
@@ -226,8 +227,10 @@ export default function Dashboard() {
       );
     }
 
-    if (filter === "CHECKLIST") {
-      return employeeServices;
+    if (filter === "COMPLETED") {
+      return employeeServices.filter(
+        (s) => String(s.serviceStatus || "").toLowerCase() === "completed"
+      );
     }
 
     return employeeServices;

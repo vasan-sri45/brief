@@ -1,160 +1,124 @@
 "use client";
-
-import Image from "next/image";
-import { useParams, useRouter } from "next/navigation";
+import React from "react";
+import Link from "next/link";
+import { useParams, useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "../../api/api";
-import { ArrowLeft, CalendarDays } from "lucide-react";
-import {
-  getBlogCover,
-  getBlogExcerpt,
-  normalizeBlogContent,
-} from "../../utils/blogContent";
-import { SITE } from "../../config/site";
+import {ArrowRight} from "lucide-react";
 
 export default function BlogDetailPage() {
   const { slug } = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["blog", slug],
     queryFn: async () => {
-      const res = await api.get(`/blogs/${slug}`);
-      return res.data.data;
+      try {
+        const res = await api.get(`/blogs/${slug}`);
+        return res.data.data;
+      } catch {
+        return null;
+      }
     },
     enabled: !!slug,
   });
 
-  if (isLoading) {
-    return (
-      <div className="min-h-[50vh] bg-slate-50 py-20 text-center font-bold text-slate-600">
-        Loading blog...
-      </div>
-    );
-  }
+  if (isLoading)
+    return <div className="py-20 text-center font-medium">Loading blog...</div>;
 
-  if (isError || !data) {
-    return (
-      <div className="min-h-[50vh] bg-slate-50 py-20 text-center font-bold text-slate-500">
-        Blog not found
-      </div>
-    );
-  }
+  if (isError || !data)
+    return <div className="py-20 text-center text-gray-500">Blog not found</div>;
 
   const blog = data;
-  const cover = getBlogCover(blog);
-  const contentBlocks = normalizeBlogContent(blog.content);
-  const description = getBlogExcerpt(blog, 160);
+  const cover = blog.documents?.[0]?.url || "/assets/brief_blue.webp";
+  const date = new Date(blog.createdAt).toLocaleDateString("en-GB");
 
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "BlogPosting",
-    headline: blog.title,
-    description,
-    image: cover,
-    datePublished: blog.createdAt,
-    dateModified: blog.updatedAt || blog.createdAt,
-    author: {
-      "@type": "Organization",
-      name: "Briefcasse",
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "Briefcasse",
-      logo: {
-        "@type": "ImageObject",
-        url: `${SITE.url}/assets/brief_blue.webp`,
-      },
-    },
-    mainEntityOfPage: `${SITE.url}/blogs/${blog.slug}`,
-  };
+  //  SAFE NORMALIZATION
+  let contentBlocks = [];
+  try {
+    if (Array.isArray(blog.content)) {
+      contentBlocks = blog.content;
+    } else if (typeof blog.content === "string") {
+      const parsed = JSON.parse(blog.content);
+      contentBlocks = Array.isArray(parsed)
+        ? parsed
+        : [{ heading: "", body: parsed }];
+    }
+  } catch {
+    contentBlocks = [{ heading: "", body: String(blog.content) }];
+  }
 
+  // const backToPrevious = () => {
+  //   router.push("/blogs")
+  // };
   const backToPrevious = () => {
-    if (window.history.length > 1) router.back();
-    else router.replace("/blogs");
-  };
+  if (window.history.length > 1) {
+    router.back();
+  } else {
+    router.replace("/blogs");
+  }
+};
 
   return (
-    <main className="w-full bg-slate-50 px-4 py-8 md:py-14">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-      />
+    <main className="w-full py-10 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="font-anton font-normal text-[1.2rem] md:text-[1.8rem] text-custom-blue mb-3 uppercase text-center tracking-wide">
+          {blog.title}
+        </h1>
 
-      <article className="mx-auto max-w-5xl">
-        <header className="rounded-[28px] border border-blue-100 bg-white p-5 shadow-sm md:p-8">
-          <p className="text-sm font-bold uppercase tracking-[0.22em] text-blue-600">
-            Briefcasse Guide
+        {blog.subtitle && (
+          <p className="text-center text-[1rem] md:text-[1.2rem] text-letter1 mb-6 font-lato font-bold">
+            {blog.subtitle}
           </p>
-          <h1 className="mt-4 text-4xl font-black leading-tight text-slate-950 md:text-5xl">
-            {blog.title}
-          </h1>
+        )}
 
-          {blog.subtitle && (
-            <p className="mt-5 max-w-3xl text-lg font-medium leading-8 text-slate-600">
-              {blog.subtitle}
-            </p>
+        <img
+          className="w-full h-[220px] md:h-[450px] object-center mb-4 shadow"
+          src={cover}
+          alt={blog.title}
+        />
+
+        <p className="text-[0.7rem] md:text-[0.8rem] text-gray-500 mb-4 font-bold">
+          {date}
+        </p>
+
+        <article className="text-[13px] leading-6 space-y-6 text-justify">
+          {contentBlocks.length > 0 ? (
+            contentBlocks.map((block, index) => (
+              <div key={index}>
+                {block.heading && (
+                  <h3 className="text-[1rem] md:text-[1.4rem] text-custom-blue mb-2 font-lato font-bold tracking-wide">
+                    {block.heading}
+                  </h3>
+                )}
+
+                <div className="font-lato font-bold text-letter1 text-[0.8rem] md:text-[0.9rem] leading-relaxed tracking-wide space-y-2">
+                  {block.body
+                    ?.split(".")
+                    .filter(Boolean)
+                    .map((sentence, i) => (
+                      <p key={i}>{sentence.trim()}.</p>
+                    ))}
+              </div>
+              </div>
+            ))
+          ) : (
+            <p>No content available</p>
           )}
+        </article>
 
-          <div className="mt-5 flex items-center gap-2 text-sm font-bold text-slate-500">
-            <CalendarDays size={18} />
-            {new Date(blog.createdAt).toLocaleDateString("en-IN", {
-              day: "2-digit",
-              month: "long",
-              year: "numeric",
-            })}
-          </div>
-        </header>
-
-        <div className="relative mt-6 h-[260px] overflow-hidden rounded-[28px] border border-blue-100 bg-blue-50 shadow-sm md:h-[520px]">
-          <Image
-            src={cover}
-            alt={blog.title || "Briefcasse blog cover"}
-            fill
-            className="object-cover"
-            sizes="(max-width: 768px) 100vw, 960px"
-            priority
-          />
+        <div className="flex justify-end mt-12">
+           <button
+              onClick={backToPrevious}
+              className="bg-starttext text-white text-[0.9rem] md:text-[1.1rem] font-anton font-normal tracking-wide rounded-full flex justify-center items-center px-3 py-2"
+            >
+              Back to blogs
+              <ArrowRight className="ml-2 w-5 h-5 md:w-7 md:h-7" />
+            </button>
         </div>
-
-        <section className="mt-6 rounded-[28px] border border-blue-100 bg-white p-5 shadow-sm md:p-9">
-          <div className="prose prose-slate max-w-none">
-            {contentBlocks.length > 0 ? (
-              contentBlocks.map((block, index) => (
-                <section key={index} className="mb-8 last:mb-0">
-                  {block.heading && (
-                    <h2 className="mb-3 text-2xl font-black text-slate-950">
-                      {block.heading}
-                    </h2>
-                  )}
-
-                  <div className="space-y-4 text-base font-medium leading-8 text-slate-700">
-                    {String(block.body || "")
-                      .split(".")
-                      .map((sentence) => sentence.trim())
-                      .filter(Boolean)
-                      .map((sentence, i) => (
-                        <p key={i}>{sentence}.</p>
-                      ))}
-                  </div>
-                </section>
-              ))
-            ) : (
-              <p>No content available.</p>
-            )}
-          </div>
-        </section>
-
-        <div className="mt-8 flex justify-start">
-          <button
-            onClick={backToPrevious}
-            className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-3 font-bold text-white transition hover:bg-blue-700"
-          >
-            <ArrowLeft size={18} />
-            Back to blogs
-          </button>
-        </div>
-      </article>
+      </div>
     </main>
   );
 }
