@@ -132,12 +132,55 @@ const normalizePaymentStatus = (value = "Pending") => {
   return "Pending";
 };
 
+const SERVICE_STATUSES = ["Pending", "In Progress", "Completed", "Cancelled"];
+
+const TRANSACTION_STAGES = [
+  "Just In",
+  "Attempt to Contact",
+  "Awaiting Document",
+  "Document Preparation",
+  "Final Draft",
+  "Conclusion Stage",
+  "Completed",
+];
+
 const normalizeServiceStatus = (value = "Pending") => {
   const normalized = String(value || "").trim().toLowerCase();
   if (normalized === "in progress") return "In Progress";
   if (normalized === "completed") return "Completed";
   if (normalized === "cancelled") return "Cancelled";
-  return "Pending";
+
+  const status = SERVICE_STATUSES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return status || "Pending";
+};
+
+const normalizeTransactionStage = (value = "Just In") => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized || normalized === "pending") return "Just In";
+  if (normalized === "in progress") return "Document Preparation";
+  if (normalized === "cancelled") return "Conclusion Stage";
+
+  const stage = TRANSACTION_STAGES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return stage || "Just In";
+};
+
+const normalizeTransactionStages = (value) => {
+  const source = Array.isArray(value) ? value : [value];
+  const stages = source
+    .flatMap((item) => String(item || "").split(","))
+    .map((item) => normalizeTransactionStage(item))
+    .filter(Boolean);
+  const uniqueStages = TRANSACTION_STAGES.filter((stage) =>
+    stages.includes(stage)
+  );
+
+  return uniqueStages.length ? uniqueStages : ["Just In"];
 };
 
 export const createPaidService = async (req, res, next) => {
@@ -158,6 +201,8 @@ export const createPaidService = async (req, res, next) => {
       notes,
       paymentStatus,
       serviceStatus = "Pending",
+      transactionStage = "Just In",
+      transactionStages,
     } = req.body;
 
     if (!req.user?._id) {
@@ -239,6 +284,12 @@ export const createPaidService = async (req, res, next) => {
           ? "Pending"
           : normalizePaymentStatus(paymentStatus || "Paid"),
       serviceStatus: normalizeServiceStatus(serviceStatus),
+      transactionStages: normalizeTransactionStages(
+        transactionStages || transactionStage
+      ),
+      transactionStage: normalizeTransactionStages(
+        transactionStages || transactionStage
+      ).at(-1),
       notes: notes || "",
       createdBy: req.user._id,
     });
@@ -536,6 +587,8 @@ export const updatePaidService = async (req, res, next) => {
       paymentMode,
       paymentStatus,
       serviceStatus,
+      transactionStage,
+      transactionStages,
       notes,
       assignedTo,
       progressMessage,
@@ -571,6 +624,13 @@ export const updatePaidService = async (req, res, next) => {
       updateData.paymentStatus = normalizePaymentStatus(paymentStatus);
     if (serviceStatus !== undefined)
       updateData.serviceStatus = normalizeServiceStatus(serviceStatus);
+    if (transactionStages !== undefined) {
+      updateData.transactionStages = normalizeTransactionStages(transactionStages);
+      updateData.transactionStage = updateData.transactionStages.at(-1);
+    } else if (transactionStage !== undefined) {
+      updateData.transactionStage = normalizeTransactionStage(transactionStage);
+      updateData.transactionStages = normalizeTransactionStages(transactionStage);
+    }
     if (isAdmin && notes !== undefined) updateData.notes = notes;
 
     if (isAdmin && assignedTo !== undefined) {

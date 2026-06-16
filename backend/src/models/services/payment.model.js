@@ -200,6 +200,38 @@ const paymentSchema = new mongoose.Schema(
       default: "Pending",
     },
 
+    transactionStage: {
+      type: String,
+      enum: [
+        "Just In",
+        "Attempt to Contact",
+        "Awaiting Document",
+        "Document Preparation",
+        "Final Draft",
+        "Conclusion Stage",
+        "Completed",
+      ],
+      default: "Just In",
+    },
+
+    transactionStages: {
+      type: [
+        {
+          type: String,
+          enum: [
+            "Just In",
+            "Attempt to Contact",
+            "Awaiting Document",
+            "Document Preparation",
+            "Final Draft",
+            "Conclusion Stage",
+            "Completed",
+          ],
+        },
+      ],
+      default: ["Just In"],
+    },
+
     /* ================= EMPLOYEE MANAGEMENT ================= */
 
     assignedTo: {

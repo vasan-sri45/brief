@@ -378,6 +378,57 @@ const SERVICE_STATUS = [
   "Cancelled",
 ];
 
+const TRANSACTION_STAGES = [
+  "Just In",
+  "Attempt to Contact",
+  "Awaiting Document",
+  "Document Preparation",
+  "Final Draft",
+  "Conclusion Stage",
+  "Completed",
+];
+
+const normalizeServiceStage = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+
+  if (!normalized || normalized === "pending") return "Just In";
+  if (normalized === "in progress") return "Document Preparation";
+  if (normalized === "cancelled") return "Conclusion Stage";
+
+  const stage = TRANSACTION_STAGES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return stage || "Just In";
+};
+
+const normalizeTransactionStages = (value) => {
+  const source = Array.isArray(value) ? value : [value];
+  const stages = source
+    .flatMap((item) => String(item || "").split(","))
+    .map((item) => normalizeServiceStage(item))
+    .filter(Boolean);
+  const uniqueStages = TRANSACTION_STAGES.filter((stage) =>
+    stages.includes(stage)
+  );
+
+  return uniqueStages.length ? uniqueStages : ["Just In"];
+};
+
+const normalizeServiceStatus = (value) => {
+  const normalized = String(value || "").trim().toLowerCase();
+
+  if (normalized === "in progress") return "In Progress";
+  if (normalized === "completed") return "Completed";
+  if (normalized === "cancelled") return "Cancelled";
+
+  const status = SERVICE_STATUS.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return status || "Pending";
+};
+
 export default function TicketDetailsModal({
   open,
   onClose,
@@ -412,6 +463,16 @@ export default function TicketDetailsModal({
       setForm({
         ...service,
         service: serviceId,
+        serviceStatus: normalizeServiceStatus(service.serviceStatus),
+        transactionStage: normalizeServiceStage(
+          service.transactionStage ||
+          service.serviceStatus
+        ),
+        transactionStages: normalizeTransactionStages(
+          service.transactionStages ||
+          service.transactionStage ||
+          service.serviceStatus
+        ),
         serviceTitle:
           service.serviceTitle ||
           service.service?.title ||
@@ -466,6 +527,13 @@ export default function TicketDetailsModal({
       form.assignedTo && typeof form.assignedTo === "object"
         ? form.assignedTo._id
         : form.assignedTo || null;
+    const selectedTransactionStages = normalizeTransactionStages(
+      form.transactionStages ||
+      service.transactionStages ||
+      form.transactionStage ||
+      service.transactionStage ||
+      service.serviceStatus
+    );
 
     onUpdate?.({
       id: service._id,
@@ -478,7 +546,13 @@ export default function TicketDetailsModal({
           form.paymentStatus,
 
         serviceStatus:
-          form.serviceStatus,
+          normalizeServiceStatus(form.serviceStatus),
+
+        transactionStage:
+          selectedTransactionStages[selectedTransactionStages.length - 1],
+
+        transactionStages:
+          selectedTransactionStages,
 
         totalPayment:
           Number(
@@ -519,6 +593,12 @@ export default function TicketDetailsModal({
       case "Completed":
         return "bg-green-100 text-green-700";
 
+      case "Just In":
+      case "Attempt to Contact":
+      case "Awaiting Document":
+      case "Document Preparation":
+      case "Final Draft":
+      case "Conclusion Stage":
       case "Pending":
       case "In Progress":
         return "bg-yellow-100 text-yellow-700";
@@ -539,7 +619,6 @@ export default function TicketDetailsModal({
       : form.assignedTo || "";
 
   const isAdmin = userRole === "admin";
-  const isEmployee = userRole === "employee";
   const isPaid =
     String(service.paymentStatus || "").toLowerCase() === "paid";
   const canSoftDelete =
@@ -823,7 +902,7 @@ export default function TicketDetailsModal({
               <SelectField
                 label="Service Status"
                 value={
-                  form.serviceStatus
+                  normalizeServiceStatus(form.serviceStatus)
                 }
                 onChange={(e) =>
                   handleChange(
@@ -837,10 +916,50 @@ export default function TicketDetailsModal({
               <StatusDetail
                 label="Service Status"
                 value={
-                  service.serviceStatus
+                  normalizeServiceStatus(service.serviceStatus)
                 }
                 className={getStatusStyle(
-                  service.serviceStatus
+                  normalizeServiceStatus(service.serviceStatus)
+                )}
+              />
+            )}
+
+            {/* TRANSACTION STAGE */}
+            {editMode ? (
+              <CheckboxStageField
+                label="Transaction Stage"
+                value={
+                  normalizeTransactionStages(
+                    form.transactionStages ||
+                    service.transactionStages ||
+                    form.transactionStage ||
+                    service.transactionStage ||
+                    service.serviceStatus
+                  )
+                }
+                onChange={(nextStages) =>
+                  handleChange(
+                    "transactionStages",
+                    nextStages
+                  )
+                }
+                options={TRANSACTION_STAGES}
+              />
+            ) : (
+              <StatusDetail
+                label="Transaction Stage"
+                value={
+                  normalizeTransactionStages(
+                    service.transactionStages ||
+                    service.transactionStage ||
+                    service.serviceStatus
+                  ).join(", ")
+                }
+                className={getStatusStyle(
+                  normalizeServiceStage(
+                    service.transactionStage ||
+                    service.serviceStatus
+                  )
                 )}
               />
             )}
@@ -1058,6 +1177,58 @@ const InputField = ({
         focus:ring-blue-200
       "
     />
+
+  </div>
+);
+
+/* =========================================
+   RADIO STAGE
+========================================= */
+
+const CheckboxStageField = ({
+  label,
+  value,
+  onChange,
+  options,
+}) => (
+  <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 sm:col-span-2">
+
+    <p className="text-sm text-gray-500 mb-3">
+      {label}
+    </p>
+
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+      {options.map((option) => {
+        const checked = value.includes(option);
+
+        return (
+          <label
+            key={option}
+            className={`flex cursor-pointer items-center gap-3 rounded-xl border px-4 py-3 text-sm font-semibold transition ${
+              checked
+                ? "border-blue-500 bg-blue-50 text-blue-700 shadow-sm"
+                : "border-gray-200 bg-white text-gray-700 hover:border-blue-200 hover:bg-blue-50/40"
+            }`}
+          >
+            <input
+              type="checkbox"
+              name="transactionStages"
+              value={option}
+              checked={checked}
+              onChange={() => {
+                const nextStages = checked
+                  ? value.filter((stage) => stage !== option)
+                  : [...value, option];
+
+                onChange(normalizeTransactionStages(nextStages));
+              }}
+              className="h-4 w-4 accent-blue-600"
+            />
+            <span>{option}</span>
+          </label>
+        );
+      })}
+    </div>
 
   </div>
 );

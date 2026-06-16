@@ -79,6 +79,8 @@ export default function Dashboard() {
           paymentMode: item.paymentMode || "Online",
           paymentStatus: item.status || "-",
           serviceStatus: item.serviceStatus || "-",
+          transactionStage: item.transactionStage || "",
+          transactionStages: item.transactionStages || [],
 
           createdAt: item.createdAt,
 
@@ -119,6 +121,8 @@ export default function Dashboard() {
           paymentMode: item.paymentMode || "-",
           paymentStatus: item.paymentStatus || "-",
           serviceStatus: item.serviceStatus || "-",
+          transactionStage: item.transactionStage || "",
+          transactionStages: item.transactionStages || [],
 
           createdAt: item.createdAt,
 
