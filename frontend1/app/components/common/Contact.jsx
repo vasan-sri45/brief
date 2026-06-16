@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Suspense } from "react";
 import { Phone, Mail, MapPin } from "lucide-react";
 import InquiryForm from "./InquiryForm";
 import { SITE } from "../../config/site";
@@ -46,9 +45,7 @@ export default function Contact() {
         </div>
 
         {/* ================= FORM ================= */}
-        <Suspense fallback={null}>
-          <InquiryForm />
-        </Suspense>
+        <InquiryForm />
 
       </div>
     </section>

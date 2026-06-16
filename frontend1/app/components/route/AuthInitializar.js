@@ -1,14 +1,11 @@
+
+
+
 "use client";
 
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import {
-  setUser,
-  clearUser,
-  hydrateUser,
-  setLoading,
-  getStoredUser,
-} from "../../store/features/auth.slice";
+import { setUser, clearUser, setLoading } from "../../store/features/auth.slice";
 import { api } from "../../api/api";
 
 export default function AuthInitializer() {
@@ -16,26 +13,20 @@ export default function AuthInitializer() {
 
   useEffect(() => {
     let mounted = true;
-    const cachedUser = getStoredUser();
-
-    if (cachedUser) {
-      dispatch(hydrateUser(cachedUser));
-    } else {
-      dispatch(setLoading(true));
-    }
 
     const initAuth = async () => {
+      dispatch(setLoading(true));
+
       try {
+        // 1️⃣ wait backend ready (important for Render cold start)
+        await fetch("/api/health", { cache: "no-store" });
+
+        // 2️⃣ get logged user
         const res = await api.get("/user");
+
         if (mounted) dispatch(setUser(res.data.user));
       } catch (err) {
-        const status = err?.response?.status;
-
-        if (mounted && (status === 401 || status === 403)) {
-          dispatch(clearUser());
-        } else if (mounted && !cachedUser) {
-          dispatch(hydrateUser(null));
-        }
+        if (mounted) dispatch(clearUser());
       } finally {
         if (mounted) dispatch(setLoading(false));
       }

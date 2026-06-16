@@ -2,7 +2,6 @@
 import Image from "next/image";
 import UserOtpLoginForm from "./Form";
 import FormFooter from "./FormFooter";
-import BriefCasse from "../../../public/assets/brief_white.webp";
 
 const LoginForm = ({ handleClick }) => {
   return (
@@ -15,7 +14,14 @@ const LoginForm = ({ handleClick }) => {
           {/* ===== LOGO ===== */}
           <div className="flex items-center gap-1 pt-4">
             <div className="flex justify-center items-center">
-              <Image src={BriefCasse} alt="logo" className="w-8 rounded" />
+              <Image
+                src="/assets/brief_white.webp"
+                alt="Briefcasse logo"
+                width={32}
+                height={32}
+                unoptimized
+                className="h-auto w-8 rounded"
+              />
             </div>
 
             {/* <div className="w-20 h-7"> */}

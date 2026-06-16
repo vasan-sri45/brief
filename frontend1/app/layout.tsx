@@ -9,37 +9,29 @@ import { SITE } from "./config/site";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: "swap",
-  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: "swap",
-  preload: false,
 });
 
 const lato = Lato({
   subsets: ["latin"],
-  weight: ["400", "700", "900"],
+  weight: ["300", "400", "700", "900"],
   variable: "--font-lato",
-  display: "swap",
 });
 
 const anton = Anton({
   subsets: ["latin"],
   weight: ["400"],
   variable: "--font-anton",
-  display: "swap",
 });
 
 const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   variable: "--font-poppins",
-  display: "swap",
-  preload: false,
 });
 
 export const metadata: Metadata = {

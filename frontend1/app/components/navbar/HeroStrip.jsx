@@ -14,7 +14,7 @@ const HeroStrip = () => {
     if(user){
       router.push(`/user/contact`);
     }else{
-      router.push(`/login?redirect=${encodeURIComponent("/serviced")}`);
+      router.push(`/login`);
     }
   };
   return (
@@ -53,11 +53,7 @@ const HeroStrip = () => {
   {/* Email */}
   <div className="flex items-center gap-2">
     <Mail size={16} />
-    <a
-      href="mailto:admin@briefcasse.com"
-      aria-label="Email Briefcasse admin"
-      className="hover:underline"
-    >
+    <a href="mailto:admin@briefcasse.com" className="hover:underline">
       admin@briefcasse.com
     </a>
   </div>

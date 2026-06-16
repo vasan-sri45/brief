@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useMemo, useCallback, useRef, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGsapScrollReveal } from "../../hooks/useGsapScrollReveal";
 import { useServiceBySlug } from "../../hooks/useServiceBySlug";
-import { useGsapHeroTitle } from "../../hooks/animation/useGsapHeroTitle";
 import ServiceHero from "../../components/services/ServiceHero";
 import LegalCard from "../../components/services/LegalCard";
 import DocumentsRequired from "../../components/services/DocumentsRequired";
@@ -15,8 +11,6 @@ import ProcessAtBriefcasse from "../../components/services/ProcessAtBriefCasse";
 import BoxClasses from "../../components/services/ClassGrid";
 import SocialMedia from "../../components/common/SocialMedia";
 import { getServiceFaqs, getServiceTitle } from "../../config/site";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const normalizeFaqs = (serviceFaqs, fallbackFaqs = []) => {
   const dynamicFaqs = Array.isArray(serviceFaqs)
@@ -56,7 +50,7 @@ const normalizeFaqs = (serviceFaqs, fallbackFaqs = []) => {
 export default function ServiceSlugPage({ initialService = null, initialSeo = null }) {
 
 const [activeTab, setActiveTab] = useState("description");
-const titleRef = useGsapHeroTitle();
+const titleRef = useRef(null);
 
 /* ================= AUTH ================= */
 // const { loading: authLoading } = useAuthGuard(["user"]);
@@ -158,12 +152,6 @@ return () => observers.forEach((o) => o.disconnect());
 
 }, []);
 
-/* ================= SCROLL ANIMATIONS ================= */
-useGsapScrollReveal(legalRef, { y: 40, stagger: 0.15 });
-useGsapScrollReveal(documentsRef, { y: 50, stagger: 0.2 });
-useGsapScrollReveal(processRef, { y: 60, stagger: 0.25 });
-useGsapScrollReveal(briefcaseRef, { y: 50, stagger: 0.2 });
-
 /* ================= STATES ================= */
 // if (authLoading || isLoading) {
 // return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -178,7 +166,6 @@ return <div className="min-h-screen flex items-center justify-center">Service no
 }
 
 const seoTitle = initialSeo?.title || getServiceTitle(filteredData, slug);
-const seoDescription = initialSeo?.description || filteredData.description;
 const faqs = normalizeFaqs(
   filteredData.faqs,
   initialSeo?.faqs || getServiceFaqs(filteredData, slug)
@@ -318,4 +305,3 @@ return ( <div className="overflow-hidden">
 
 );
 }
-

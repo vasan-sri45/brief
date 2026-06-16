@@ -3,7 +3,6 @@ import React from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import HeroButton from "./HeroButton";
-import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 import { useSelector } from "react-redux";
 
 const ServiceHero = ({ service }) => {
@@ -12,8 +11,6 @@ const ServiceHero = ({ service }) => {
   const { user } = useSelector((state) => state.auth);
 
   // 🎯 GSAP hooks
-  useGsapSmoothScroll();
-
   const descriptionText =
     service?.description ||
     "Want to register your Private Limited Company? We've got you covered!";
@@ -62,6 +59,8 @@ const ServiceHero = ({ service }) => {
                 src={service.images[0].url}
                 alt={service?.heading || "Briefcasse service"}
                 fill
+                priority
+                fetchPriority="high"
                 sizes="(min-width: 1024px) 34vw, 100vw"
                 className="object-cover object-center"
               />

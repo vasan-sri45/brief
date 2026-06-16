@@ -1,43 +1,45 @@
 "use client";
-import { useRouter } from "next/navigation";
+import React from "react";
+import Image from "next/image";
+import { useRouter, usePathname } from "next/navigation";
 import HeroButton from "./HeroButton";
+import { useGsapSmoothScroll } from "../../hooks/animation/useGsapSmoothScroll";
 import { useSelector } from "react-redux";
-import ServiceMedia from "./ServiceMedia";
-import { getCanonicalServiceSlug } from "../../utils/serviceSlug";
 
 const ServiceHero = ({ service }) => {
   const router = useRouter();
+  const pathname = usePathname();
   const { user } = useSelector((state) => state.auth);
 
+  // 🎯 GSAP hooks
+  useGsapSmoothScroll();
 
   const descriptionText =
-    service?.shortDescription ||
     service?.description ||
-    service?.fullDescription ||
     "Want to register your Private Limited Company? We've got you covered!";
 
   const handleStartService = () => {
-  const canonicalSlug = getCanonicalServiceSlug(service);
-  if (!canonicalSlug) return;
+  if (!service?.slug) return;
 
-  const pricingUrl = `/services/${canonicalSlug}/pricing`;
+  const pricingUrl = `/services/${service.slug}/pricing`;
 
   if (user) {
     router.push(pricingUrl);
   } else {
-    router.push(`/login?redirect=${encodeURIComponent(pricingUrl)}`);
+    
+    router.push(`/login?redirect=${encodeURIComponent(pathname)}`);
   }
 };
 
 
   return (
-    <section className="w-full pt-1 md:pt-3">
-      <div className="w-full mx-auto px-4 pt-0 pb-2 md:p-4 lg:w-10/12 lg:p-0">
+    <section className="w-full pt-1 ">
+      <div className="w-full mx-auto px-4 pt-0 pb-2  lg:w-10/12 lg:p-0">
 
-        <div className="grid grid-cols-1 md:grid-cols-[2fr_1.2fr] gap-6">
+        <div className="grid grid-cols-1 gap-5 lg:grid-cols-[2fr_1.2fr] lg:gap-6">
           <div>
 
-            <p className="mt-4 max-w-xl text-left text-sm leading-7 font-lato font-semibold text-letter1 md:text-justify md:text-base md:leading-8">
+            <p className="mt-3 max-w-3xl leading-7 font-lato font-normal text-[0.9rem] md:text-[1rem] text-justify text-letter1 md:mt-4 md:leading-8 lg:max-w-xl">
               {descriptionText}
             </p>
             <HeroButton handleStartService={handleStartService}/>
@@ -50,21 +52,20 @@ const ServiceHero = ({ service }) => {
             sm:h-52
             md:h-64
             lg:h-72
-            rounded-2xl
+            rounded-xl
             overflow-hidden
             shadow-lg
           ">
 
-            <ServiceMedia
-              service={service}
-              priority
-              className="h-full w-full object-cover object-center"
-              fallback={
-              <div className="flex h-full w-full items-center justify-center bg-blue-50 text-sm font-bold text-blue-600">
-                Briefcasse Service
-              </div>
-              }
-            />
+            {service?.images?.[0]?.url && (
+              <Image
+                src={service.images[0].url}
+                alt={service?.heading || "Briefcasse service"}
+                fill
+                sizes="(min-width: 1024px) 34vw, 100vw"
+                className="object-cover object-center"
+              />
+            )}
 
           </div>
         </div>

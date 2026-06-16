@@ -18,7 +18,7 @@ const TopBar = () => {
   const user = useSelector((state) => state.auth.user);
 
    const handleLogin = () => {
-    router.push(user ? "/serviced" : "/login");
+    router.push(`/login`);
   };
 
   useEffect(() => {
@@ -34,13 +34,13 @@ const TopBar = () => {
       {/* <div className="text-xl font-anton font-medium tracking-wider">Briefcasse</div> */}
 
         <Link href="/" className="flex items-center mb-4">
-                    {/* <Image  alt="logo" src="/assets/brief_white.png" className="w-8 h-8 bg-white rounded mr-3" /> */}
                      <Image
                       src="/assets/brief_white.webp"
                       alt="logo"
                       width={44}
                       height={44}
-                      className=" rounded mr-1"
+                      unoptimized
+                      className="h-auto rounded mr-1"
                     />
                     <h2 className="text-xl md:text-3xl font-anton font-normal tracking-wider mt-2">BRIEFCASSE</h2>
                   </Link>
@@ -61,13 +61,13 @@ const TopBar = () => {
             <User2 size={18} className="text-[#1E4484]" />
           </div>
 
-          {/* User Info: Name and Email */}
+          {/* User Info */}
           <div className="flex flex-col items-start text-left">
             <span className="text-sm font-lato font-normal leading-tight tracking-wide uppercase">
               {user?.name || "User"}
             </span>
             <span className="text-[11px] opacity-80 leading-tight font-lato font-bold tracking-wider">
-              {user?.email || "user@example.com"}
+              {user?.customerId || user?.customer_id || "Customer ID"}
             </span>
           </div>
 

@@ -1,12 +1,8 @@
 import ServiceSlugClient from "./ServiceSlugClient";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
 import { SERVICES } from "../../config/services";
-import { getCanonicalServiceSlug, serviceMatchesSlug } from "../../utils/serviceSlug";
 import {
+  SERVICE_API_URL,
   SITE,
-  getServiceImage,
-  getServiceKeywords,
   getReadableSlug,
   getServiceDescription,
   getServiceFaqs,
@@ -14,24 +10,27 @@ import {
 } from "../../config/site";
 
 async function getServiceBySlug(slug) {
-  const localService =
-    SERVICES.find((item) => item.slug === slug) ||
-    SERVICES.find((item) => serviceMatchesSlug(item, slug));
+  try {
+    const res = await fetch(`${SERVICE_API_URL}/slug/${encodeURIComponent(slug)}`, {
+      next: { revalidate: 3600 },
+    });
 
-  if (localService) {
-    return {
-      ...localService,
-      heading: localService.title,
-      description: localService.summary,
-    };
+    if (!res.ok) {
+      throw new Error("Service request failed");
+    }
+
+    return await res.json();
+  } catch {
+    // Fall through to the local service index so pages still render for crawlers.
   }
-  const readableTitle = getReadableSlug(slug);
+
+  const localService = SERVICES.find((item) => item.slug === slug);
+  if (!localService) return null;
+
   return {
-    slug,
-    title: "Startup",
-    heading: readableTitle,
-    description: `${readableTitle} support in India from Briefcasse. Get help with documents, process, filing timelines, compliance steps, and expert guidance for individuals, startups, and businesses.`,
-    status: "Active",
+    ...localService,
+    heading: localService.title,
+    description: localService.summary,
   };
 }
 
@@ -44,23 +43,29 @@ export async function generateMetadata({ params }) {
   const service = await getServiceBySlug(slug);
   const title = getServiceTitle(service, slug);
   const description = getServiceDescription(service, slug).slice(0, 155);
-  const image = toAbsoluteUrl(getServiceImage(service));
-  const canonical = toAbsoluteUrl(service?.canonicalUrl || `/services/${slug}`);
-  const ogTitle = service?.openGraphTitle || `${title} | ${SITE.name}`;
-  const ogDescription = service?.openGraphDescription || description;
+  const image = service?.image || service?.images?.[0]?.url || SITE.logo;
 
   return {
     title,
     description,
-    keywords: getServiceKeywords(service, title),
+    keywords: [
+      `${title.toLowerCase()} India`,
+      `${title.toLowerCase()} Chennai`,
+      `${title.toLowerCase()} online`,
+      `${title.toLowerCase()} documents`,
+      `${title.toLowerCase()} process`,
+      "legal services Chennai",
+      "legal services India",
+      SITE.name,
+    ],
     alternates: {
-      canonical,
+      canonical: `/services/${slug}`,
     },
     openGraph: {
       type: "website",
-      title: ogTitle,
-      description: ogDescription,
-      url: canonical,
+      title: `${title} | ${SITE.name}`,
+      description,
+      url: `${SITE.url}/services/${slug}`,
       siteName: SITE.name,
       images: [
         {
@@ -74,8 +79,8 @@ export async function generateMetadata({ params }) {
     },
     twitter: {
       card: "summary_large_image",
-      title: ogTitle,
-      description: ogDescription,
+      title: `${title} | ${SITE.name}`,
+      description,
       images: [image],
     },
     robots: {
@@ -89,10 +94,8 @@ function buildServiceSchema(service, slug) {
   const title = getServiceTitle(service, slug);
   const description = getServiceDescription(service, slug);
   const faqs = getServiceFaqs(service, slug);
-  const customSchema = parseSchemaJson(service?.schemaMarkupJson);
 
   return [
-    ...(customSchema ? [customSchema] : []),
     {
       "@context": "https://schema.org",
       "@type": "Service",
@@ -116,7 +119,7 @@ function buildServiceSchema(service, slug) {
         "@type": "Country",
         name: "India",
       },
-      serviceType: service?.serviceCategory || service?.category || title,
+      serviceType: service?.category || title,
       url: `${SITE.url}/services/${slug}`,
     },
     {
@@ -133,7 +136,7 @@ function buildServiceSchema(service, slug) {
           "@type": "ListItem",
           position: 2,
           name: "Services",
-          item: `${SITE.url}/serviced`,
+          item: SITE.url,
         },
         {
           "@type": "ListItem",
@@ -158,32 +161,9 @@ function buildServiceSchema(service, slug) {
   ];
 }
 
-function parseSchemaJson(schemaMarkupJson) {
-  if (!schemaMarkupJson) return null;
-
-  try {
-    return JSON.parse(schemaMarkupJson);
-  } catch {
-    return null;
-  }
-}
-
-function toAbsoluteUrl(value = "") {
-  if (!value) return SITE.url;
-  if (/^data:/i.test(value) || /^blob:/i.test(value)) return `${SITE.url}${SITE.logo}`;
-  if (/^https?:\/\//i.test(value)) return value;
-  return `${SITE.url}${String(value).startsWith("/") ? "" : "/"}${value}`;
-}
-
 export default async function ServiceSlugPage({ params }) {
   const { slug } = await params;
   const service = await getServiceBySlug(slug);
-
-  const canonicalSlug = getCanonicalServiceSlug(service);
-  if (service?.slug !== slug && canonicalSlug && canonicalSlug !== slug) {
-    redirect(`/services/${canonicalSlug}`);
-  }
-
   const title = getServiceTitle(service, slug);
   const description = getServiceDescription(service, slug);
   const faqs = getServiceFaqs(service, slug);
@@ -195,17 +175,15 @@ export default async function ServiceSlugPage({ params }) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
-      <Suspense fallback={null}>
-        <ServiceSlugClient
-          initialService={service}
-          initialSeo={{
-            title,
-            description,
-            faqs,
-            readableSlug: getReadableSlug(slug),
-          }}
-        />
-      </Suspense>
+      <ServiceSlugClient
+        initialService={service}
+        initialSeo={{
+          title,
+          description,
+          faqs,
+          readableSlug: getReadableSlug(slug),
+        }}
+      />
     </>
   );
 }

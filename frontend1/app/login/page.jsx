@@ -1,13 +1,13 @@
 "use client";
 import { useSelector } from "react-redux";
 // import { useRouter } from "next/navigation";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import LoginForm from "../components/forms/LoginForm";
 import RegisterForm from "../components/forms/RegisterForm";
 import LoginFormImage from "../components/forms/LoginFormImage";
 
-function LoginContent() {
+export default function LoginPage() {
   const { user, hydrated } = useSelector((s) => s.auth);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -15,13 +15,13 @@ function LoginContent() {
 
   const toggle = () => setIsLogin((v) => !v);
 
-  const redirect = searchParams.get("redirect") || "/serviced";
-  const safeRedirect = redirect.startsWith("/login") ? "/serviced" : redirect;
+  const redirect = searchParams.get("redirect") || "/";
 
   useEffect(() => {
     if (!hydrated) return;
-    if (user) router.replace(safeRedirect);
-  }, [hydrated, user, router, safeRedirect]);
+    // if (user) router.replace("/");
+    if (user) router.replace(redirect);
+  }, [hydrated, user, router]);
 
   if (!hydrated || user) return null;
 
@@ -34,13 +34,5 @@ function LoginContent() {
       )}
       <LoginFormImage />
     </div>
-  );
-}
-
-export default function LoginPage() {
-  return (
-    <Suspense fallback={null}>
-      <LoginContent />
-    </Suspense>
   );
 }

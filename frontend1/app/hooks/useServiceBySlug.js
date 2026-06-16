@@ -1,20 +1,12 @@
-// src/hooks/useServiceBySlug.js
 "use client";
 
-import { useAllServices } from "./userServiceList";
-import { serviceMatchesSlug } from "../utils/serviceSlug";
+import { useServiceBySlug as useServiceBySlugQuery } from "./useServices";
 
 export const useServiceBySlug = (slug, options = {}) => {
-  const query = useAllServices(options);
-
-  const service =
-    slug && query.data?.items
-      ? query.data.items.find((s) => s.slug === slug)
-        || query.data.items.find((s) => serviceMatchesSlug(s, slug))
-      : undefined;
+  const query = useServiceBySlugQuery(slug, options);
 
   return {
     ...query,
-    service
+    service: query.data,
   };
 };

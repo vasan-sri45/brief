@@ -1,15 +1,19 @@
-
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { ArrowUp } from "lucide-react";
 import { gsap } from "gsap";
 
 export default function ScrollToTop() {
   const btnRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
   const [show, setShow] = useState(false);
   const [footerVisible, setFooterVisible] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   /* Scroll detection */
   useEffect(() => {
@@ -44,7 +48,9 @@ export default function ScrollToTop() {
 
   }, [show]);
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <button
       ref={btnRef}
       onClick={() =>
@@ -60,6 +66,7 @@ export default function ScrollToTop() {
       style={{ opacity: 0 }}
     >
       <ArrowUp size={25} />
-    </button>
+    </button>,
+    document.body
   );
 }
