@@ -18,8 +18,6 @@ const Navbar = () => {
           src="/assets/navbar_banner.webp"
           alt="Briefcasse banner"
           fill
-          priority
-          unoptimized
           sizes="98vw"
           className="object-center"
         />

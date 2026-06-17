@@ -3,7 +3,18 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Download } from "lucide-react";
+import {
+  BadgeCheck,
+  Building2,
+  Calculator,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  FileCheck2,
+  Minus,
+  Plus,
+  Scale,
+} from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import ReviewCarousel from "./ReviewCarousel";
 import { useAuthGuard } from "../../components/route/useAuthGuard";
@@ -12,6 +23,200 @@ import { api } from "../../api/api";
 const heroMessages = [
   "Briefcasse offers simple, fast, and reliable business registration and compliance services across India. We help startups and businesses with company registration, GST, trademark, legal, and tax support at affordable pricing. Our team provides professional guidance and hassle-free service for all your business needs. Choose Briefcasse for trusted, smooth, and easy business solutions.",
   "Briefcasse offers simple and reliable business registration services for startups and entrepreneurs in India. We help with company formation, legal documentation, and compliance support at affordable pricing. Our team ensures a smooth and quick registration process for your business needs. Trust Briefcasse for professional and hassle-free business solutions.",
+];
+
+const supportCards = [
+  {
+    title: "Lawyers",
+    text: "For contracts, notices, and litigation support.",
+    href: "/services/talk-to-lawyer",
+    stat: "205+ Lawyers",
+    Icon: Scale,
+  },
+  {
+    title: "Chartered Accountants (CAs)",
+    text: "For tax filings, audits, and financial planning.",
+    href: "/services/talk-to-charted-accountant",
+    stat: "256+ CAs",
+    Icon: Calculator,
+  },
+  {
+    title: "Company Secretaries (CSs)",
+    text: "For regulatory compliance and corporate governance.",
+    href: "/services/talk-to-company-secretary",
+    stat: "200+ CS",
+    Icon: FileCheck2,
+  },
+];
+
+const homeServiceSections = [
+  {
+    title: "Start and Register Your Business",
+    // badge: "Startup",
+    services: [
+      {
+        heading: "Private Limited Company Registration",
+        slug: "private-limited-company-registration",
+      },
+      {
+        heading: "Limited Liability Partnership Registration",
+        slug: "limited-liability-partnership-registration",
+      },
+      {
+        heading: "One Person Company Registration",
+        slug: "one-person-company-registration",
+      },
+      {
+        heading: "Partnership Firm Registration",
+        slug: "partnership-firm-registration",
+      },
+      {
+        heading: "Sole Proprietorship Firm Registration",
+        slug: "sole-proprietorship-firm-registration",
+      },
+      {
+        heading: "Section 8 Company Registration",
+        slug: "section-8-company-registration",
+      },
+      {
+        heading: "Association Registration",
+        slug: "association-registration",
+      },
+      {
+        heading: "Trust Registration",
+        slug: "trust-registration",
+      },
+    ],
+    quote:
+      "Briefcasse made our business registration clear and simple. The team guided us from document collection to filing without confusion.",
+    author: "Startup Founder",
+  },
+  {
+    title: "Simplify Your Legal and Compliance Needs",
+    // badge: "Legal & IP",
+    services: [
+      {
+        heading: "Trademark Registration",
+        slug: "trademark-registration",
+      },
+      {
+        heading: "Copyright Registration",
+        slug: "copyright-registration",
+      },
+      {
+        heading: "Design",
+        slug: "design",
+      },
+      {
+        heading: "Geographical Indication (GI)",
+        slug: "geographical-indication-gi",
+      },
+      {
+        heading: "Patent Search",
+        slug: "patent-search",
+      },
+    ],
+    quote:
+      "I reached out for help with trademark registration, and the process was handled smoothly with practical guidance at every step.",
+    author: "Parmjeet Singh, Founder - Joat Matrimony",
+  },
+  {
+    title: "Protect Your IP & Legal Rights",
+    // badge: "Compliance",
+    services: [
+      {
+        heading: "DSC Registration",
+        slug: "dsc-registration",
+      },
+      {
+        heading: "Import Export Code Registration",
+        slug: "import-export-code-registration",
+      },
+      {
+        heading: "Startup India Registration",
+        slug: "startup-india-registration",
+      },
+      {
+        heading: "Shop & Establishment Registration",
+        slug: "shop-establishment-registration",
+      },
+      {
+        heading: "Professional Tax Registration",
+        slug: "professional-tax-registration",
+      },
+      {
+        heading: "PAN Application",
+        slug: "pan-application",
+      },
+      {
+        heading: "TAN Application",
+        slug: "tan-application",
+      },
+      {
+        heading: "FSSAI Registration",
+        slug: "fssai-registration",
+      },
+      {
+        heading: "ESI Registration",
+        slug: "esi-registration",
+      },
+      {
+        heading: "GST Registration",
+        slug: "gst-registration",
+      },
+      {
+        heading: "LUT under GST",
+        slug: "lut-under-gst",
+      },
+      {
+        heading: "Udyam - MSME Registration",
+        slug: "udyam-msme-registration",
+      },
+      {
+        heading: "Annual Filing for Limited Liability Partnership",
+        slug: "annual-filing-limited-liability-partnership",
+      },
+      {
+        heading: "Annual Compliance for Private Limited Company",
+        slug: "annual-compliance-private-limited-company",
+      },
+      {
+        heading: "GST Return Filling",
+        slug: "gst-return-filling",
+      },
+    ],
+    quote:
+      "The compliance support was fast and professional. Briefcasse helped us keep registrations, tax work, and filings organized.",
+    author: "Business Owner",
+  },
+];
+
+const homeFaqs = [
+  {
+    question: "How do I start a service with Briefcasse?",
+    answer:
+      "Choose the service you need, open the service page, and complete the payment or enquiry flow. Our team will contact you, collect required documents, and keep you updated through the service process.",
+  },
+  {
+    question: "Can I track my purchased services?",
+    answer:
+      "Yes. After login, your dashboard shows current and previously availed services with working updates, status, and invoice download options.",
+  },
+  {
+    question: "Do I need to upload documents immediately?",
+    answer:
+      "No. You can start the service first. Our support team will explain the document requirements and guide you through each step.",
+  },
+  {
+    question: "Is GST added to the service price?",
+    answer:
+      "Yes. The payment page shows the base price, GST amount, and total payable amount clearly before payment.",
+  },
+  {
+    question: "How will I know the stage of my service?",
+    answer:
+      "Your service status and working updates are shown in the user dashboard. The team updates the progress as the service moves through document collection, preparation, review, and completion.",
+  },
 ];
 
 const formatDate = (value) => {
@@ -224,16 +429,19 @@ export default function ServicePage() {
           <div className="relative z-10 grid grid-cols-1 gap-6 items-stretch xl:grid-cols-2 xl:gap-8">
             <div className="relative flex min-h-[360px] justify-center items-center overflow-hidden sm:min-h-[440px] xl:min-h-[520px]">
               <div className="absolute top-4 left-2 md:left-6 bg-white shadow-lg border border-[#FFD94E] rounded-full px-4 py-2 text-sm font-semibold text-[#9A7400] z-20 animate-bounce">
-                GST Registration
+                Pvt Registration
               </div>
               <div className="absolute top-24 right-0 md:right-6 bg-white shadow-lg border border-[#FFD94E] rounded-full px-4 py-2 text-sm font-semibold text-[#9A7400] z-20">
-                Company Setup
+                Trademark
+              </div>
+              <div className="absolute top-1/2 right-1 -translate-y-1/2 bg-white shadow-lg border border-[#FFD94E] rounded-full px-4 py-2 text-sm font-semibold text-[#9A7400] z-20 md:right-10">
+                GST Registration
               </div>
               <div className="absolute bottom-24 left-0 md:left-8 bg-white shadow-lg border border-[#FFD94E] rounded-full px-4 py-2 text-sm font-semibold text-[#9A7400] z-20">
-                Legal Support
+                Agreements
               </div>
               <div className="absolute bottom-6 right-4 bg-white shadow-lg border border-[#FFD94E] rounded-full px-4 py-2 text-sm font-semibold text-[#9A7400] z-20">
-                Compliance
+                Talk to Lawyer
               </div>
 
               <div className="absolute w-[320px] h-[320px] md:w-[430px] md:h-[430px] rounded-full bg-gradient-to-br from-[#FFD94E] via-[#FFE680] to-[#FFF7C7] animate-pulse opacity-80 blur-sm" />
@@ -292,6 +500,9 @@ export default function ServicePage() {
           </div>
         </div>
 
+        <ProfessionalSupportSection />
+        <HomeServicesMenu />
+
         <ReviewCarousel />
 
         <PurchasedServicesSummary
@@ -300,6 +511,161 @@ export default function ServicePage() {
           currentOrders={currentOrders}
           hasOrders={paidOrders.length > 0}
         />
+
+        <HomeFaqSection />
+      </div>
+    </section>
+  );
+}
+
+function ProfessionalSupportSection() {
+  return (
+    <section className="py-10 md:py-14">
+      <div className="mx-auto max-w-4xl text-center">
+        <h2 className="font-lato text-3xl font-extrabold tracking-tight text-letter1 md:text-4xl">
+          Professional Support on Demand
+        </h2>
+        <p className="mt-3 font-lato text-sm font-semibold text-gray-500 md:text-base">
+          We guide you through legal, financial, and compliance challenges.
+        </p>
+      </div>
+
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
+        {supportCards.map(({ title, text, href, stat, Icon }) => (
+          <article
+            key={title}
+            className="flex min-h-[320px] flex-col rounded-lg border border-gray-300 bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:border-custom-blue hover:shadow-lg"
+          >
+            <h3 className="font-lato text-xl font-extrabold text-letter1">
+              {title}
+            </h3>
+            <p className="mt-3 min-h-[44px] font-lato text-sm font-semibold leading-6 text-gray-500">
+              {text}
+            </p>
+
+            <Link
+              href={href}
+              className="mt-6 inline-flex items-center justify-center rounded-md bg-[#07365f] px-5 py-3 font-lato text-sm font-extrabold text-white transition hover:bg-custom-blue"
+            >
+              Consult Now
+            </Link>
+
+            <div className="mt-5 flex flex-1 items-center justify-center rounded-lg bg-[#F2F7FC]">
+              <div className="relative flex h-32 w-full max-w-[220px] items-center justify-center overflow-hidden rounded-lg border border-custom-blue/10 bg-white">
+                <div className="absolute inset-x-0 bottom-0 h-12 bg-custom-blue/10" />
+                <Icon
+                  size={76}
+                  strokeWidth={1.6}
+                  className="relative text-custom-blue"
+                />
+                <span className="absolute bottom-3 inline-flex items-center gap-1 rounded-full bg-black/55 px-3 py-1 font-lato text-xs font-bold text-white">
+                  <BadgeCheck size={14} className="text-green-400" />
+                  {stat}
+                </span>
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function HomeServicesMenu() {
+  return (
+    <section className="my-10 overflow-hidden rounded-2xl bg-[#F3F9FF] px-5 py-8 md:px-10 md:py-12">
+      <div className="max-w-5xl">
+        <div className="relative pl-8 md:pl-12">
+          <span className="absolute bottom-0 left-[10px] top-3 w-px bg-[#07365f]/35 md:left-[14px]" />
+
+          <div className="space-y-12">
+            {homeServiceSections.map((section) => (
+              <div key={section.title} className="relative">
+                <span className="absolute -left-8 top-1 h-6 w-6 rounded-full bg-[#07365f] md:-left-12 md:h-8 md:w-8" />
+
+                <h2 className="font-lato text-3xl font-extrabold leading-tight text-letter1 md:text-4xl">
+                  {section.title}
+                </h2>
+
+                <div className="mt-6 max-w-2xl divide-y divide-custom-blue/10">
+                  {section.services.map((service) => (
+                    <Link
+                      key={service.slug}
+                      href={`/services/${service.slug}`}
+                      className="flex items-center gap-4 py-3 font-lato text-base font-bold text-blue-600 transition hover:translate-x-1 hover:text-custom-blue"
+                    >
+                      <Building2 size={17} className="shrink-0 text-[#07365f]" />
+                      <span>{service.heading}</span>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className="mt-8 rounded-2xl bg-gradient-to-br from-[#1D72B8] to-[#0D5592] p-6 text-white shadow-xl md:p-8">
+                  <p className="font-lato text-5xl font-black leading-none text-white/80">
+                    &quot;
+                  </p>
+                  <p className="mt-2 font-lato text-lg font-bold leading-8">
+                    {section.quote}
+                  </p>
+                  <p className="mt-6 font-lato text-lg font-extrabold">
+                    {section.author}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HomeFaqSection() {
+  const [openIndex, setOpenIndex] = useState(0);
+
+  return (
+    <section className="mt-16 mb-12 px-5 py-8 md:px-10 md:py-12">
+      <div className="mx-auto max-w-4xl text-center">
+        <h2 className="font-lato text-3xl font-extrabold text-letter1 md:text-4xl">
+          Frequently Asked Questions
+        </h2>
+        <p className="mt-3 font-lato text-base font-semibold leading-7 text-gray-600">
+          Quick answers about starting, tracking, and completing your Briefcasse
+          services.
+        </p>
+      </div>
+
+      <div className="mx-auto mt-8 max-w-4xl divide-y divide-custom-blue/10 rounded-2xl border border-custom-blue/10 bg-white shadow-sm">
+        {homeFaqs.map((faq, index) => {
+          const isOpen = openIndex === index;
+
+          return (
+          <div
+            key={faq.question}
+            className="px-5 py-5 md:px-7"
+          >
+            <button
+              type="button"
+              onClick={() => setOpenIndex(isOpen ? -1 : index)}
+              className="flex w-full items-center justify-between gap-4 text-left"
+              aria-expanded={isOpen}
+            >
+              <span className="font-lato text-base font-extrabold text-letter1 md:text-lg">
+                {faq.question}
+              </span>
+              <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-custom-blue text-white shadow-md">
+                {isOpen ? <Minus size={20} /> : <Plus size={20} />}
+              </span>
+            </button>
+
+            {isOpen && (
+              <p className="mt-4 max-w-3xl font-lato text-base font-semibold leading-8 text-gray-700">
+                {faq.answer}
+              </p>
+            )}
+          </div>
+          );
+        })}
       </div>
     </section>
   );

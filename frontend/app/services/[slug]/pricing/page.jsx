@@ -9,6 +9,26 @@ import ContactForm from "../../../components/common/Contact";
 import { useServiceBySlug } from "../../../hooks/useServiceBySlug";
 import { loadRazorpay } from "../../../utils/loadRazorPay";
 
+const GST_RATE = 18;
+
+const formatCurrency = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Number(value || 0));
+
+const getPriceBreakdown = (amount) => {
+  const price = Number(amount || 0);
+  const gst = Math.round((price * GST_RATE) / 100);
+
+  return {
+    price,
+    gst,
+    total: price + gst,
+  };
+};
+
 export default function ServicePricingPage() {
   const { slug } = useParams();
   const router = useRouter();
@@ -141,6 +161,7 @@ export default function ServicePricingPage() {
         >
           {service.prices.map((plan, index) => {
             const isPayment = plan.type === "payment";
+            const priceBreakdown = getPriceBreakdown(plan.amount);
 
             return (
               <div
@@ -171,6 +192,23 @@ export default function ServicePricingPage() {
                       </span>
                     )}
                   </div>
+
+                  {isPayment && (
+                    <div className="mt-5 rounded-2xl border border-custom-blue/10 bg-[#F7F9FF] p-4 font-lato">
+                      <div className="flex items-center justify-between border-b border-custom-blue/10 pb-3 text-sm font-bold text-letter1">
+                        <span>Price</span>
+                        <span>{formatCurrency(priceBreakdown.price)}</span>
+                      </div>
+                      <div className="flex items-center justify-between border-b border-custom-blue/10 py-3 text-sm font-bold text-letter1">
+                        <span>GST ({GST_RATE}%)</span>
+                        <span>{formatCurrency(priceBreakdown.gst)}</span>
+                      </div>
+                      <div className="flex items-center justify-between pt-3 text-base font-extrabold text-custom-blue">
+                        <span>Total</span>
+                        <span>{formatCurrency(priceBreakdown.total)}</span>
+                      </div>
+                    </div>
+                  )}
 
                   <ul className="mt-8 space-y-4 text-letter1">
                     {plan.features?.map((feature, i) => (
