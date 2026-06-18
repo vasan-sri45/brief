@@ -64,7 +64,7 @@ const TopBar = () => {
           {/* User Info */}
           <div className="flex flex-col items-start text-left">
             <span className="text-sm font-lato font-normal leading-tight tracking-wide uppercase">
-              {user?.name || "User"}
+              {user?.name || "My Account"}
             </span>
             <span className="text-[11px] opacity-80 leading-tight font-lato font-bold tracking-wider">
               {user?.customerId || user?.customer_id || "Customer ID"}
