@@ -27,7 +27,7 @@ const heroMessages = [
 ];
 
 const stats = [
-  { value: "80+", label: "a" },
+  { value: "80+", label: "Services" },
   { value: "5000+", label: "Clients Supported" },
   { value: "100+", label: "Experts" },
   { value: "24/7", label: "Support" },
