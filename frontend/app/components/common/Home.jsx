@@ -7,14 +7,11 @@ import {
   ArrowRight,
   BadgeCheck,
   Building2,
-  Calculator,
   ChevronLeft,
   ChevronRight,
   Download,
-  FileCheck2,
   Minus,
   Plus,
-  Scale,
   ShieldCheck,
   Users,
   Zap,
@@ -42,21 +39,52 @@ const supportCards = [
     text: "For contracts, notices, and litigation support.",
     href: "/services/talk-to-lawyer",
     stat: "205+ Lawyers",
-    Icon: Scale,
+    imageUrl: "https://www.pngmart.com/files/21/Advocate-Transparent-PNG.png",
+    imageAlt: "Advocate",
   },
   {
     title: "Chartered Accountants (CAs)",
     text: "For tax filings, audits, and financial planning.",
-    href: "/services/talk-to-charted-accountant",
+    href: "/services/talk-to-chartered-accountant",
     stat: "256+ CAs",
-    Icon: Calculator,
+    imageUrl: "https://m.media-amazon.com/images/I/51sk0rBtWLL.jpg",
+    imageAlt: "Chartered accountant",
   },
   {
     title: "Company Secretaries (CSs)",
     text: "For regulatory compliance and corporate governance.",
     href: "/services/talk-to-company-secretary",
     stat: "200+ CS",
-    Icon: FileCheck2,
+    imageUrl:"https://careeravenues.info/wp-content/uploads/2022/02/cs.jpg",
+    imageAlt: "Company secretary",
+  },
+];
+
+const heroServiceLinks = [
+  {
+    label: "Pvt Registration",
+    href: "/services/private-limited-company-registration",
+    className: "left-2 top-4 md:left-6",
+  },
+  {
+    label: "Trademark",
+    href: "/services/trademark-registration",
+    className: "right-0 top-24 md:right-6",
+  },
+  {
+    label: "GST Registration",
+    href: "/services/gst-registration",
+    className: "right-1 top-1/2 -translate-y-1/2 md:right-10",
+  },
+  {
+    label: "Agreements",
+    href: "/services/legal-agreement",
+    className: "bottom-24 left-0 md:left-8",
+  },
+  {
+    label: "Talk to Lawyer",
+    href: "/services/talk-to-lawyer",
+    className: "bottom-6 right-4",
   },
 ];
 
@@ -406,28 +434,18 @@ function HeroSection({ currentMessage }) {
 
       <div className="relative z-10 grid grid-cols-1 items-stretch gap-6 xl:grid-cols-2 xl:gap-8">
         <div className="relative flex min-h-[360px] items-center justify-center overflow-hidden sm:min-h-[440px] xl:min-h-[520px]">
-          <div className="absolute left-2 top-4 z-20 rounded-full border border-[#FFD94E] bg-white px-4 py-2 text-sm font-semibold text-[#9A7400] shadow-lg md:left-6">
-            Pvt Registration
-          </div>
-
-          <div className="absolute right-0 top-24 z-20 rounded-full border border-[#FFD94E] bg-white px-4 py-2 text-sm font-semibold text-[#9A7400] shadow-lg md:right-6">
-            Trademark
-          </div>
-
-          <div className="absolute right-1 top-1/2 z-20 -translate-y-1/2 rounded-full border border-[#FFD94E] bg-white px-4 py-2 text-sm font-semibold text-[#9A7400] shadow-lg md:right-10">
-            GST Registration
-          </div>
-
-          <div className="absolute bottom-24 left-0 z-20 rounded-full border border-[#FFD94E] bg-white px-4 py-2 text-sm font-semibold text-[#9A7400] shadow-lg md:left-8">
-            Agreements
-          </div>
-
-          <div className="absolute bottom-6 right-4 z-20 rounded-full border border-[#FFD94E] bg-white px-4 py-2 text-sm font-semibold text-[#9A7400] shadow-lg">
-            Talk to Lawyer
-          </div>
+          {heroServiceLinks.map((item) => (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`absolute z-20 rounded-full border border-[#FFD94E] bg-white px-4 py-2 text-sm font-semibold text-[#9A7400] shadow-lg transition hover:-translate-y-1 hover:border-[#D4A700] hover:text-custom-blue ${item.className}`}
+            >
+              {item.label}
+            </Link>
+          ))}
 
           <div className="absolute h-[320px] w-[320px] rounded-full bg-gradient-to-br from-[#FFD94E] via-[#FFE680] to-[#FFF7C7] opacity-80 blur-sm md:h-[430px] md:w-[430px]" />
-          <div className="absolute h-[340px] w-[340px] rounded-full border-[3px] border-dashed border-[#D4A700] opacity-40 md:h-[470px] md:w-[470px]" />
+          <div className="absolute h-[340px] w-[340px] rounded-full border-[3px] border-dashed border-[#D4A700] opacity-40 animate-[spin_18s_linear_infinite] md:h-[470px] md:w-[470px]" />
           <div className="absolute h-[290px] w-[290px] rounded-full border border-white/50 bg-white/40 shadow-2xl backdrop-blur-xl md:h-[400px] md:w-[400px]" />
 
           <Image
@@ -551,7 +569,7 @@ function HomeServicesMenu() {
               </p>
 
               <div className="mt-5 inline-flex rounded-full bg-white px-4 py-2 text-sm font-black text-[#D4A700]">
-                {section.services.length} Services
+                {section.services.length} Exclusive Services
               </div>
             </div>
           </div>
@@ -573,16 +591,12 @@ function HomeServicesMenu() {
               ))}
             </div>
 
-            <div className="mt-6 flex items-center justify-between border-t border-[#FFE680] pt-5">
-              <p className="text-sm font-black text-[#D4A700]">
-                Choose service and continue
-              </p>
-
+            <div className="mt-6 flex justify-end border-t border-[#FFE680] pt-5">
               <Link
-                href="/"
-                className="inline-flex items-center gap-1 rounded-full bg-[#FFF7C7] px-4 py-2 text-sm font-black text-custom-blue transition hover:bg-[#FFD94E]"
+                href="tel:+919600606897"
+                className="inline-flex items-center gap-2 rounded-full bg-custom-blue px-5 py-3 text-sm font-black text-white transition hover:bg-[#2847b5]"
               >
-                Next <ArrowRight size={15} />
+                Contact Us <ArrowRight size={16} />
               </Link>
             </div>
           </div>
@@ -659,13 +673,19 @@ function ProfessionalSupportSection() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-        {supportCards.map(({ title, text, href, stat, Icon }) => (
+        {supportCards.map(({ title, text, href, stat, imageUrl, imageAlt }) => (
           <article
             key={title}
-            className="rounded-[28px] border border-[#FFD94E] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+            className="flex min-h-[430px] flex-col rounded-[28px] border border-[#FFD94E] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
           >
-            <div className="grid h-14 w-14 place-items-center rounded-2xl border border-[#FFD94E] bg-[#FFF7C7] text-[#D4A700]">
-              <Icon size={28} />
+            <div className="relative h-44 overflow-hidden">
+              <Image
+                src={imageUrl}
+                alt={imageAlt}
+                fill
+                sizes="(min-width: 768px) 30vw, 90vw"
+                className="object-contain p-4"
+              />
             </div>
 
             <h3 className="mt-5 font-lato text-xl font-black text-letter1">
@@ -683,7 +703,7 @@ function ProfessionalSupportSection() {
 
             <Link
               href={href}
-              className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#07365f] px-5 py-3 font-lato text-sm font-extrabold text-white transition hover:bg-custom-blue"
+              className="mt-auto inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#07365f] px-5 py-3 font-lato text-sm font-extrabold text-white transition hover:bg-custom-blue"
             >
               Consult Now <ArrowRight size={17} />
             </Link>
