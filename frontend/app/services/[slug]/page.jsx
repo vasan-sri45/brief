@@ -1,7 +1,6 @@
 import ServiceSlugClient from "./ServiceSlugClient";
 import { SERVICES } from "../../config/services";
 import {
-  SERVICE_API_URL,
   SITE,
   getReadableSlug,
   getServiceDescription,
@@ -9,21 +8,7 @@ import {
   getServiceTitle,
 } from "../../config/site";
 
-async function getServiceBySlug(slug) {
-  try {
-    const res = await fetch(`${SERVICE_API_URL}/slug/${encodeURIComponent(slug)}`, {
-      next: { revalidate: 3600 },
-    });
-
-    if (!res.ok) {
-      throw new Error("Service request failed");
-    }
-
-    return await res.json();
-  } catch {
-    // Fall through to the local service index so pages still render for crawlers.
-  }
-
+function getServiceBySlug(slug) {
   const localService = SERVICES.find((item) => item.slug === slug);
   if (!localService) return null;
 

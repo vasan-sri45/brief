@@ -44,5 +44,6 @@ export function useServiceBySlug(slug, options = {}) {
     staleTime: 5 * 60 * 1000,
     gcTime: 20 * 60 * 1000,
     initialData: options.initialData,
+    initialDataUpdatedAt: options.initialData ? 0 : undefined,
   });
 }
