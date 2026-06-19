@@ -1,9 +1,14 @@
 import mongoose from "mongoose";
 import PaidService from "../../models/selling/paidService.model.js";
+import Payment from "../../models/services/payment.model.js";
 import Counter from "../../models/selling/counter.model.js";
+import User from "../../models/auth/user.js";
 
 const normalizeCustomerCode = (value = "") =>
   String(value).trim().toUpperCase();
+
+const buildCustomerCodeRegex = (customerCode) =>
+  new RegExp(`^${customerCode.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i");
 
 const generateCustomerCode = async () => {
   const counter = await Counter.findOneAndUpdate(
@@ -64,6 +69,61 @@ const splitCustomerName = (name = "") => {
   };
 };
 
+const normalizeOnlineOrderForLookup = (order) => ({
+  ...order,
+  serviceType: "Online Service",
+  serviceTitle: order.serviceId?.title || order.serviceId?.heading || "",
+  serviceName: order.serviceId?.heading || order.serviceId?.title || "",
+  service: order.serviceId,
+  totalPayment: order.amount,
+  paymentStatus: order.status,
+  customer: {
+    userCode:
+      order.userId?.customerId ||
+      order.customer?.userCode ||
+      order.customer?.customerId ||
+      "",
+    customerId:
+      order.userId?.customerId ||
+      order.customer?.customerId ||
+      order.customer?.userCode ||
+      "",
+    name: order.userId?.name || order.customer?.name || "",
+    mobile: order.userId?.mobile || order.customer?.mobile || "",
+    email: order.userId?.email || order.customer?.email || "",
+  },
+});
+
+const getOnlineOrdersByCustomer = async (user, customerCode) => {
+  const filters = [
+    { "customer.userCode": customerCode },
+    { "customer.customerId": customerCode },
+  ];
+
+  if (user?._id) {
+    filters.push({ userId: user._id });
+  }
+
+  if (user?.email) {
+    filters.push({ "customer.email": user.email });
+  }
+
+  if (user?.mobile) {
+    filters.push({ "customer.mobile": user.mobile });
+  }
+
+  const orders = await Payment.find({
+    $or: filters,
+    adminHidden: { $ne: true },
+  })
+    .populate("serviceId", "title heading")
+    .populate("userId", "customerId name email mobile")
+    .sort({ createdAt: -1 })
+    .lean();
+
+  return orders.map(normalizeOnlineOrderForLookup);
+};
+
 const normalizePaymentStatus = (value = "Pending") => {
   const normalized = String(value || "").trim().toLowerCase();
   if (normalized === "paid") return "Paid";
@@ -72,12 +132,55 @@ const normalizePaymentStatus = (value = "Pending") => {
   return "Pending";
 };
 
+const SERVICE_STATUSES = ["Pending", "In Progress", "Completed", "Cancelled"];
+
+const TRANSACTION_STAGES = [
+  "Just In",
+  "Attempt to Contact",
+  "Awaiting Document",
+  "Document Preparation",
+  "Final Draft",
+  "Conclusion Stage",
+  "Completed",
+];
+
 const normalizeServiceStatus = (value = "Pending") => {
   const normalized = String(value || "").trim().toLowerCase();
   if (normalized === "in progress") return "In Progress";
   if (normalized === "completed") return "Completed";
   if (normalized === "cancelled") return "Cancelled";
-  return "Pending";
+
+  const status = SERVICE_STATUSES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return status || "Pending";
+};
+
+const normalizeTransactionStage = (value = "Just In") => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized || normalized === "pending") return "Just In";
+  if (normalized === "in progress") return "Document Preparation";
+  if (normalized === "cancelled") return "Conclusion Stage";
+
+  const stage = TRANSACTION_STAGES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return stage || "Just In";
+};
+
+const normalizeTransactionStages = (value) => {
+  const source = Array.isArray(value) ? value : [value];
+  const stages = source
+    .flatMap((item) => String(item || "").split(","))
+    .map((item) => normalizeTransactionStage(item))
+    .filter(Boolean);
+  const uniqueStages = TRANSACTION_STAGES.filter((stage) =>
+    stages.includes(stage)
+  );
+
+  return uniqueStages.length ? uniqueStages : ["Just In"];
 };
 
 export const createPaidService = async (req, res, next) => {
@@ -98,6 +201,8 @@ export const createPaidService = async (req, res, next) => {
       notes,
       paymentStatus,
       serviceStatus = "Pending",
+      transactionStage = "Just In",
+      transactionStages,
     } = req.body;
 
     if (!req.user?._id) {
@@ -119,6 +224,12 @@ export const createPaidService = async (req, res, next) => {
 
     let customerCode = normalizeCustomerCode(customerUserId);
     const isPreviousClient = clientType === "previous";
+    let linkedUserId = null;
+    const existingUser = customerCode
+      ? await User.findOne({ customerId: buildCustomerCodeRegex(customerCode) })
+          .select("_id customerId")
+          .lean()
+      : null;
 
     if (isPreviousClient) {
       if (!customerCode) {
@@ -133,7 +244,15 @@ export const createPaidService = async (req, res, next) => {
         isDeleted: false,
       }).lean();
 
-      if (!existingCustomer) {
+      if (existingCustomer?.user) {
+        linkedUserId = existingCustomer.user;
+      }
+
+      if (!linkedUserId && existingUser?._id) {
+        linkedUserId = existingUser._id;
+      }
+
+      if (!existingCustomer && !linkedUserId) {
         return res.status(404).json({
           success: false,
           message: "No previous client found with this customer ID",
@@ -141,10 +260,12 @@ export const createPaidService = async (req, res, next) => {
       }
     } else if (!customerCode) {
       customerCode = await generateCustomerCode();
+    } else if (existingUser?._id) {
+      linkedUserId = existingUser._id;
     }
 
     const paidService = await createPaidServiceWithIndexRepair({
-      user: req.user.role === "user" ? req.user._id : null,
+      user: linkedUserId || (req.user.role === "user" ? req.user._id : null),
       customer: {
         userCode: customerCode,
         name: customerName.trim(),
@@ -163,6 +284,12 @@ export const createPaidService = async (req, res, next) => {
           ? "Pending"
           : normalizePaymentStatus(paymentStatus || "Paid"),
       serviceStatus: normalizeServiceStatus(serviceStatus),
+      transactionStages: normalizeTransactionStages(
+        transactionStages || transactionStage
+      ),
+      transactionStage: normalizeTransactionStages(
+        transactionStages || transactionStage
+      ).at(-1),
       notes: notes || "",
       createdBy: req.user._id,
     });
@@ -198,24 +325,59 @@ export const getCustomerByUserCode = async (req, res, next) => {
       .sort({ createdAt: -1 })
       .lean();
 
-    if (!services.length) {
-      return res.status(404).json({
-        success: false,
-        message: "Customer not found",
+    const user = await User.findOne({ customerId: buildCustomerCodeRegex(userCode) })
+      .select("_id customerId name email mobile")
+      .lean();
+
+    const onlineServices = await getOnlineOrdersByCustomer(user, userCode);
+
+    if (!services.length && !onlineServices.length) {
+      if (!user) {
+        return res.status(404).json({
+          success: false,
+          message: "Customer not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        data: {
+          userCode: user.customerId,
+          customer: {
+            userCode: user.customerId,
+            name: user.name,
+            email: user.email,
+            mobile: user.mobile,
+            ...splitCustomerName(user.name),
+          },
+          services: onlineServices,
+        },
       });
     }
 
-    const latest = services[0];
+    const allServices = [...onlineServices, ...services].sort(
+      (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0)
+    );
+    const latest = allServices[0] || services[0];
+    const customer = user
+      ? {
+          userCode: user.customerId,
+          name: user.name,
+          email: user.email,
+          mobile: user.mobile,
+          ...splitCustomerName(user.name),
+        }
+      : {
+          ...latest.customer,
+          ...splitCustomerName(latest.customer?.name),
+        };
 
     return res.status(200).json({
       success: true,
       data: {
         userCode,
-        customer: {
-          ...latest.customer,
-          ...splitCustomerName(latest.customer?.name),
-        },
-        services,
+        customer,
+        services: allServices,
       },
     });
   } catch (error) {
@@ -425,6 +587,8 @@ export const updatePaidService = async (req, res, next) => {
       paymentMode,
       paymentStatus,
       serviceStatus,
+      transactionStage,
+      transactionStages,
       notes,
       assignedTo,
       progressMessage,
@@ -460,6 +624,13 @@ export const updatePaidService = async (req, res, next) => {
       updateData.paymentStatus = normalizePaymentStatus(paymentStatus);
     if (serviceStatus !== undefined)
       updateData.serviceStatus = normalizeServiceStatus(serviceStatus);
+    if (transactionStages !== undefined) {
+      updateData.transactionStages = normalizeTransactionStages(transactionStages);
+      updateData.transactionStage = updateData.transactionStages.at(-1);
+    } else if (transactionStage !== undefined) {
+      updateData.transactionStage = normalizeTransactionStage(transactionStage);
+      updateData.transactionStages = normalizeTransactionStages(transactionStage);
+    }
     if (isAdmin && notes !== undefined) updateData.notes = notes;
 
     if (isAdmin && assignedTo !== undefined) {

@@ -391,7 +391,10 @@ const TicketRaiseForm = () => {
 
       setLookupState({
         loading: false,
-        message: `Customer found. ${services.length} previous service${services.length === 1 ? "" : "s"} linked.`,
+        message:
+          services.length > 0
+            ? `Customer found. ${services.length} previous service${services.length === 1 ? "" : "s"} linked.`
+            : "Customer found. No previous services linked yet.",
         error: "",
         services,
       });

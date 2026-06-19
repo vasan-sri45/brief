@@ -98,6 +98,20 @@ const paymentSchema = new mongoose.Schema(
     /* ================= CUSTOMER DETAILS ================= */
 
     customer: {
+      userCode: {
+        type: String,
+        default: "",
+        trim: true,
+        uppercase: true,
+      },
+
+      customerId: {
+        type: String,
+        default: "",
+        trim: true,
+        uppercase: true,
+      },
+
       name: {
         type: String,
         default: "",
@@ -186,6 +200,38 @@ const paymentSchema = new mongoose.Schema(
       default: "Pending",
     },
 
+    transactionStage: {
+      type: String,
+      enum: [
+        "Just In",
+        "Attempt to Contact",
+        "Awaiting Document",
+        "Document Preparation",
+        "Final Draft",
+        "Conclusion Stage",
+        "Completed",
+      ],
+      default: "Just In",
+    },
+
+    transactionStages: {
+      type: [
+        {
+          type: String,
+          enum: [
+            "Just In",
+            "Attempt to Contact",
+            "Awaiting Document",
+            "Document Preparation",
+            "Final Draft",
+            "Conclusion Stage",
+            "Completed",
+          ],
+        },
+      ],
+      default: ["Just In"],
+    },
+
     /* ================= EMPLOYEE MANAGEMENT ================= */
 
     assignedTo: {
@@ -264,6 +310,16 @@ paymentSchema.index({
 
 paymentSchema.index({
   "customer.mobile": 1,
+  createdAt: -1,
+});
+
+paymentSchema.index({
+  "customer.customerId": 1,
+  createdAt: -1,
+});
+
+paymentSchema.index({
+  "customer.userCode": 1,
   createdAt: -1,
 });
 

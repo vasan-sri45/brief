@@ -19,7 +19,8 @@ export default function ScrollToTopSocialFAB() {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const frame = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(frame);
   }, []);
 
   /* GSAP animation */
@@ -60,13 +61,13 @@ export default function ScrollToTopSocialFAB() {
     },
     {
       Icon: Facebook,
-      href: "https://facebook.com",
+      href: "https://www.facebook.com/share/14ntuxkHGuT/?mibextid=wwXIfr",
       bg: "bg-blue-600",
       label: "Facebook",
     },
     {
       Icon: Instagram,
-      href: "https://www.instagram.com/briefcasse_?igsh=emI0MW1mcGdnMzVj",
+      href: "https://www.instagram.com/briefcasse_?igsh=bGQ3MnhvNnRxa3M3&utm_source=qr",
       bg: "bg-pink-500",
       label: "Instagram",
     },

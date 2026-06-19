@@ -31,6 +31,7 @@ const defaultAllowlist = [
   "http://localhost:3001",
   "https://briefcasse.com",
   "https://www.briefcasse.com",
+  "https://brief-1-cpll.onrender.com",
   "https://admin-brief.onrender.com"
 ];
 

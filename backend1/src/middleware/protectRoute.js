@@ -15,7 +15,7 @@ const protectFactory = (Model) => async (req, res, next) => {
 
     // Fetch only what is needed for authorization
     const user = await Model.findById(id).select(
-      '_id employee_id name email mobile role status department designation dateOfJoining dateOfBirth profileImage'
+      '_id employee_id customerId name email mobile role status department designation dateOfJoining dateOfBirth profileImage'
     );
     if (!user) return res.status(401).json({ success: false, message: 'Invalid user' });
 

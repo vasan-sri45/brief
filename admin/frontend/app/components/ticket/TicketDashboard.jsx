@@ -24,6 +24,9 @@ const idString = (value) => {
   return String(value);
 };
 
+const isPaymentCompleted = (service) =>
+  String(service?.paymentStatus || "").trim().toLowerCase() === "paid";
+
 export default function Dashboard() {
 
   const { data: onlineData, isLoading: onlineLoading } =
@@ -172,12 +175,10 @@ export default function Dashboard() {
 
     const total = employeeServices.length;
 
-    const availed = employeeServices.filter(
-      (s) => String(s.paymentStatus || "").toLowerCase() === "paid"
-    ).length;
+    const availed = employeeServices.filter(isPaymentCompleted).length;
 
     const notAvailed = employeeServices.filter(
-      (s) => String(s.paymentStatus || "").toLowerCase() !== "paid"
+      (s) => !isPaymentCompleted(s)
     ).length;
 
     const completed = employeeServices.filter(
@@ -192,22 +193,22 @@ export default function Dashboard() {
         bg: "bg-[#B7CDB3]",
       },
       {
+        key: "COMPLETED",
+        title: "Completed",
+        value: completed,
+        bg: "bg-[#C7D0F0]",
+      },
+      {
         key: "AVAILED",
-        title: "Availed",
+        title: "Paid",
         value: availed,
         bg: "bg-[#FFE8CC]",
       },
       {
         key: "NOT_AVAILED",
-        title: "Not Availed",
+        title: "Un Paid",
         value: notAvailed,
         bg: "bg-[#FFDCD8]",
-      },
-      {
-        key: "COMPLETED",
-        title: "Completed",
-        value: completed,
-        bg: "bg-[#C7D0F0]",
       },
     ];
 
@@ -220,14 +221,12 @@ export default function Dashboard() {
     if (filter === "ALL") return employeeServices;
 
     if (filter === "AVAILED") {
-      return employeeServices.filter(
-        (s) => String(s.paymentStatus || "").toLowerCase() === "paid"
-      );
+      return employeeServices.filter(isPaymentCompleted);
     }
 
     if (filter === "NOT_AVAILED") {
       return employeeServices.filter(
-        (s) => String(s.paymentStatus || "").toLowerCase() !== "paid"
+        (s) => !isPaymentCompleted(s)
       );
     }
 
@@ -292,5 +291,3 @@ export default function Dashboard() {
     </section>
   );
 }
-
-

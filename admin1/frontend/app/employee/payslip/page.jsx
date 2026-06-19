@@ -90,20 +90,9 @@ export default function EmployeePayslipPage() {
         </div>
       ) : (
         <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-[0_16px_45px_rgba(15,23,42,0.08)]">
-          <div className="grid gap-4 md:grid-cols-4">
+          <div className="grid gap-4 md:grid-cols-2">
             <Info label="Employee" value={payroll?.employeeName || "-"} />
-            <Info label="Code" value={payroll?.employeeCode || "-"} />
-            <Info label="Designation" value={payroll?.designation || "-"} />
-            <Info label="Type" value={payroll?.employmentType === "on-role" ? "On-role" : "Off-role"} />
-            <Info label="Month" value={`${monthName} ${year}`} />
-            <Info label="Salary" value={`Rs. ${payroll?.monthlySalary || 0}`} />
-            <Info label="Allowances" value={`Rs. ${payroll?.allowances || 0}`} />
-            <Info label="Statutory Deduction" value={`Rs. ${payroll?.statutoryDeduction || 0}`} />
-            <Info label="Present" value={payroll?.presentDays || 0} />
-            <Info label="LOP" value={payroll?.lopDays || 0} />
-            <Info label="LOP Deduction" value={`Rs. ${payroll?.lopDeduction || 0}`} />
-            <Info label="LOP Recovery" value={`Rs. ${payroll?.lopRecoveryAmount || 0}`} />
-            <Info label="Net Pay" value={`Rs. ${payroll?.payableSalary || 0}`} />
+            <Info label="Employee ID" value={payroll?.employeeCode || "-"} />
           </div>
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row">

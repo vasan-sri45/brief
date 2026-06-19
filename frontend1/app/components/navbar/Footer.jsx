@@ -12,8 +12,8 @@ import Link from "next/link"; // ✅ Next.js Link
 const Footer = () => {
 
   const socialLinks = [
-    { icon: Facebook, href: "https://www.facebook.com/yourpage", label: "Facebook" },
-    { icon: Instagram, href: "https://www.instagram.com/briefcasse_?igsh=emI0MW1mcGdnMzVj", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/share/14ntuxkHGuT/?mibextid=wwXIfr", label: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/briefcasse_?igsh=bGQ3MnhvNnRxa3M3&utm_source=qr", label: "Instagram" },
     { icon: FaXTwitter, href: "https://x.com/yourprofile", label: "X" },
     { icon: Youtube, href: "https://www.youtube.com/@yourchannel", label: "YouTube" },
   ];

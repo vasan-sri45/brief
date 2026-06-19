@@ -54,11 +54,18 @@ const faqSchema = new mongoose.Schema(
 
 const serviceSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true },        // "Startup", "Intellectual Property"
-    subTitle: { type: String, required: true },     // "Company Registration", "Trademark"
-    slug: { type: String, required: true, unique: true },
+    title: { type: String, required: true, trim: true, index: true },
+    subTitle: { type: String, required: true, trim: true },
+    slug: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      index: true,
+    },
 
-    heading: { type: String, required: true },
+    heading: { type: String, required: true, trim: true },
     description: { type: String, default: "" },
     shortDescription: { type: String, default: "", trim: true },
     fullDescription: { type: String, default: "", trim: true },
@@ -149,6 +156,7 @@ const serviceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+serviceSchema.index({ status: 1, title: 1, heading: 1, displayOrder: 1 });
 serviceSchema.index({ status: 1, title: 1, subTitle: 1, displayOrder: 1 });
 serviceSchema.index({ slug: 1, status: 1 });
 serviceSchema.index({

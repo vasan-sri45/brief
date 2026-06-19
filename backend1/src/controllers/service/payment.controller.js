@@ -197,6 +197,8 @@ export const createOrder = async (req, res) => {
       serviceId: service._id,
       userId,
       customer: {
+        userCode: user?.customerId || "",
+        customerId: user?.customerId || "",
         name: user?.name || "",
         mobile: user?.mobile || "",
         email: user?.email || "",
@@ -376,7 +378,7 @@ export const getAllOrders = async (req, res) => {
 
     const orders = await Payment.find(query)
       .select(
-        "serviceNo serviceId userId customer amount baseAmount gstAmount gstRate status serviceStatus paymentMode paymentDate assignedTo progressMessages createdAt updatedAt"
+        "serviceNo serviceId userId customer amount baseAmount gstAmount gstRate status serviceStatus transactionStage transactionStages paymentMode paymentDate assignedTo progressMessages createdAt updatedAt"
       )
       .populate("serviceId", "title price heading")
       .populate("userId", "name email mobile")
@@ -418,6 +420,57 @@ const normalizeOnlinePaymentStatus = (value = "created") => {
   return "created";
 };
 
+const SERVICE_STATUSES = ["Pending", "In Progress", "Completed", "Cancelled"];
+
+const TRANSACTION_STAGES = [
+  "Just In",
+  "Attempt to Contact",
+  "Awaiting Document",
+  "Document Preparation",
+  "Final Draft",
+  "Conclusion Stage",
+  "Completed",
+];
+
+const normalizeServiceStatus = (value = "Pending") => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (normalized === "in progress") return "In Progress";
+  if (normalized === "completed") return "Completed";
+  if (normalized === "cancelled") return "Cancelled";
+
+  const status = SERVICE_STATUSES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return status || "Pending";
+};
+
+const normalizeTransactionStage = (value = "Just In") => {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (!normalized || normalized === "pending") return "Just In";
+  if (normalized === "in progress") return "Document Preparation";
+  if (normalized === "cancelled") return "Conclusion Stage";
+
+  const stage = TRANSACTION_STAGES.find(
+    (item) => item.toLowerCase() === normalized
+  );
+
+  return stage || "Just In";
+};
+
+const normalizeTransactionStages = (value) => {
+  const source = Array.isArray(value) ? value : [value];
+  const stages = source
+    .flatMap((item) => String(item || "").split(","))
+    .map((item) => normalizeTransactionStage(item))
+    .filter(Boolean);
+  const uniqueStages = TRANSACTION_STAGES.filter((stage) =>
+    stages.includes(stage)
+  );
+
+  return uniqueStages.length ? uniqueStages : ["Just In"];
+};
+
 export const updatePaymentService = async (req, res) => {
   try {
 
@@ -426,6 +479,8 @@ export const updatePaymentService = async (req, res) => {
     const {
       paymentStatus,
       serviceStatus,
+      transactionStage,
+      transactionStages,
       assignedTo,
       paymentMode,
       progressMessage,
@@ -453,7 +508,15 @@ export const updatePaymentService = async (req, res) => {
       updateData.status = normalizeOnlinePaymentStatus(paymentStatus);
 
     if (serviceStatus !== undefined)
-      updateData.serviceStatus = serviceStatus;
+      updateData.serviceStatus = normalizeServiceStatus(serviceStatus);
+
+    if (transactionStages !== undefined) {
+      updateData.transactionStages = normalizeTransactionStages(transactionStages);
+      updateData.transactionStage = updateData.transactionStages.at(-1);
+    } else if (transactionStage !== undefined) {
+      updateData.transactionStage = normalizeTransactionStage(transactionStage);
+      updateData.transactionStages = normalizeTransactionStages(transactionStage);
+    }
 
     if (isAdmin && paymentMode !== undefined)
       updateData.paymentMode = paymentMode;
@@ -515,7 +578,7 @@ export const getMyOrders = async (req, res) => {
 
     const orders = await Payment.find({ userId: req.user._id })
       .select(
-        "serviceNo serviceId amount baseAmount gstAmount gstRate status serviceStatus paymentMode paymentDate assignedTo progressMessages createdAt updatedAt"
+        "serviceNo serviceId amount baseAmount gstAmount gstRate status serviceStatus transactionStage transactionStages paymentMode paymentDate razorpayPaymentId assignedTo progressMessages createdAt updatedAt"
       )
       .populate("serviceId", "title price heading slug")
       .populate("assignedTo", "name employee_id")

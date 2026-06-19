@@ -114,22 +114,35 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 const sendEmail = async (options) => {
   try {
+    const recipients = Array.isArray(options.email)
+      ? options.email.filter(Boolean)
+      : [options.email].filter(Boolean);
+
+    if (!recipients.length) {
+      throw new Error("Email recipient is missing");
+    }
+
     const response = await resend.emails.send({
       from: process.env.FROM_EMAIL,
 
       // allow string or array
-      to: Array.isArray(options.email) ? options.email : [options.email],
+      to: recipients,
 
       subject: options.subject,
 
       html: options.html || "",
       text: options.text || options.message || "",
+      attachments: options.attachments || undefined,
 
       // optional reply-to (needed for contact form)
       reply_to: options.replyTo || undefined,
     });
 
-    console.log("Email sent:", response?.data?.id);
+    console.log("Email sent:", {
+      id: response?.data?.id,
+      to: recipients,
+      subject: options.subject,
+    });
     return response;
 
   } catch (error) {

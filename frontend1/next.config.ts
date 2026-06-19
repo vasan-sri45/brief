@@ -60,6 +60,10 @@ const nextConfig: NextConfig = {
       },
       { protocol: "https", hostname: "res.cloudinary.com" },
       { protocol: "https", hostname: "brief-ewyr.onrender.com" },
+      { protocol: "https", hostname: "www.pngmart.com" },
+      { protocol: "https", hostname: "m.media-amazon.com" },
+      { protocol: "https", hostname: "images.seeklogo.com" },
+      { protocol: "https", hostname: "careeravenues.info" },
     ],
     formats: ["image/avif", "image/webp"], // Performance boost
   },
