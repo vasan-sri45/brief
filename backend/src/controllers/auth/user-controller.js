@@ -18,6 +18,57 @@ const getNextCustomerId = async () => {
   return `CUS${String(counter.seq).padStart(5, "0")}`;
 };
 
+const escapeHtml = (value = "") =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
+const buildLoginSuccessEmail = (user) => {
+  const customerName = user.name || "Customer";
+  const loginTime = new Date().toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+  return `
+    <div style="font-family:Arial,sans-serif;background:#f6f8fc;padding:24px;color:#172033">
+      <div style="max-width:640px;margin:auto;background:#ffffff;border:1px solid #dce7ff;border-radius:18px;overflow:hidden">
+        <div style="background:#3158df;color:#ffffff;padding:24px">
+          <h1 style="margin:0;font-size:24px">Login successful</h1>
+          <p style="margin:8px 0 0">Welcome back to Briefcasse.</p>
+        </div>
+        <div style="padding:24px;line-height:1.7">
+          <p style="margin-top:0">Hi <strong>${escapeHtml(customerName)}</strong>,</p>
+          <p>Thank you for logging in to your Briefcasse account.</p>
+          <p>Your customer dashboard is ready with service updates, invoices, and support ticket information.</p>
+          <table style="width:100%;border-collapse:collapse;margin:18px 0">
+            <tr>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Email ID</td>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(user.email)}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Customer ID</td>
+              <td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(user.customerId || "-")}</td>
+            </tr>
+            <tr>
+              <td style="padding:10px;color:#64748b">Login Time</td>
+              <td style="padding:10px;font-weight:700">${escapeHtml(loginTime)}</td>
+            </tr>
+          </table>
+          <p>If this login was not done by you, please contact Briefcasse support immediately.</p>
+          <p style="margin-bottom:0">Regards,<br/><strong>Team Briefcasse</strong></p>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
 const sendRegistrationOtp = async (user) => {
   const otp = generateOtp();
   const hashedOtp = await hashOtp(otp);
@@ -166,7 +217,7 @@ export const sendOtp = asyncHandler(async (req, res) => {
   if (!user) {
     return res.status(200).json({
       status: "success",
-      message: "If an account with that email exists, an OTP has been sent.",
+      message: "this emailId already exists, use an alternative emailId.",
     });
   }
 
@@ -240,6 +291,17 @@ export const verifyOtp = asyncHandler(async (req, res) => {
   await user.save({ validateBeforeSave: false });
 
   const token = generateToken(user._id, res);
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Login successful - Briefcasse",
+      html: buildLoginSuccessEmail(user),
+      text: `Hi ${user.name || "Customer"}, thank you for logging in to your Briefcasse account. Customer ID: ${user.customerId || "-"}.`,
+    });
+  } catch (emailError) {
+    console.error("Login Success Email Error:", emailError);
+  }
 
   return res.status(200).json({
     success: true,

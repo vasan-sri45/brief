@@ -27,7 +27,7 @@ const heroMessages = [
 ];
 
 const stats = [
-  { value: "80+", label: "Services" },
+  { value: "80+", label: "a" },
   { value: "5000+", label: "Clients Supported" },
   { value: "100+", label: "Experts" },
   { value: "24/7", label: "Support" },
@@ -39,7 +39,7 @@ const supportCards = [
     text: "For contracts, notices, and litigation support.",
     href: "/services/talk-to-lawyer",
     stat: "205+ Lawyers",
-    imageUrl: "https://www.pngmart.com/files/21/Advocate-Transparent-PNG.png",
+    imageUrl: "/assets/lawyer_logo.webp",
     imageAlt: "Advocate",
   },
   {
@@ -47,7 +47,7 @@ const supportCards = [
     text: "For tax filings, audits, and financial planning.",
     href: "/services/talk-to-chartered-accountant",
     stat: "256+ CAs",
-    imageUrl: "https://m.media-amazon.com/images/I/51sk0rBtWLL.jpg",
+    imageUrl: "/assets/chartered_accountant_logo.webp",
     imageAlt: "Chartered accountant",
   },
   {
@@ -55,7 +55,7 @@ const supportCards = [
     text: "For regulatory compliance and corporate governance.",
     href: "/services/talk-to-company-secretary",
     stat: "200+ CS",
-    imageUrl:"https://careeravenues.info/wp-content/uploads/2022/02/cs.jpg",
+    imageUrl: "/assets/company_secretaries_logo.webp",
     imageAlt: "Company secretary",
   },
 ];

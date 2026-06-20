@@ -52,7 +52,9 @@ export const useVerifyOtp = () => {
       dispatch(setUser(data.user));
 
       // Redirect to app
-      router.replace("/");
+      setTimeout(() => {
+        router.replace("/");
+      }, 700);
     },
   });
 };

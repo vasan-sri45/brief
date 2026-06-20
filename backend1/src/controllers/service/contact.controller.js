@@ -1,5 +1,8 @@
 import sendEmail from "../../utils/email.js";
 
+const ADMIN_NOTIFICATION_EMAIL =
+  process.env.ADMIN_EMAIL || "admin@briefcasse.com";
+
 export const sendContactMail = async (req, res) => {
   try {
     const {
@@ -39,7 +42,7 @@ export const sendContactMail = async (req, res) => {
     `;
 
     await sendEmail({
-      email: process.env.ADMIN_EMAIL,   // your receiving email
+      email: ADMIN_NOTIFICATION_EMAIL,
       subject: `New Contact Form: ${fullName}`,
       html,
       replyTo: email,                   // so you can reply directly

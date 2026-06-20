@@ -7,6 +7,7 @@ import {
   Instagram,
   Youtube,
   MessageCircle,
+  Linkedin,
   ChevronUp
 } from "lucide-react";
 import { gsap } from "gsap";
@@ -55,7 +56,7 @@ export default function ScrollToTopSocialFAB() {
   const socialLinks = [
     {
       Icon: MessageCircle,
-      href: "https://wa.me/919999999999",
+      href: "https://wa.me/message/6Z5BZWEXWYMED1",
       bg: "bg-green-500",
       label: "WhatsApp",
     },
@@ -73,9 +74,15 @@ export default function ScrollToTopSocialFAB() {
     },
     {
       Icon: Youtube,
-      href: "https://youtube.com",
+      href: "https://youtube.com/@briefcasse?si=pZhvMj-20eOo7jv6",
       bg: "bg-red-600",
       label: "YouTube",
+    },
+    {
+      Icon: Linkedin,
+      href: "https://www.linkedin.com/company/briefcasse/",
+      bg: "bg-[#0A66C2]",
+      label: "LinkedIn",
     },
   ];
 

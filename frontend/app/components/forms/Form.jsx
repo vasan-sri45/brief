@@ -6,7 +6,7 @@ import { useOtpLogin, useSendOtp } from "../../hooks/useAuthMutations";
 const UserOtpLoginForm = ({ handleClick }) => {
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const [info, setInfo] = useState("");
+  const [info, setInfo] = useState({ message: "", isError: false });
 
   const otpLogin = useOtpLogin();
   const sendOtp = useSendOtp();
@@ -20,10 +20,18 @@ const UserOtpLoginForm = ({ handleClick }) => {
     otpLogin.mutate(
       { email, otp },
       {
+        onSuccess: (data) => {
+          const loginEmail = data?.user?.email || email;
+          setInfo({
+            message: `Login successful for ${loginEmail}`,
+            isError: false,
+          });
+        },
         onError: (err) => {
-          setInfo(
-            err?.response?.data?.message || "OTP verification failed"
-          );
+          setInfo({
+            message: err?.response?.data?.message || "OTP verification failed",
+            isError: true,
+          });
         },
       }
     );
@@ -31,7 +39,7 @@ const UserOtpLoginForm = ({ handleClick }) => {
 
   const handleSendOtp = () => {
     if (!email) {
-      setInfo("Please enter email.");
+      setInfo({ message: "Please enter email.", isError: true });
       return;
     }
 
@@ -39,12 +47,16 @@ const UserOtpLoginForm = ({ handleClick }) => {
       { email },
       {
         onSuccess: (data) => {
-          setInfo(data?.message || "OTP sent to your email.");
+          setInfo({
+            message: data?.message || `OTP sent to ${email}.`,
+            isError: false,
+          });
         },
         onError: (err) => {
-          setInfo(
-            err?.response?.data?.message || "Failed to send OTP."
-          );
+          setInfo({
+            message: err?.response?.data?.message || "Failed to send OTP.",
+            isError: true,
+          });
         },
       }
     );
@@ -99,9 +111,13 @@ const UserOtpLoginForm = ({ handleClick }) => {
         </button>
       </form>
 
-      {info && (
-        <p className="mt-2 text-center text-xs text-red-500">
-          {info}
+      {info.message && (
+        <p
+          className={`mt-2 text-center text-xs font-lato font-bold ${
+            info.isError ? "text-red-500" : "text-green-100"
+          }`}
+        >
+          {info.message}
         </p>
       )}
 

@@ -4,6 +4,7 @@
 import { useSelector } from "react-redux";
 import Navbar from "../navbar/Navbar";
 import Footer from "../navbar/Footer";
+import SocialMedia from "../common/SocialMedia";
 import { usePathname } from "next/navigation";
 
 export default function AppLayout({ children }) {
@@ -24,6 +25,7 @@ export default function AppLayout({ children }) {
        {!hideLayout && <Navbar />}
         {children}
        {!hideLayout && <Footer />}
+       {!hideLayout && <SocialMedia />}
     </>
   );
 }

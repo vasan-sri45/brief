@@ -5,6 +5,9 @@ import { razorpay } from "../../utils/razorpay.js";
 import User from "../../models/auth/user.js";
 import sendEmail from "../../utils/email.js";
 
+const ADMIN_NOTIFICATION_EMAIL =
+  process.env.ADMIN_EMAIL || "admin@briefcasse.com";
+
 const formatCurrency = (amount = 0) =>
   new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -20,6 +23,17 @@ const formatInvoiceDate = (date) =>
     hour: "2-digit",
     minute: "2-digit",
   });
+
+const formatInvoiceDateOnly = (date) =>
+  new Date(date || Date.now()).toLocaleDateString("en-IN");
+
+const escapeHtml = (value = "") =>
+  String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 
 const GST_RATE = 18;
 
@@ -38,65 +52,154 @@ const calculateGstBreakdown = (baseAmount = 0) => {
   };
 };
 
-const buildInvoiceEmail = (payment, paymentId) => {
+const getPaymentServiceName = (payment) =>
+  payment.serviceId?.heading ||
+  payment.serviceId?.title ||
+  payment.serviceSlug ||
+  "Briefcasse Service";
+
+const getPaymentServiceTitle = (payment) =>
+  payment.serviceId?.title || payment.serviceId?.heading || "Briefcasse Service";
+
+const getInvoiceData = (payment, paymentId) => {
   const serviceName =
-    payment.serviceId?.heading ||
-    payment.serviceId?.title ||
-    payment.serviceSlug ||
-    "Briefcasse Service";
+    getPaymentServiceName(payment);
   const baseAmount = Number(payment.baseAmount || payment.amount || 0);
   const gstRate = Number(payment.gstRate ?? GST_RATE);
   const gstAmount = Number(payment.gstAmount || 0);
   const totalAmount = Number(payment.amount || baseAmount + gstAmount || 0);
+  const customerName = payment.userId?.name || payment.customer?.name || "Customer";
+  const customerMobile = payment.userId?.mobile || payment.customer?.mobile || "-";
+  const customerEmail = payment.userId?.email || payment.customer?.email || "-";
+
+  return {
+    invoiceNo: payment.serviceNo || payment.razorpayOrderId || payment._id || "-",
+    date: payment.paymentDate || payment.createdAt || new Date(),
+    customerName,
+    customerMobile,
+    customerEmail,
+    serviceTitle: getPaymentServiceTitle(payment),
+    serviceName,
+    serviceId: payment.serviceNo || payment._id || "-",
+    paymentMode: payment.paymentMode || "Online",
+    paymentStatus: payment.status || "paid",
+    paymentId: paymentId || payment.razorpayPaymentId || "-",
+    baseAmount,
+    gstRate,
+    gstAmount,
+    totalAmount,
+  };
+};
+
+const buildInvoiceDocumentHtml = (payment, paymentId) => {
+  const invoice = getInvoiceData(payment, paymentId);
+  const rows = [
+    ["Service Title", invoice.serviceTitle],
+    ["Service Name", invoice.serviceName],
+    ["Service ID", invoice.serviceId],
+    ["Payment Mode", invoice.paymentMode],
+    ["Payment Status", invoice.paymentStatus],
+    ["Payment ID", invoice.paymentId],
+    ["Service Price", formatCurrency(invoice.baseAmount)],
+    [`GST (${invoice.gstRate}%)`, formatCurrency(invoice.gstAmount)],
+  ];
+
+  return `
+    <!doctype html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <title>Invoice ${escapeHtml(invoice.invoiceNo)}</title>
+        <style>
+          body { font-family: Arial, sans-serif; color: #111827; padding: 32px; }
+          .top { display: flex; justify-content: space-between; border-bottom: 3px solid #374296; padding-bottom: 18px; gap: 24px; }
+          .brand { display: flex; align-items: center; gap: 14px; }
+          .logo { width: 72px; height: 54px; border-radius: 8px; background: #374296; position: relative; }
+          .logo:before { content: ""; position: absolute; left: 13px; top: 13px; width: 46px; height: 8px; background: #fff; transform: skewX(-30deg); }
+          .logo:after { content: ""; position: absolute; left: 15px; bottom: 11px; width: 40px; height: 26px; border-left: 7px solid #fff; border-right: 7px solid #fff; transform: skewX(-35deg); }
+          h1 { margin: 0; color: #374296; letter-spacing: .3px; }
+          h2 { margin: 8px 0 0; }
+          p { margin: 7px 0; }
+          .box { margin-top: 26px; border: 1px solid #dbeafe; border-radius: 14px; padding: 18px; }
+          .row { display: flex; justify-content: space-between; gap: 18px; border-bottom: 1px solid #e5e7eb; padding: 12px 0; }
+          .row:last-child { border-bottom: 0; }
+          .label { color: #64748b; font-weight: 700; }
+          .total { margin-top: 22px; background: #eff6ff; padding: 18px; border-radius: 14px; font-size: 22px; font-weight: 800; color: #172033; }
+          .note { margin-top: 28px; color: #64748b; font-size: 12px; }
+        </style>
+      </head>
+      <body>
+        <div class="top">
+          <div class="brand">
+            <div class="logo"></div>
+            <div>
+              <h1>Briefcasse</h1>
+              <p>Legal | Compliance | IP Services</p>
+            </div>
+          </div>
+          <div>
+            <h2>Tax Invoice</h2>
+            <p><b>Invoice No:</b> ${escapeHtml(invoice.invoiceNo)}</p>
+            <p><b>Date:</b> ${escapeHtml(formatInvoiceDateOnly(invoice.date))}</p>
+          </div>
+        </div>
+        <div class="box">
+          <h3>Bill To</h3>
+          <p>${escapeHtml(invoice.customerName)}</p>
+          <p>${escapeHtml(invoice.customerMobile)}</p>
+          <p>${escapeHtml(invoice.customerEmail)}</p>
+        </div>
+        <div class="box">
+          ${rows
+            .map(
+              ([label, value]) =>
+                `<div class="row"><span class="label">${escapeHtml(label)}</span><span>${escapeHtml(value)}</span></div>`
+            )
+            .join("")}
+        </div>
+        <div class="total">Total Paid: ${escapeHtml(formatCurrency(invoice.totalAmount))}</div>
+        <p class="note">This is a computer-generated invoice.</p>
+      </body>
+    </html>
+  `;
+};
+
+const getInvoiceAttachment = (payment, paymentId) => {
+  const invoiceNo = payment.serviceNo || payment.razorpayOrderId || payment._id || "invoice";
+  const fileName = `briefcasse-invoice-${String(invoiceNo).replace(/[^a-z0-9-]/gi, "-")}.html`;
+
+  return {
+    filename: fileName,
+    content: buildInvoiceDocumentHtml(payment, paymentId),
+    contentType: "text/html",
+  };
+};
+
+const buildInvoiceEmail = (payment, paymentId) => {
+  const invoice = getInvoiceData(payment, paymentId);
 
   return `
     <div style="font-family:Arial,sans-serif;background:#f6f8fc;padding:24px;color:#172033">
       <div style="max-width:680px;margin:auto;background:#ffffff;border:1px solid #dce7ff;border-radius:18px;overflow:hidden">
         <div style="background:#2563eb;color:#ffffff;padding:24px">
-          <h1 style="margin:0;font-size:26px">Briefcasse Invoice</h1>
-          <p style="margin:8px 0 0">Your service payment has been verified successfully.</p>
+          <h1 style="margin:0;font-size:26px">Thank you for purchasing a Briefcasse service</h1>
+          <p style="margin:8px 0 0">Your online payment has been verified successfully.</p>
         </div>
         <div style="padding:24px">
+          <p style="margin:0 0 18px;line-height:1.7;color:#475569">
+            Dear ${escapeHtml(invoice.customerName)}, thank you for choosing Briefcasse.
+            Our team has received your service request and will begin the next steps shortly.
+            Your invoice document is attached to this email for download and printing.
+          </p>
           <table style="width:100%;border-collapse:collapse">
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Invoice / Service No</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${payment.serviceNo}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Date</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff">${formatInvoiceDate(payment.paymentDate)}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Customer</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff">${payment.userId?.name || payment.customer?.name || "Customer"}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Email</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff">${payment.userId?.email || payment.customer?.email || "Not available"}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Service</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${serviceName}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Payment ID</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff">${paymentId}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Service Price</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff">${formatCurrency(baseAmount)}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">GST (${gstRate}%)</td>
-              <td style="padding:10px;border-bottom:1px solid #edf2ff">${formatCurrency(gstAmount)}</td>
-            </tr>
-            <tr>
-              <td style="padding:10px;color:#64748b">Amount Paid</td>
-              <td style="padding:10px;font-size:22px;font-weight:800;color:#2563eb">${formatCurrency(totalAmount)}</td>
-            </tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Service Name</td><td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(invoice.serviceName)}</td></tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Service ID</td><td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(invoice.serviceId)}</td></tr>
+            <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Payment ID</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(invoice.paymentId)}</td></tr>
+            <tr><td style="padding:10px;color:#64748b">Amount Paid</td><td style="padding:10px;font-size:22px;font-weight:800;color:#2563eb">${escapeHtml(formatCurrency(invoice.totalAmount))}</td></tr>
           </table>
-          <p style="margin-top:24px;color:#475569;line-height:1.6">
-            You can download or print this invoice from your Briefcasse account.
+          <p style="margin-top:24px;color:#475569;line-height:1.7">
+            We will review your service details, confirm any required documents,
+            and keep you updated through your Briefcasse account.
           </p>
         </div>
       </div>
@@ -305,23 +408,25 @@ export const verifyPayment = async (req, res) => {
       try {
         await sendEmail({
           email: invoiceEmail,
-          subject: `Invoice ${payment.serviceNo} - Briefcasse`,
+          subject: `Thank you for your purchase - Invoice ${payment.serviceNo} - Briefcasse`,
           html: buildInvoiceEmail(populatedPayment, razorpay_payment_id),
+          attachments: [getInvoiceAttachment(populatedPayment, razorpay_payment_id)],
         });
       } catch (emailError) {
         console.error("Invoice Email Error:", emailError);
       }
     }
 
-    if (process.env.ADMIN_EMAIL) {
+    if (ADMIN_NOTIFICATION_EMAIL) {
       try {
         await sendEmail({
-          email: process.env.ADMIN_EMAIL,
-          subject: `New paid service ${payment.serviceNo} - Briefcasse`,
+          email: ADMIN_NOTIFICATION_EMAIL,
+          subject: `New online service purchase ${payment.serviceNo} - Briefcasse`,
           html: buildAdminPaymentNotificationEmail(
             populatedPayment,
             razorpay_payment_id
           ),
+          attachments: [getInvoiceAttachment(populatedPayment, razorpay_payment_id)],
         });
       } catch (adminEmailError) {
         console.error("Admin Payment Notification Error:", adminEmailError);

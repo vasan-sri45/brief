@@ -26,7 +26,7 @@ export default function LoginPage() {
   if (!hydrated || user) return null;
 
   return (
-    <div className="flex gap-4">
+    <div className="flex min-h-screen items-center justify-center gap-8 px-4 ">
       {isLogin ? (
         <LoginForm handleClick={toggle} />
       ) : (

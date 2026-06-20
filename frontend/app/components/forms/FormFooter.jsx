@@ -9,7 +9,7 @@ const socialLinks = {
   instagram:
     "https://www.instagram.com/briefcasse_?igsh=bGQ3MnhvNnRxa3M3&utm_source=qr",
   facebook: "https://www.facebook.com/share/14ntuxkHGuT/?mibextid=wwXIfr",
-  youtube: "https://youtube.com",
+  youtube: "https://youtube.com/@briefcasse?si=pZhvMj-20eOo7jv6",
 };
 
 const FormFooter = () => {

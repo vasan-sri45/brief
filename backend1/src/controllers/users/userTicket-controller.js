@@ -1,8 +1,40 @@
 import mongoose from 'mongoose';
 import Ticket from '../../models/ticket.js';
 import asyncHandler from 'express-async-handler';
+import sendEmail from '../../utils/email.js';
+
+const ADMIN_NOTIFICATION_EMAIL =
+  process.env.ADMIN_EMAIL || 'admin@briefcasse.com';
 
 const { Types } = mongoose;
+
+const escapeHtml = (value = '') =>
+  String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
+const buildAdminUserTicketEmail = (ticket, user = {}) => `
+  <div style="font-family:Arial,sans-serif;background:#f6f8fc;padding:24px;color:#172033">
+    <div style="max-width:680px;margin:auto;background:#ffffff;border:1px solid #dce7ff;border-radius:18px;overflow:hidden">
+      <div style="background:#172033;color:#ffffff;padding:24px">
+        <h1 style="margin:0;font-size:24px">New user ticket raised</h1>
+        <p style="margin:8px 0 0">A customer has created a support ticket.</p>
+      </div>
+      <div style="padding:24px">
+        <table style="width:100%;border-collapse:collapse">
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Ticket ID</td><td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(ticket._id)}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Customer</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(user.name || 'Customer')}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Email</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(user.email || 'Not available')}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Subject</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(ticket.subject)}</td></tr>
+          <tr><td style="padding:10px;color:#64748b;vertical-align:top">Message</td><td style="padding:10px;line-height:1.6">${escapeHtml(ticket.message)}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+`;
 
 // CREATE TICKET - User creates a new ticket
 export const createTicket = asyncHandler(async (req, res) => {
@@ -23,6 +55,18 @@ export const createTicket = asyncHandler(async (req, res) => {
   }
 
   const ticket = await Ticket.create({ subject, message, createdBy });
+
+  if (ADMIN_NOTIFICATION_EMAIL) {
+    try {
+      await sendEmail({
+        email: ADMIN_NOTIFICATION_EMAIL,
+        subject: `New user ticket - Briefcasse`,
+        html: buildAdminUserTicketEmail(ticket, req.user),
+      });
+    } catch (emailError) {
+      console.error('Admin User Ticket Email Error:', emailError);
+    }
+  }
 
   res.status(201).json({ success: true, ticket });
 });

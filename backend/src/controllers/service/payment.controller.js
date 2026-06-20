@@ -190,6 +190,7 @@ const buildInvoiceEmail = (payment, paymentId) => {
             Dear ${escapeHtml(invoice.customerName)}, thank you for choosing Briefcasse.
             Our team has received your service request and will begin the next steps shortly.
             Your invoice document is attached to this email for download and printing.
+            You can track the status of the service in the home page of the website after login.
           </p>
           <table style="width:100%;border-collapse:collapse">
             <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Service Name</td><td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(invoice.serviceName)}</td></tr>
@@ -199,7 +200,9 @@ const buildInvoiceEmail = (payment, paymentId) => {
           </table>
           <p style="margin-top:24px;color:#475569;line-height:1.7">
             We will review your service details, confirm any required documents,
-            and keep you updated through your Briefcasse account.
+            and keep you updated through your Briefcasse account. You can also
+            open the website home page anytime to view your current service status,
+            working updates, and invoice download option.
           </p>
         </div>
       </div>

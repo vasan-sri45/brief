@@ -6,9 +6,9 @@ import FormFooter from "./FormFooter";
 
 const RegisterForm = ({ handleClick }) => {
   return (
-    <div className="w-full md:w-6/12 min-h-screen flex flex-col justify-center  items-center md:items-end px-4 md:px-0 gap-1">
+    <div className="w-full md:w-6/12 md:max-w-[550px] md:h-[700px] flex flex-col justify-center items-center px-4 md:px-0 gap-1">
       {/* Card Container */}
-      <div className="bg-custom-blue w-full  lg:max-w-lg rounded-3xl h-[520px] lg:h-[520px] xl:h-[550px]">
+      <div className="bg-custom-blue w-full rounded-3xl h-[520px] md:flex-1">
         <div className="w-11/12 mx-auto">
           
 
@@ -46,7 +46,7 @@ const RegisterForm = ({ handleClick }) => {
       </div>
       
            {/* ================= FOOTER ================= */}
-      <div className="bg-custom-blue w-full lg:max-w-lg h-[90px] md:h-[125px] lg:h-[135px] rounded-3xl">
+      <div className="bg-custom-blue w-full h-[90px] md:h-[135px] rounded-3xl">
         <div className="h-full flex items-center justify-center">
           <FormFooter />
         </div>

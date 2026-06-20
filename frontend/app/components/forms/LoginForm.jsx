@@ -5,10 +5,10 @@ import FormFooter from "./FormFooter";
 
 const LoginForm = ({ handleClick }) => {
   return (
-    <div className="w-full md:w-6/12 min-h-screen flex flex-col justify-center items-center md:items-end gap-1">
+    <div className="w-full md:w-6/12 md:max-w-[550px] md:h-[700px] flex flex-col justify-center items-center gap-1">
       
       {/* ================= CARD ================= */}
-      <div className="bg-custom-blue w-11/12 lg:max-w-lg h-[520px] lg:h-[520px] xl:h-[550px] rounded-3xl">
+      <div className="bg-custom-blue w-full h-[520px] md:flex-1 rounded-3xl">
         <div className="w-5/6 mx-auto pt-2">
 
           {/* ===== LOGO ===== */}
@@ -50,7 +50,7 @@ const LoginForm = ({ handleClick }) => {
       </div>
 
       {/* ================= FOOTER ================= */}
-      <div className="bg-custom-blue w-11/12 lg:max-w-lg h-[90px] md:h-[125px] lg:h-[135px] rounded-3xl">
+      <div className="bg-custom-blue w-full h-[90px] md:h-[135px] rounded-3xl">
         <div className="h-full flex items-center justify-center">
           <FormFooter />
         </div>

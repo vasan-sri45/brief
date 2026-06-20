@@ -1,6 +1,50 @@
 import mongoose from 'mongoose';
 import Ticket from '../../models/admin/ticket.model.js';
 import asyncHandler from "express-async-handler";
+import sendEmail from '../../utils/email.js';
+
+const ADMIN_NOTIFICATION_EMAIL =
+  process.env.ADMIN_EMAIL || 'admin@briefcasse.com';
+
+const formatTicketDate = (date) =>
+  new Date(date || Date.now()).toLocaleString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+const escapeHtml = (value = '') =>
+  String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+
+const buildAdminTicketEmail = (ticket, user = {}) => `
+  <div style="font-family:Arial,sans-serif;background:#f6f8fc;padding:24px;color:#172033">
+    <div style="max-width:680px;margin:auto;background:#ffffff;border:1px solid #dce7ff;border-radius:18px;overflow:hidden">
+      <div style="background:#172033;color:#ffffff;padding:24px">
+        <h1 style="margin:0;font-size:24px">New ticket raised</h1>
+        <p style="margin:8px 0 0">A support ticket has been created in Briefcasse.</p>
+      </div>
+      <div style="padding:24px">
+        <table style="width:100%;border-collapse:collapse">
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Ticket No</td><td style="padding:10px;border-bottom:1px solid #edf2ff;font-weight:700">${escapeHtml(ticket.ticketNo)}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Raised By</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(user.name || 'Employee')}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Email</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(user.email || 'Not available')}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Department</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(ticket.department)}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Request Type</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(ticket.requestType)}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Date</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(formatTicketDate(ticket.date))}</td></tr>
+          <tr><td style="padding:10px;border-bottom:1px solid #edf2ff;color:#64748b">Status</td><td style="padding:10px;border-bottom:1px solid #edf2ff">${escapeHtml(ticket.status)}</td></tr>
+          <tr><td style="padding:10px;color:#64748b;vertical-align:top">Remark</td><td style="padding:10px;line-height:1.6">${escapeHtml(ticket.remark)}</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+`;
 
 // Create
 export const createTicket = asyncHandler(async (req, res) => {
@@ -35,6 +79,18 @@ export const createTicket = asyncHandler(async (req, res) => {
       remark: rmk,
       createdBy,
     });
+
+    if (ADMIN_NOTIFICATION_EMAIL) {
+      try {
+        await sendEmail({
+          email: ADMIN_NOTIFICATION_EMAIL,
+          subject: `New ticket ${ticket.ticketNo} - Briefcasse`,
+          html: buildAdminTicketEmail(ticket, req.user),
+        });
+      } catch (emailError) {
+        console.error('Admin Ticket Email Error:', emailError);
+      }
+    }
 
     return res.status(201).json({
       success: true,

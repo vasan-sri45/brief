@@ -32,7 +32,7 @@ const HeroStrip = () => {
                          hover:shadow-lg hover:scale-105 
                          transition-all duration-300"
             >
-              Talk To An Expert
+              START THE SERVICE
               <ArrowRight className="ml-2 w-7 h-7" />
             </button>
       </div>

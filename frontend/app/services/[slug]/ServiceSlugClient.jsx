@@ -9,7 +9,6 @@ import LegalRequired from "../../components/services/LegalRequired";
 import IncorporationProcess from "../../components/services/InCoporationProcess";
 import ProcessAtBriefcasse from "../../components/services/ProcessAtBriefCasse";
 import BoxClasses from "../../components/services/ClassGrid";
-import SocialMedia from "../../components/common/SocialMedia";
 import { getServiceFaqs, getServiceTitle } from "../../config/site";
 
 const normalizeFaqs = (serviceFaqs, fallbackFaqs = []) => {
@@ -298,8 +297,6 @@ return ( <div className="overflow-hidden">
       </div>
     </section>
   )}
-
-  <SocialMedia />
 
 </div>
 
