@@ -160,7 +160,7 @@ export default function ServiceManagerPage() {
                   {service.subTitle || "Service"}
                 </p>
                 <h2 className="mt-2 line-clamp-2 text-lg font-bold text-gray-900">
-                  {service.title}
+                  {service.heading}
                 </h2>
                 <p className="mt-2 line-clamp-3 text-sm text-gray-500">
                   {service.description || service.heading || "No description added."}
